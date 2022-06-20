@@ -2,15 +2,17 @@ package io.github.junkfood.podcast.ui.destination
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,92 +24,31 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.google.android.material.color.DynamicColors
-import io.github.junkfood.podcast.R
+import com.icosillion.podengine.models.Episode
+import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.podcast.ui.color.hct.Hct
 import io.github.junkfood.podcast.ui.color.palettes.CorePalette
 import io.github.junkfood.podcast.ui.common.LocalDarkTheme
 import io.github.junkfood.podcast.ui.common.LocalSeedColor
+import io.github.junkfood.podcast.ui.component.PodcastItem
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.net.URL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppearanceSettings() {
+    val podcastState: MutableState<Podcast?> = remember { mutableStateOf(null) }
     Column(
         Modifier
             .systemBarsPadding()
             .statusBarsPadding()
     ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .clickable { }
-                .padding(12.dp)
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(5f, matchHeightConstraintsFirst = true)
-                    .height(IntrinsicSize.Min)
-            ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.small)
-                        .aspectRatio(1f, matchHeightConstraintsFirst = true),
-                    model = R.drawable.cover,
-                    contentDescription = null
-                )
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 6.dp)
-                        .fillMaxHeight(), verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        "【随机波动070】想象一种更好的社交网络，也是想象更好的社会",
-                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        "随机波动StochasticVolatility",
-                        modifier = Modifier.padding(top = 3.dp),
-                        style = MaterialTheme.typography.bodySmall,
-//                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-            }
-            Text(
-                "作为社交网络重度成瘾者，这期节目像是一个小规模的戒酒会，参与者先要忏悔：我叫xxx，我上周的平均屏幕使用时间是6小时49分钟，其中5小时23分钟用于社交网络，微信、微博和小红书瓜分了我一天生命中的五个小时，令我效率低下、情绪波动、颈椎僵直、眼睛干涩。",
-                style = MaterialTheme.typography.bodySmall,
-//                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 6.dp)
-            )
-
-        }
-        Row(Modifier.padding(horizontal = 6.dp)) {
-            ElevatedCard(modifier = Modifier
-                .weight(1f)
-                .padding(6.dp), onClick = {}) { CardContent() }
-
-            Card(modifier = Modifier
-                .weight(1f)
-                .padding(6.dp), onClick = {}) { CardContent() }
-        }
-        Row(Modifier.padding(horizontal = 6.dp)) {
-            OutlinedCard(modifier = Modifier
-                .weight(1f)
-                .padding(6.dp), onClick = {}) { CardContent() }
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(6.dp)
-                .clip(MaterialTheme.shapes.medium)
-                .clickable { }) {
-                CardContent()
+        LaunchedEffect(Unit) {
+            launch(Dispatchers.IO) {
+                podcastState.value = Podcast(URL("https://feeds.fireside.fm/stovol/rss"))
             }
         }
         Row(
@@ -126,6 +67,37 @@ fun AppearanceSettings() {
             ColorButton(color = Color.Red)
             ColorButton(color = Color.Magenta)
             ColorButton(color = Color.Blue)
+        }
+
+        podcastState.value?.let { podcast ->
+            LazyColumn {
+                for (episode in podcast.episodes) {
+                    item {
+                        PodcastItem(
+                            imageModel = episode.iTunesInfo.imageString,
+                            title = podcast.title,
+                            episodeTitle = episode.title,
+                            episodeDescription = episode.description
+                        )
+                    }
+                }
+            }
+/*            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                for (episode in podcast.episodes) {
+                    item {
+                        ElevatedCard(modifier = Modifier.padding(6.dp), onClick = {}) {
+                            CardContent(
+                                podcast.title,
+                                episode
+                            )
+                        }
+                    }
+                }
+            }*/
         }
     }
 
@@ -171,17 +143,17 @@ fun ColorButton(modifier: Modifier = Modifier, color: Color) {
 }
 
 @Composable
-fun CardContent() {
+fun CardContent(title: String, episode: Episode) {
 
     AsyncImage(
         modifier = Modifier
             .clip(MaterialTheme.shapes.medium)
             .aspectRatio(1f, matchHeightConstraintsFirst = true),
-        model = R.drawable.cover,
+        model = episode.iTunesInfo.image,
         contentDescription = null
     )
     Text(
-        "【随机波动070】想象一种更好的社交网络，也是想象更好的社会",
+        episode.title,
         modifier = Modifier.padding(
             top = 9.dp,
             bottom = 3.dp,
@@ -193,7 +165,7 @@ fun CardContent() {
         overflow = TextOverflow.Ellipsis
     )
     Text(
-        "随机波动StochasticVolatility",
+        title,
         modifier = Modifier.padding(bottom = 15.dp, start = 12.dp, end = 12.dp),
         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),

@@ -1,5 +1,6 @@
 package io.github.junkfood.podcast.ui.common
 
 object RouteName {
-    const val COLOR = "color"
+    const val FEED = "feed"
+    const val EPISODE = "episode"
 }

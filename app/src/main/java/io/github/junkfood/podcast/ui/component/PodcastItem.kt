@@ -1,5 +1,6 @@
 package io.github.junkfood.podcast.ui.component
 
+import android.text.Html
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -10,14 +11,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 
 @Composable
-fun PodcastItem(imageModel: Any, title: String, episodeTitle: String, episodeDescription: String) {
+fun PodcastItem(
+    imageModel: Any,
+    title: String,
+    episodeTitle: String,
+    episodeDescription: String,
+    onClick: () -> Unit
+) {
     Column(
         Modifier
             .fillMaxWidth()
-            .clickable { }
+            .clickable { onClick() }
             .padding(12.dp)
     ) {
         Row(
@@ -35,7 +43,7 @@ fun PodcastItem(imageModel: Any, title: String, episodeTitle: String, episodeDes
             )
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 6.dp)
+                    .padding(horizontal = 9.dp)
                     .fillMaxHeight(), verticalArrangement = Arrangement.Center
             ) {
                 Text(
@@ -56,11 +64,12 @@ fun PodcastItem(imageModel: Any, title: String, episodeTitle: String, episodeDes
 
         }
         Text(
-            episodeDescription, style = MaterialTheme.typography.bodySmall,
-//                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
+            text = HtmlCompat.fromHtml(episodeDescription, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                .toString(), style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(top = 6.dp)
+            modifier = Modifier.padding(top = 9.dp),
         )
 
     }

@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -22,6 +20,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.google.android.material.color.DynamicColors
 import com.icosillion.podengine.models.Episode
@@ -30,6 +30,7 @@ import io.github.junkfood.podcast.ui.color.hct.Hct
 import io.github.junkfood.podcast.ui.color.palettes.CorePalette
 import io.github.junkfood.podcast.ui.common.LocalDarkTheme
 import io.github.junkfood.podcast.ui.common.LocalSeedColor
+import io.github.junkfood.podcast.ui.common.RouteName
 import io.github.junkfood.podcast.ui.component.PodcastItem
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
@@ -37,19 +38,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.URL
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppearanceSettings() {
-    val podcastState: MutableState<Podcast?> = remember { mutableStateOf(null) }
+fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
+
+    val viewState = feedViewModel.stateFlow.collectAsState()
     Column(
         Modifier
             .systemBarsPadding()
             .statusBarsPadding()
     ) {
         LaunchedEffect(Unit) {
-            launch(Dispatchers.IO) {
-                podcastState.value = Podcast(URL("https://feeds.fireside.fm/stovol/rss"))
-            }
+            feedViewModel.fetchPodcast()
         }
         Row(
             modifier = Modifier
@@ -69,16 +68,20 @@ fun AppearanceSettings() {
             ColorButton(color = Color.Blue)
         }
 
-        podcastState.value?.let { podcast ->
+        viewState.value.run {
             LazyColumn {
-                for (episode in podcast.episodes) {
+                for (i in episodeList.indices) {
+                    val episode = episodeList[i]
                     item {
                         PodcastItem(
                             imageModel = episode.iTunesInfo.imageString,
-                            title = podcast.title,
+                            title = podcastTitle,
                             episodeTitle = episode.title,
                             episodeDescription = episode.description
-                        )
+                        ) {
+                            feedViewModel.jumpToEpisode(i)
+                            navHostController.navigate(RouteName.EPISODE)
+                        }
                     }
                 }
             }

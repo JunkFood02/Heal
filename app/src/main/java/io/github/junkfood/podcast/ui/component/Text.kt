@@ -1,16 +1,16 @@
 package io.github.junkfood.podcast.ui.component
 
 import android.graphics.Typeface
-import android.os.Build.VERSION.SDK_INT
 import android.text.Html
 import android.text.Spanned
 import android.text.style.*
-import androidx.annotation.StringRes
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,116 +27,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import androidx.core.text.getSpans
+import androidx.hilt.navigation.compose.hiltViewModel
+import io.github.junkfood.podcast.ui.destination.FeedViewModel
 
-/**
- * Simple Text composable to show the text with html styling from string resources.
- * Supported are:
- *
- * &lt;b>Bold&lt;/b>
- *
- * &lt;i>Italic&lt;/i>
- *
- * &lt;u>Underlined&lt;/u>
- *
- * &lt;strike>Strikethrough&lt;/strike>
- *
- * &lt;a href="https://google.de">Link&lt;/a>
- *
- * @see androidx.compose.material.Text
- *
- */
-@Composable
-fun HtmlText(
-    modifier: Modifier = Modifier,
-    @StringRes textId: Int,
-    urlSpanStyle: SpanStyle = SpanStyle(
-        color = MaterialTheme.colors.secondary,
-        textDecoration = TextDecoration.Underline
-    ),
-    color: Color = Color.Unspecified,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    fontStyle: FontStyle? = null,
-    fontWeight: FontWeight? = null,
-    fontFamily: FontFamily? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = null,
-    lineHeight: TextUnit = TextUnit.Unspecified,
-    overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
-    maxLines: Int = Int.MAX_VALUE,
-    inlineContent: Map<String, InlineTextContent> = mapOf(),
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = LocalTextStyle.current
-) {
-    val context = LocalContext.current
-    val annotatedString = context.resources.getText(textId).toAnnotatedString(urlSpanStyle)
 
-    val uriHandler = LocalUriHandler.current
-    val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-
-    Text(
-        modifier = modifier.pointerInput(Unit) {
-            detectTapGestures(onTap = { pos ->
-                layoutResult.value?.let { layoutResult ->
-                    val position = layoutResult.getOffsetForPosition(pos)
-                    annotatedString.getStringAnnotations(position, position)
-                        .firstOrNull()
-                        ?.let { sa ->
-                            if (sa.tag == "url") { // NON-NLS
-                                uriHandler.openUri(sa.item)
-                            }
-                        }
-                }
-            })
-        },
-        text = annotatedString,
-        color = color,
-        fontSize = fontSize,
-        fontStyle = fontStyle,
-        fontWeight = fontWeight,
-        fontFamily = fontFamily,
-        letterSpacing = letterSpacing,
-        textDecoration = textDecoration,
-        textAlign = textAlign,
-        lineHeight = lineHeight,
-        overflow = overflow,
-        softWrap = softWrap,
-        maxLines = maxLines,
-        inlineContent = inlineContent,
-        onTextLayout = {
-            layoutResult.value = it
-            onTextLayout(it)
-        },
-        style = style
-    )
-}
-
-/**
- * Simple Text composable to show the text with html styling from a String.
- * Supported are:
- *
- * &lt;b>Bold&lt;/b>
- *
- * &lt;i>Italic&lt;/i>
- *
- * &lt;u>Underlined&lt;/u>
- *
- * &lt;strike>Strikethrough&lt;/strike>
- *
- * &lt;a href="https://google.de">Link&lt;/a>
- *
- * @see androidx.compose.material.Text
- *
- */
 @Composable
 fun HtmlText(
     modifier: Modifier = Modifier,
     text: String,
     urlSpanStyle: SpanStyle = SpanStyle(
-        color = MaterialTheme.colors.secondary,
+        color = MaterialTheme.colorScheme.primary,
         textDecoration = TextDecoration.Underline
+    ),
+    timeStampSpanStyle: SpanStyle = SpanStyle(
+        color = MaterialTheme.colorScheme.primary,
+        fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace
     ),
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
@@ -154,15 +61,13 @@ fun HtmlText(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = LocalTextStyle.current
 ) {
-    val annotatedString = if (SDK_INT < 24) {
-        Html.fromHtml(text)
-    } else {
+    val annotatedString =
         Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
-    }.toAnnotatedString(urlSpanStyle)
+            .toAnnotatedString(urlSpanStyle, timeStampSpanStyle)
 
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-
     Text(
         modifier = modifier
             .pointerInput(Unit) {
@@ -175,6 +80,8 @@ fun HtmlText(
                             ?.let { sa ->
                                 if (sa.tag == "url") { // NON-NLS
                                     uriHandler.openUri(sa.item)
+                                } else if (sa.tag == "timeStamp") {
+                                    Toast.makeText(context, sa.item, Toast.LENGTH_SHORT).show()
                                 }
                             }
                     }
@@ -202,34 +109,35 @@ fun HtmlText(
     )
 }
 
-fun CharSequence.toAnnotatedString(
-    urlSpanStyle: SpanStyle = SpanStyle(
-        color = Color.Blue,
-        textDecoration = TextDecoration.Underline
-    )
-): AnnotatedString {
-    return if (this is Spanned) {
-        this.toAnnotatedString(urlSpanStyle)
-    } else {
-        buildAnnotatedString {
-            append(this@toAnnotatedString.toString())
-        }
-    }
-}
 
 fun Spanned.toAnnotatedString(
     urlSpanStyle: SpanStyle = SpanStyle(
         color = Color.Blue,
         textDecoration = TextDecoration.Underline
+    ), timeStampSpanStyle: SpanStyle = SpanStyle(
+        color = Color.Blue, fontWeight = FontWeight.Bold
     )
 ): AnnotatedString {
     return buildAnnotatedString {
-        append(this@toAnnotatedString.toString())
+        val rawString = this@toAnnotatedString.toString()
+        append(rawString)
         val urlSpans = getSpans<URLSpan>()
         val styleSpans = getSpans<StyleSpan>()
         val colorSpans = getSpans<ForegroundColorSpan>()
         val underlineSpans = getSpans<UnderlineSpan>()
         val strikethroughSpans = getSpans<StrikethroughSpan>()
+        Regex("(\\d{1,2}:)+\\d\\d").findAll(rawString).forEach {
+            addStyle(
+                timeStampSpanStyle, it.range.first,
+                it.range.last + 1
+            )
+            addStringAnnotation(
+                "timeStamp",
+                rawString.substring(it.range),
+                it.range.first,
+                it.range.last + 1
+            )
+        }
         urlSpans.forEach { urlSpan ->
             val start = getSpanStart(urlSpan)
             val end = getSpanEnd(urlSpan)

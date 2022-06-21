@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -83,9 +84,10 @@ fun SmallTopAppBar(
     colors: TopAppBarColors = TopAppBarDefaults.largeTopAppBarColors(),
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
-    val backgroundColor = colors.containerColor(
-        scrollFraction = scrollBehavior?.scrollFraction ?: 0f
-    ).value
+    val backgroundColor =
+        if (scrollBehavior == null) MaterialTheme.colorScheme.surface else colors.containerColor(
+            scrollFraction = scrollBehavior.scrollFraction
+        ).value
     Box(
         modifier = modifier.drawBehind { drawRect(backgroundColor) },
     ) {

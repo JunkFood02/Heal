@@ -1,5 +1,6 @@
 package io.github.junkfood.podcast.ui.destination
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -9,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -38,53 +40,83 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.URL
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
 
     val viewState = feedViewModel.stateFlow.collectAsState()
-    Column(
-        Modifier
-            .systemBarsPadding()
-            .statusBarsPadding()
-    ) {
-        LaunchedEffect(Unit) {
-            feedViewModel.fetchPodcast()
-        }
-        Row(
+    var showDialog by remember { mutableStateOf(false) }
+    Scaffold(modifier = Modifier
+        .padding()
+        .fillMaxSize(), floatingActionButton = {
+        FloatingActionButton(
+            onClick = { showDialog = true },
             modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(12.dp)
-        ) {
-            if (DynamicColors.isDynamicColorAvailable()) {
-                ColorButton(color = dynamicDarkColorScheme(LocalContext.current).primary)
-                ColorButton(color = dynamicDarkColorScheme(LocalContext.current).tertiary)
-            }
-            ColorButton(color = Color(DEFAULT_SEED_COLOR))
-            ColorButton(color = Color.Yellow)
-            ColorButton(color = Color(Hct.from(60.0, 150.0, 70.0).toInt()))
-            ColorButton(color = Color(Hct.from(125.0, 50.0, 60.0).toInt()))
-            ColorButton(color = Color.Red)
-            ColorButton(color = Color.Magenta)
-            ColorButton(color = Color.Blue)
+                .padding(bottom = 36.dp, end = 24.dp)
+        ) { Icon(Icons.Rounded.RssFeed, null) }
+    }) {
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("RSS Feed") },
+                text = {
+                    TextField(
+                        value = viewState.value.url,
+                        onValueChange = { feedViewModel.updateUrl(it) })
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        feedViewModel.fetchPodcast()
+                        showDialog = false
+                    }) {
+                        Text("Fetch podcast")
+                    }
+                })
         }
+        Column(
+            Modifier
+                .statusBarsPadding()
+                .fillMaxSize()
+        ) {
 
-        viewState.value.run {
-            LazyColumn {
-                for (i in episodeList.indices) {
-                    val episode = episodeList[i]
-                    item {
-                        PodcastItem(
-                            imageModel = episode.iTunesInfo.imageString,
-                            title = podcastTitle,
-                            episodeTitle = episode.title,
-                            episodeDescription = episode.description
-                        ) {
-                            feedViewModel.jumpToEpisode(i)
-                            navHostController.navigate(RouteName.EPISODE)
+
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(12.dp)
+            ) {
+                if (DynamicColors.isDynamicColorAvailable()) {
+                    ColorButton(color = dynamicDarkColorScheme(LocalContext.current).primary)
+                    ColorButton(color = dynamicDarkColorScheme(LocalContext.current).tertiary)
+                }
+                ColorButton(color = Color(DEFAULT_SEED_COLOR))
+                ColorButton(color = Color.Yellow)
+                ColorButton(color = Color(Hct.from(60.0, 150.0, 70.0).toInt()))
+                ColorButton(color = Color(Hct.from(125.0, 50.0, 60.0).toInt()))
+                ColorButton(color = Color.Red)
+                ColorButton(color = Color.Magenta)
+                ColorButton(color = Color.Blue)
+            }
+
+            viewState.value.run {
+                LazyColumn {
+                    for (i in episodeList.indices) {
+                        val episode = episodeList[i]
+                        item {
+                            PodcastItem(
+                                imageModel = episode.iTunesInfo.imageString ?: podcastCover,
+                                title = podcastTitle,
+                                episodeTitle = episode.title,
+                                episodeDescription = episode.iTunesInfo.summary
+                                    ?: episode.description
+                            ) {
+                                feedViewModel.jumpToEpisode(i)
+                                navHostController.navigate(RouteName.EPISODE)
+                            }
                         }
                     }
                 }
-            }
 /*            LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -101,9 +133,9 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                     }
                 }
             }*/
+            }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

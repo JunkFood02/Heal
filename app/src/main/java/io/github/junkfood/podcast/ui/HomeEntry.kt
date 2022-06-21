@@ -1,7 +1,7 @@
 package io.github.junkfood.podcast.ui
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -28,11 +28,17 @@ fun HomeEntry() {
             val onBackPressed = { navController.popBackStack() }
             Surface(
                 modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.surface
             ) {
                 val feedViewModel: FeedViewModel = hiltViewModel()
                 AnimatedNavHost(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            bottom = WindowInsets.systemBars
+                                .asPaddingValues()
+                                .calculateBottomPadding()
+                        ),
                     navController = navController,
                     startDestination = RouteName.FEED
                 ) {

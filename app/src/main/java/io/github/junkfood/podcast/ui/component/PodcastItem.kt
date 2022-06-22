@@ -44,7 +44,7 @@ fun PodcastItem(
             Column(
                 modifier = Modifier
                     .padding(horizontal = 9.dp)
-                    .fillMaxHeight(), verticalArrangement = Arrangement.Center
+                    .fillMaxHeight(), verticalArrangement = Arrangement.Top
             ) {
                 Text(
                     episodeTitle,

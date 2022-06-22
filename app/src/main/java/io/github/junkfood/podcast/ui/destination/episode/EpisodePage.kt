@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,9 +24,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
-import io.github.junkfood.podcast.ui.component.BackButton
-import io.github.junkfood.podcast.ui.component.HtmlText
+import io.github.junkfood.podcast.ui.component.*
 import io.github.junkfood.podcast.ui.destination.FeedViewModel
+import io.github.junkfood.podcast.util.TextUtil
 import java.text.DateFormat
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -72,7 +73,7 @@ fun EpisodePage(
                             ) {
                                 AsyncImage(
                                     modifier = Modifier
-                                        .fillMaxWidth(0.25f)
+                                        .fillMaxWidth(0.3f)
                                         .clip(MaterialTheme.shapes.small)
                                         .aspectRatio(1f, matchHeightConstraintsFirst = true),
                                     model = podcastCover,
@@ -80,52 +81,31 @@ fun EpisodePage(
                                 )
                                 Column(
                                     Modifier
-                                        .padding(18.dp)
+                                        .padding(horizontal = 18.dp)
                                         .align(Alignment.CenterVertically)
                                 ) {
-                                    Text(
-                                        podcastTitle,
-                                        style = MaterialTheme.typography.titleLarge
-                                    )
-                                    Text(
-                                        author,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f)
-                                    )
+                                    TitleMedium(podcastTitle)
+                                    SubtitleMedium(author)
                                 }
-
 
                             }
 
                         }
                         item {
-                            Box(modifier = Modifier.padding(horizontal = 18.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 18.dp)
+                                    .padding(top = 6.dp)
+                            ) {
                                 Column {
-                                    Text(
-                                        text = episode.title,
-                                        modifier = Modifier.padding(bottom = 3.dp),
-                                        style = MaterialTheme.typography.headlineSmall
-                                    )
-                                    Row() {
-                                        val df: DateFormat =
-                                            DateFormat.getDateInstance(
-                                                DateFormat.SHORT,
-                                                java.util.Locale.getDefault()
-                                            )
-                                        Text(
-                                            "发布于：" + df.format(episode.pubDate),
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = MaterialTheme.colorScheme.onSurface.copy(
-                                                alpha = 0.62f
-                                            ),
+                                    HeadlineSmall(episode.title)
+                                    Row(modifier = Modifier.padding(top = 3.dp)) {
+                                        LabelMedium(
+                                            text = "发布于：" + TextUtil.parseDate(episode.pubDate),
                                             modifier = Modifier.padding(end = 9.dp)
                                         )
-                                        Text(
-                                            "单集长度：" +episode.iTunesInfo.duration,
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = MaterialTheme.colorScheme.onSurface.copy(
-                                                alpha = 0.62f
-                                            ),
+                                        LabelMedium(
+                                            "单集长度：" + episode.iTunesInfo.duration,
                                             modifier = Modifier.padding(end = 18.dp)
                                         )
                                     }
@@ -177,9 +157,7 @@ fun EpisodePage(
                                 FilledIconButton(
                                     onClick = { },
                                     modifier = Modifier.padding(end = 9.dp)
-                                ) {
-                                    Icon(Icons.Rounded.PlayArrow, null)
-                                }
+                                ) { Icon(Icons.Rounded.PlayArrow, null) }
 
                             }
                         }
@@ -188,7 +166,6 @@ fun EpisodePage(
                                 Modifier
                                     .padding(horizontal = 18.dp)
                             ) {
-
 
                                 Text(
                                     text = "本集内容简介",
@@ -199,9 +176,7 @@ fun EpisodePage(
                                 )
                                 SelectionContainer {
                                     HtmlText(
-                                        modifier = Modifier
-
-                                            .padding(top = 9.dp),
+                                        modifier = Modifier.padding(top = 9.dp),
                                         text = episode.iTunesInfo.summary ?: episode.description,
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurface,

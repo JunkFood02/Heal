@@ -5,17 +5,39 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 
 
 @Composable
-fun TitleMedium(text: String, modifier: Modifier = Modifier) {
+fun TitleMedium(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onSurface,
+    fontWeight: FontWeight = FontWeight.Normal
+) {
     Text(
         text = text,
         modifier = modifier,
         style = MaterialTheme.typography.titleMedium,
         maxLines = 2,
-        overflow = TextOverflow.Ellipsis, softWrap = true
+        overflow = TextOverflow.Ellipsis, softWrap = true, color = color, fontWeight = fontWeight
+    )
+}
+
+@Composable
+fun TitleLarge(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onSurface,
+    fontWeight: FontWeight = FontWeight.Normal
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.titleLarge,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis, softWrap = true, color = color, fontWeight = fontWeight
     )
 }
 

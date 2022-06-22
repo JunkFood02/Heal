@@ -1,4 +1,4 @@
-package io.github.junkfood.podcast.ui.destination
+package io.github.junkfood.podcast.ui.destination.feed
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
@@ -22,23 +22,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.google.android.material.color.DynamicColors
 import com.icosillion.podengine.models.Episode
-import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.podcast.ui.color.hct.Hct
 import io.github.junkfood.podcast.ui.color.palettes.CorePalette
 import io.github.junkfood.podcast.ui.common.LocalDarkTheme
 import io.github.junkfood.podcast.ui.common.LocalSeedColor
 import io.github.junkfood.podcast.ui.common.RouteName
 import io.github.junkfood.podcast.ui.component.PodcastItem
+import io.github.junkfood.podcast.ui.destination.FeedViewModel
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.URL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -109,30 +105,15 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                 title = podcastTitle,
                                 episodeTitle = episode.title,
                                 episodeDescription = episode.iTunesInfo.summary
-                                    ?: episode.description
-                            ) {
-                                feedViewModel.jumpToEpisode(i)
-                                navHostController.navigate(RouteName.EPISODE)
-                            }
-                        }
-                    }
-                }
-/*            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                for (episode in podcast.episodes) {
-                    item {
-                        ElevatedCard(modifier = Modifier.padding(6.dp), onClick = {}) {
-                            CardContent(
-                                podcast.title,
-                                episode
+                                    ?: episode.description,
+                                onClick = {
+                                    feedViewModel.jumpToEpisode(i)
+                                    navHostController.navigate(RouteName.EPISODE)
+                                }, episodeDate = episode.pubDate
                             )
                         }
                     }
                 }
-            }*/
             }
         }
     }

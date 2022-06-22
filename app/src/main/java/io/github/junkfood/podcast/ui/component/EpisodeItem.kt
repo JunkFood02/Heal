@@ -13,8 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.util.TextUtil
-import java.time.Duration
-import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -37,7 +35,9 @@ fun PodcastItem(
         Row(
             Modifier
                 .fillMaxWidth()
-                .aspectRatio(4.5f, matchHeightConstraintsFirst = true)
+                .aspectRatio(
+                    if (inPodcastPage) 5f else (4.5f), matchHeightConstraintsFirst = true
+                )
                 .height(IntrinsicSize.Min)
         ) {
             AsyncImage(
@@ -74,7 +74,7 @@ fun PodcastItem(
                     val text =
                         if (dayCount == 0L) "今天" else if (dayCount <= 60L) dayCount.toString() + "天前"
                         else TextUtil.parseDate(episodeDate)
-                    LabelMedium(text)
+                    SubtitleSmall(text)
                 }
             }
 

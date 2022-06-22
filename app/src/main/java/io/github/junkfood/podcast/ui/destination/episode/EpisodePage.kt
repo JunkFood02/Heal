@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -188,8 +189,8 @@ fun EpisodePage(
                                 modifier = Modifier
                                     .padding(18.dp)
                                     .fillParentMaxWidth()
-                                    .clip(MaterialTheme.shapes.large),
-                                model = it,
+                                    .clip(MaterialTheme.shapes.large).aspectRatio(1f),
+                                model = it, contentScale = ContentScale.FillBounds,
                                 contentDescription = null
                             )
                         }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,6 +44,7 @@ import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
 fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
 
     val viewState = feedViewModel.stateFlow.collectAsState()
+    val clipboardManager = LocalClipboardManager.current
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(modifier = Modifier
         .padding()
@@ -52,6 +55,7 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                 .padding(bottom = 36.dp, end = 24.dp)
         ) { Icon(Icons.Rounded.RssFeed, null) }
     }) {
+
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
@@ -59,7 +63,14 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                 text = {
                     TextField(
                         value = viewState.value.url,
-                        onValueChange = { feedViewModel.updateUrl(it) })
+                        onValueChange = { feedViewModel.updateUrl(it) }, trailingIcon = {
+                            IconButton(
+                                onClick = {
+                                    clipboardManager.getText()?.text?.let {
+                                        feedViewModel.updateUrl(it)
+                                    }
+                                }) { Icon(Icons.Rounded.ContentPaste, null) }
+                        })
                 },
                 confirmButton = {
                     TextButton(onClick = {

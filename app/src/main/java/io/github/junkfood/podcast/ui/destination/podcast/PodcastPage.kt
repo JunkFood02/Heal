@@ -5,8 +5,8 @@ import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Sort
+import androidx.compose.material.icons.outlined.RssFeed
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
@@ -80,36 +82,68 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                 SubtitleMedium(author)
                             }
                         }
+
+                    }
+/*                    item {
+
+                        Row(
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .padding(start = 12.dp, end = 9.dp, bottom = 6.dp)
+                        ) {
+                            FilledTonalIconToggleButton(checked = true, onCheckedChange = {}, modifier = Modifier.padding(end = 6.dp)) {
+                                Icon(Icons.Rounded.LibraryAddCheck, null)
+                            }
+                            IconButton(onClick = {}, modifier = Modifier.padding(end = 6.dp)) {
+                                Icon(
+                                    Icons.Rounded.RssFeed,
+                                    null,
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+                            IconButton(onClick = {}, modifier = Modifier.padding(end = 6.dp)) {
+                                Icon(
+                                    Icons.Rounded.Share,
+                                    null,
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+                        }
+
+                    }*/
+
+                    item {
                         HtmlText(
                             text = description,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier
                                 .padding(horizontal = 18.dp)
-                                .padding(bottom = 9.dp)
+                                .padding(bottom = 12.dp)
                         )
                     }
                     item {
-                        Row(
-                            horizontalArrangement = Arrangement.End,
+                        Box(
                             modifier = Modifier
                                 .fillParentMaxWidth()
-                                .padding(horizontal = 12.dp)
+                                .padding(start = 12.dp, end = 3.dp)
                         ) {
-//                            TextButton(onClick = { }) {
-//                                Icon(
-//                                    Icons.Rounded.Sort,
-//                                    null,
-//                                    modifier = Modifier
-//                                        .padding(end = 8.dp)
-//                                        .size(18.dp)
-//                                )
-//                                Text(text = "排序与筛选")
-//                            }
-                            IconButton(onClick = { }) {
-                                Icon(Icons.Rounded.Sort, null)
+                            LabelLarge(
+                                text = episodeList.size.toString() + " 单集",
+                                modifier = Modifier.align(Alignment.CenterStart),
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                            IconButton(
+                                onClick = { },
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            ) {
+                                Icon(
+                                    Icons.Rounded.FilterList,
+                                    null
+                                )
                             }
                         }
+                        Divider(modifier = Modifier.fillParentMaxWidth(),color=MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                     }
                     for (i in episodeList.indices) {
                         val episode = episodeList[i]
@@ -125,6 +159,8 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                     navHostController.navigate(RouteName.EPISODE)
                                 }, inPodcastPage = true, episodeDate = episode.pubDate
                             )
+                            Divider(modifier = Modifier.fillParentMaxWidth(),color=MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+
                         }
                     }
                 }

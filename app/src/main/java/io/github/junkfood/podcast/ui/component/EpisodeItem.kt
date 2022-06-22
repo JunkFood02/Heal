@@ -1,6 +1,5 @@
 package io.github.junkfood.podcast.ui.component
 
-import android.text.Html
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +12,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
+import io.github.junkfood.podcast.util.TextUtil
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun PodcastItem(
@@ -20,7 +22,9 @@ fun PodcastItem(
     title: String,
     episodeTitle: String,
     episodeDescription: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    inPodcastPage: Boolean = false,
+    episodeDate: Date? = null
 ) {
     Column(
         Modifier
@@ -31,7 +35,9 @@ fun PodcastItem(
         Row(
             Modifier
                 .fillMaxWidth()
-                .aspectRatio(5f, matchHeightConstraintsFirst = true)
+                .aspectRatio(
+                    if (inPodcastPage) 5f else (4.5f), matchHeightConstraintsFirst = true
+                )
                 .height(IntrinsicSize.Min)
         ) {
             AsyncImage(
@@ -44,7 +50,7 @@ fun PodcastItem(
             Column(
                 modifier = Modifier
                     .padding(horizontal = 9.dp)
-                    .fillMaxHeight(), verticalArrangement = Arrangement.Center
+                    .fillMaxHeight(), verticalArrangement = Arrangement.Top
             ) {
                 Text(
                     episodeTitle,
@@ -52,20 +58,31 @@ fun PodcastItem(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    title,
-                    modifier = Modifier.padding(top = 3.dp),
-                    style = MaterialTheme.typography.bodySmall,
-//                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                if (!inPodcastPage)
+                    Text(
+                        title,
+                        modifier = Modifier.padding(),
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                episodeDate?.let {
+                    val dayCount = TimeUnit.DAYS.convert(
+                        (Calendar.getInstance().time.time - episodeDate.time),
+                        TimeUnit.MILLISECONDS
+                    )
+                    val text =
+                        if (dayCount == 0L) "今天" else if (dayCount <= 60L) dayCount.toString() + "天前"
+                        else TextUtil.parseDate(episodeDate)
+                    SubtitleSmall(text)
+                }
             }
 
         }
         Text(
             text = HtmlCompat.fromHtml(episodeDescription, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                .toString(), style = MaterialTheme.typography.bodySmall,
+                .toString(),
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,

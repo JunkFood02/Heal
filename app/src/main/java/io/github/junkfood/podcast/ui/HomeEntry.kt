@@ -10,8 +10,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import io.github.junkfood.podcast.ui.common.*
-import io.github.junkfood.podcast.ui.destination.FeedPage
+import io.github.junkfood.podcast.ui.destination.feed.FeedPage
 import io.github.junkfood.podcast.ui.destination.FeedViewModel
+import io.github.junkfood.podcast.ui.destination.podcast.PodcastPage
 import io.github.junkfood.podcast.ui.destination.episode.EpisodePage
 import io.github.junkfood.podcast.ui.theme.PodcastTheme
 
@@ -48,6 +49,9 @@ fun HomeEntry() {
                             navController,
                             feedViewModel
                         )
+                    }
+                    animatedComposable(RouteName.PODCAST) {
+                        PodcastPage(feedViewModel, navController)
                     }
                 }
             }

@@ -5,7 +5,6 @@ import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.RssFeed
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -15,9 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
@@ -143,23 +140,28 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                 )
                             }
                         }
-                        Divider(modifier = Modifier.fillParentMaxWidth(),color=MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                        Divider(
+                            modifier = Modifier.fillParentMaxWidth(),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                        )
                     }
                     for (i in episodeList.indices) {
                         val episode = episodeList[i]
                         item {
-                            PodcastItem(
+                            EpisodeItem(
                                 imageModel = episode.iTunesInfo.imageString ?: podcastCover,
-                                title = podcastTitle,
                                 episodeTitle = episode.title,
                                 episodeDescription = episode.iTunesInfo.summary
                                     ?: episode.description,
                                 onClick = {
                                     feedViewModel.jumpToEpisode(i)
                                     navHostController.navigate(RouteName.EPISODE)
-                                }, inPodcastPage = true, episodeDate = episode.pubDate
+                                }, episodeDate = episode.pubDate
                             )
-                            Divider(modifier = Modifier.fillParentMaxWidth(),color=MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                            Divider(
+                                modifier = Modifier.fillParentMaxWidth().padding(horizontal = 3.dp),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                            )
 
                         }
                     }
@@ -167,4 +169,6 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
             }
         }
     })
+    FilterDrawer()
+
 }

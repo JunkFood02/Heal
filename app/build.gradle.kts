@@ -1,3 +1,7 @@
+import java.io.FileInputStream
+import java.util.*
+
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -24,9 +28,20 @@ val exoPlayerVersion = "2.18.0"
 val retrofitVersion = "2.9.0"
 val rssParserVersion = "0.6.0"
 
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdk = 32
-
+    signingConfigs {
+        all {
+            keyAlias = keystoreProperties["keyAlias"].toString()
+            keyPassword = keystoreProperties["keyPassword"].toString()
+            storeFile = file(keystoreProperties["storeFile"]!!)
+            storePassword = keystoreProperties["storePassword"].toString()
+        }
+    }
     defaultConfig {
         applicationId = "io.github.junkfood.podcast"
         minSdk = 26

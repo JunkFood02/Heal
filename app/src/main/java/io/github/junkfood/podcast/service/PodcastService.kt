@@ -1,4 +1,4 @@
-package io.github.junkfood.podcast.Service
+package io.github.junkfood.podcast.service
 
 import android.app.Service
 import android.content.Intent

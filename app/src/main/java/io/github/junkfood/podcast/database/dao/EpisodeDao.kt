@@ -16,10 +16,13 @@ interface EpisodeDao {
     @Delete
     fun delete(episode: Episode)
 
-//    @Query(
-//        "SELECT * FROM podcast" +
-//                "JOIN episode ON episode.episodeID = podcast.podcastId"
-//    )
-//    fun loadPodcastAndEpisode(): Flow<Map<Podcast, List<Episode>>>
+    @Query("SELECT * FROM episode")
+    fun getAllEpisodes(): Flow<List<Episode>>
+
+    @Query(
+        "SELECT * FROM podcast " +
+                "JOIN episode ON episode.episodeID = podcast.podcastId"
+    )
+    fun loadPodcastAndEpisode(): Flow<Map<Podcast, List<Episode>>>
 
 }

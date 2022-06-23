@@ -6,6 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class Podcast(
     @PrimaryKey(autoGenerate = true)
-    val podCastId: Long,
+    val podcastId: Long,
     val title: String,
-    val author: String)
+    val author: String,
+    val description: String
+    )

@@ -8,7 +8,7 @@ object TextUtil {
     fun parseDate(date: Date): String {
         val df: DateFormat =
             DateFormat.getDateInstance(
-                DateFormat.SHORT,
+                DateFormat.MEDIUM,
                 java.util.Locale.getDefault()
             )
         return df.format(date)

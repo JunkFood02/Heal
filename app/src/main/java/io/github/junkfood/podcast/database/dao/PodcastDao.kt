@@ -12,6 +12,9 @@ interface PodcastDao {
     @Delete
     fun delete(podcast: Podcast)
 
+    @Query("SELECT * FROM podcast")
+    fun getAllPodcasts(): Flow<List<Podcast>>
+
     @Query("SELECT * FROM podcast WHERE title LIKE :search")
     fun searchPodcastByTitle(search: String): Flow<List<Podcast>>
 

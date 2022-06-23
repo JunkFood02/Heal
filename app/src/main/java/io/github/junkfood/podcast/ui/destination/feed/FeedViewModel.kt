@@ -1,4 +1,4 @@
-package io.github.junkfood.podcast.ui.destination
+package io.github.junkfood.podcast.ui.destination.feed
 
 import android.util.Log
 import android.widget.Toast
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.net.URL
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @HiltViewModel
 class FeedViewModel @Inject constructor() : ViewModel() {

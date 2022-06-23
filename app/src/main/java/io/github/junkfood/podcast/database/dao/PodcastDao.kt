@@ -1,7 +1,7 @@
 package io.github.junkfood.podcast.database.dao
 
 import androidx.room.*
-import com.icosillion.podengine.models.Podcast
+import io.github.junkfood.podcast.database.model.Podcast
 import kotlinx.coroutines.flow.Flow
 
 @Dao

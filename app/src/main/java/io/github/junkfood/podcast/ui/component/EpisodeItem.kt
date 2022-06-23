@@ -11,11 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
+import io.github.junkfood.podcast.R
 import io.github.junkfood.podcast.util.TextUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -64,7 +66,9 @@ fun EpisodeItem(
                         TimeUnit.MILLISECONDS
                     )
                     val text =
-                        if (dayCount == 0L) "今天" else if (dayCount <= 60L) dayCount.toString() + "天前"
+                        if (dayCount == 0L) stringResource(R.string.today) else if (dayCount <= 60L) stringResource(
+                            R.string.days_before
+                        ).format(dayCount.toInt())
                         else TextUtil.parseDate(episodeDate)
                     SubtitleSmall(text)
                 }
@@ -103,7 +107,8 @@ fun FeedItem(
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp).padding(top = 15.dp)
+                .padding(horizontal = 12.dp)
+                .padding(top = 15.dp)
                 .aspectRatio(4.5f, matchHeightConstraintsFirst = true)
                 .height(IntrinsicSize.Min)
         ) {
@@ -138,7 +143,9 @@ fun FeedItem(
                         TimeUnit.MILLISECONDS
                     )
                     val text =
-                        if (dayCount == 0L) "今天" else if (dayCount <= 60L) dayCount.toString() + "天前"
+                        if (dayCount == 0L) stringResource(R.string.today) else if (dayCount <= 60L) stringResource(
+                            R.string.days_before
+                        ).format(dayCount.toInt())
                         else TextUtil.parseDate(episodeDate)
                     SubtitleSmall(text)
                 }
@@ -159,7 +166,7 @@ fun FeedItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding( start = 3.dp),
+                .padding(start = 3.dp),
             horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -180,16 +187,6 @@ fun FeedItem(
                 ) {
                     Icon(
                         Icons.Outlined.DownloadForOffline,
-                        null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier.padding()
-                ) {
-                    Icon(
-                        Icons.Outlined.Share,
                         null,
                         tint = MaterialTheme.colorScheme.secondary
                     )

@@ -126,7 +126,7 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                 .padding(start = 12.dp, end = 3.dp)
                         ) {
                             LabelLarge(
-                                text = episodeList.size.toString() + " 单集",
+                                text = stringResource(R.string.episodes).format(episodeList.size),
                                 modifier = Modifier.align(Alignment.CenterStart),
                                 color = MaterialTheme.colorScheme.secondary
                             )
@@ -159,7 +159,9 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                 }, episodeDate = episode.pubDate
                             )
                             Divider(
-                                modifier = Modifier.fillParentMaxWidth().padding(horizontal = 3.dp),
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .padding(horizontal = 3.dp),
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
                             )
 

@@ -5,4 +5,10 @@
     <string name="off">Off</string>
     <string name="back">Go back</string>
     <string name="more">More</string>
+    <string name="today">Today</string>
+    <string name="days_before">%d days before</string>
+    <string name="episodes">%d Episodes</string>
+    <string name="publish_date">Publish on: %s</string>
+    <string name="duration">Duration: %s</string>
+    <string name="episode_description">Episode description</string>
 </resources>

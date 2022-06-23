@@ -27,19 +27,22 @@ val coilVersion = "2.1.0"
 val exoPlayerVersion = "2.18.0"
 val retrofitVersion = "2.9.0"
 val rssParserVersion = "0.6.0"
+val isDebug = true
 
-val keystorePropertiesFile = rootProject.file("keystore.properties")
-val keystoreProperties = Properties()
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdk = 32
-    signingConfigs {
-        all {
-            keyAlias = keystoreProperties["keyAlias"].toString()
-            keyPassword = keystoreProperties["keyPassword"].toString()
-            storeFile = file(keystoreProperties["storeFile"]!!)
-            storePassword = keystoreProperties["storePassword"].toString()
+    if (isDebug) {
+        val keystorePropertiesFile = rootProject.file("keystore.properties")
+        val keystoreProperties = Properties()
+        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+        signingConfigs {
+            all {
+                keyAlias = keystoreProperties["keyAlias"].toString()
+                keyPassword = keystoreProperties["keyPassword"].toString()
+                storeFile = file(keystoreProperties["storeFile"]!!)
+                storePassword = keystoreProperties["storePassword"].toString()
+            }
         }
     }
     defaultConfig {
@@ -125,7 +128,7 @@ dependencies {
     implementation("com.tencent:mmkv:1.2.13")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    implementation ( "com.icosillion.podengine:podengine:2.4.1")
+    implementation("com.icosillion.podengine:podengine:2.4.1")
     implementation("org.apache.commons:commons-lang3:3.12.0")
 
     testImplementation("junit:junit:4.13.2")

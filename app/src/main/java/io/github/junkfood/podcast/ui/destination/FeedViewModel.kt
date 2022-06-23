@@ -40,6 +40,7 @@ class FeedViewModel @Inject constructor() : ViewModel() {
                     it.copy(
                         author = podcast.iTunesInfo.author ?: podcast.title,
                         podcastTitle = podcast.title,
+                        description = podcast.description,
                         podcastCover = podcast.imageURL.toExternalForm(),
                         episodeList = podcast.episodes.sortedWith { o1, o2 ->
                             if (o1.pubDate.after(o2.pubDate)) -1 else 1
@@ -80,7 +81,7 @@ class FeedViewModel @Inject constructor() : ViewModel() {
     data class FeedViewState(
         val url: String = "https://justpodmedia.com/rss/left-right.xml",
         val podcastTitle: String = "", val podcastCover: String = "",
-        val author: String = "",
+        val author: String = "", val description: String = "",
         val episodeList: List<Episode> = ArrayList(), val currentEpisodeIndex: Int = 0
     )
 

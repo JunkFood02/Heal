@@ -126,7 +126,7 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                 .padding(start = 12.dp, end = 3.dp)
                         ) {
                             LabelLarge(
-                                text = episodeList.size.toString() + " 单集",
+                                text = stringResource(R.string.episodes).format(episodeList.size),
                                 modifier = Modifier.align(Alignment.CenterStart),
                                 color = MaterialTheme.colorScheme.secondary
                             )
@@ -140,23 +140,30 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                 )
                             }
                         }
-                        Divider(modifier = Modifier.fillParentMaxWidth(),color=MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                        Divider(
+                            modifier = Modifier.fillParentMaxWidth(),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                        )
                     }
                     for (i in episodeList.indices) {
                         val episode = episodeList[i]
                         item {
-                            PodcastItem(
+                            EpisodeItem(
                                 imageModel = episode.iTunesInfo.imageString ?: podcastCover,
-                                title = podcastTitle,
                                 episodeTitle = episode.title,
                                 episodeDescription = episode.iTunesInfo.summary
                                     ?: episode.description,
                                 onClick = {
                                     feedViewModel.jumpToEpisode(i)
                                     navHostController.navigate(RouteName.EPISODE)
-                                }, inPodcastPage = true, episodeDate = episode.pubDate
+                                }, episodeDate = episode.pubDate
                             )
-                            Divider(modifier = Modifier.fillParentMaxWidth(),color=MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                            Divider(
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .padding(horizontal = 3.dp),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                            )
 
                         }
                     }
@@ -164,4 +171,6 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
             }
         }
     })
+    FilterDrawer()
+
 }

@@ -37,6 +37,7 @@ fun HtmlText(
         color = MaterialTheme.colorScheme.primary,
         textDecoration = TextDecoration.Underline
     ),
+    isTimeStampEnabled: Boolean = true,
     timeStampSpanStyle: SpanStyle = SpanStyle(
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace
@@ -110,9 +111,12 @@ fun Spanned.toAnnotatedString(
     urlSpanStyle: SpanStyle = SpanStyle(
         color = Color.Blue,
         textDecoration = TextDecoration.Underline
-    ), timeStampSpanStyle: SpanStyle = SpanStyle(
+    ),
+    timeStampSpanStyle: SpanStyle = SpanStyle(
         color = Color.Blue, fontWeight = FontWeight.Bold
-    )
+    ),
+    isTimeStampEnabled: Boolean = true
+
 ): AnnotatedString {
     return buildAnnotatedString {
         val rawString = this@toAnnotatedString.toString()
@@ -122,17 +126,19 @@ fun Spanned.toAnnotatedString(
         val colorSpans = getSpans<ForegroundColorSpan>()
         val underlineSpans = getSpans<UnderlineSpan>()
         val strikethroughSpans = getSpans<StrikethroughSpan>()
-        Regex("(\\d{1,2}:)+\\d\\d").findAll(rawString).forEach {
-            addStyle(
-                timeStampSpanStyle, it.range.first,
-                it.range.last + 1
-            )
-            addStringAnnotation(
-                "timeStamp",
-                rawString.substring(it.range),
-                it.range.first,
-                it.range.last + 1
-            )
+        if (isTimeStampEnabled) {
+            Regex("(\\d{1,2}:)+\\d\\d").findAll(rawString).forEach {
+                addStyle(
+                    timeStampSpanStyle, it.range.first,
+                    it.range.last + 1
+                )
+                addStringAnnotation(
+                    "timeStamp",
+                    rawString.substring(it.range),
+                    it.range.first,
+                    it.range.last + 1
+                )
+            }
         }
         urlSpans.forEach { urlSpan ->
             val start = getSpanStart(urlSpan)

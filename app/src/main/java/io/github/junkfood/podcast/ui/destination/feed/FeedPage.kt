@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.rounded.ContentPaste
@@ -33,7 +34,10 @@ import io.github.junkfood.podcast.ui.color.palettes.CorePalette
 import io.github.junkfood.podcast.ui.common.LocalDarkTheme
 import io.github.junkfood.podcast.ui.common.LocalSeedColor
 import io.github.junkfood.podcast.ui.common.RouteName
-import io.github.junkfood.podcast.ui.component.PodcastItem
+import io.github.junkfood.podcast.ui.component.EpisodeItem
+import io.github.junkfood.podcast.ui.component.FeedItem
+import io.github.junkfood.podcast.ui.destination.FeedViewModel
+
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
 
@@ -110,7 +114,7 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                     for (i in episodeList.indices) {
                         val episode = episodeList[i]
                         item {
-                            PodcastItem(
+                            FeedItem(
                                 imageModel = episode.iTunesInfo.imageString ?: podcastCover,
                                 title = podcastTitle,
                                 episodeTitle = episode.title,
@@ -120,6 +124,12 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                     feedViewModel.jumpToEpisode(i)
                                     navHostController.navigate(RouteName.EPISODE)
                                 }, episodeDate = episode.pubDate
+                            )
+                            Divider(
+                                modifier = Modifier.fillParentMaxWidth().padding(horizontal = 12.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                ,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
                             )
                         }
                     }

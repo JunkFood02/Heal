@@ -4,6 +4,7 @@
     package="io.github.junkfood.podcast">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".BaseApplication"
         android:allowBackup="true"
@@ -15,6 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Podcast"
         tools:targetApi="31">
+        <service
+            android:name=".PodcastService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name="io.github.junkfood.podcast.MainActivity"
             android:exported="true"

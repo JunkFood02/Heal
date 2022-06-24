@@ -20,7 +20,7 @@ import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
 import io.github.junkfood.podcast.ui.common.RouteName
 import io.github.junkfood.podcast.ui.component.*
-import io.github.junkfood.podcast.ui.destination.FeedViewModel
+import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

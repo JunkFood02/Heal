@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,9 +26,8 @@ import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
 import io.github.junkfood.podcast.ui.common.RouteName
 import io.github.junkfood.podcast.ui.component.*
-import io.github.junkfood.podcast.ui.destination.FeedViewModel
+import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
 import io.github.junkfood.podcast.util.TextUtil
-import java.text.DateFormat
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)

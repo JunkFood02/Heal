@@ -131,7 +131,7 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                 color = MaterialTheme.colorScheme.secondary
                             )
                             IconButton(
-                                onClick = { },
+                                onClick  = { },
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             ) {
                                 Icon(

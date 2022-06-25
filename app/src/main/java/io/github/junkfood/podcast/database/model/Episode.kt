@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Episode(
     @PrimaryKey(autoGenerate = true)
     val episodeID: Long,
-    val author: String?,
+    val author: String,
     val title: String,
     val cover: String,
     val description: String?,

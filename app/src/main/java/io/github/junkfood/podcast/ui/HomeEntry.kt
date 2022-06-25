@@ -14,6 +14,8 @@ import io.github.junkfood.podcast.ui.destination.feed.FeedPage
 import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
 import io.github.junkfood.podcast.ui.destination.podcast.PodcastPage
 import io.github.junkfood.podcast.ui.destination.episode.EpisodePage
+import io.github.junkfood.podcast.ui.destination.library.LibraryPage
+import io.github.junkfood.podcast.ui.destination.library.LibraryViewModel
 import io.github.junkfood.podcast.ui.theme.PodcastTheme
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -32,6 +34,7 @@ fun HomeEntry() {
                 color = MaterialTheme.colorScheme.surface
             ) {
                 val feedViewModel: FeedViewModel = hiltViewModel()
+                val libraryViewModel: LibraryViewModel = hiltViewModel()
                 AnimatedNavHost(
                     modifier = Modifier
                         .fillMaxSize()
@@ -41,7 +44,7 @@ fun HomeEntry() {
                                 .calculateBottomPadding()
                         ),
                     navController = navController,
-                    startDestination = RouteName.FEED
+                    startDestination = RouteName.LIBRARY//test
                 ) {
                     animatedComposable(RouteName.FEED) { FeedPage(navController, feedViewModel) }
                     animatedComposable(RouteName.EPISODE) {
@@ -52,6 +55,9 @@ fun HomeEntry() {
                     }
                     animatedComposable(RouteName.PODCAST) {
                         PodcastPage(feedViewModel, navController)
+                    }
+                    animatedComposable(RouteName.LIBRARY) {
+                        LibraryPage(navController, libraryViewModel)
                     }
                 }
             }

@@ -8,6 +8,7 @@ import com.icosillion.podengine.models.Episode
 import com.icosillion.podengine.models.Podcast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.junkfood.podcast.BaseApplication.Companion.context
+import io.github.junkfood.podcast.database.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,33 +21,17 @@ import javax.inject.Inject
 class FeedViewModel @Inject constructor() : ViewModel() {
     //    init { fetchPodcast() }
     private val mutableStateFlow = MutableStateFlow(FeedViewState())
-
+    val podcastWithEpisodesFlow = Repository.getPodcastsWithEpisodes()
     val stateFlow = mutableStateFlow.asStateFlow()
     private val TAG = "FeedViewModel"
     fun fetchPodcast() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val podcast = Podcast(
-                    URL(
-                        mutableStateFlow.value.url
-//                        "https://justpodmedia.com/rss/left-right.xml"
-//                    "https://storyfm.cn/feed/episodes"
-//                    "https://feeds.fireside.fm/shengdongjixi/rss"
-                    )
+                    URL(mutableStateFlow.value.url)
                 )
                 Log.d(TAG, "fetchPodcast: ")
-                mutableStateFlow.update {
-                    it.copy(
-                        author = podcast.iTunesInfo.author ?: podcast.title,
-                        podcastTitle = podcast.title,
-                        description = podcast.description,
-                        podcastCover = podcast.imageURL.toExternalForm(),
-                        episodeList = podcast.episodes.sortedWith { o1, o2 ->
-                            if (o1.pubDate.after(o2.pubDate)) -1 else 1
-                        },
-                        currentEpisodeIndex = -1
-                    )
-                }
+                Repository.importRssData(podcast)
             } catch (e: Exception) {
                 e.printStackTrace()
                 launch(Dispatchers.Main) {

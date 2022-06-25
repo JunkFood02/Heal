@@ -44,7 +44,7 @@ fun HomeEntry() {
                                 .calculateBottomPadding()
                         ),
                     navController = navController,
-                    startDestination = RouteName.LIBRARY//test
+                    startDestination = RouteName.FEED//test
                 ) {
                     animatedComposable(RouteName.FEED) { FeedPage(navController, feedViewModel) }
                     animatedComposable(RouteName.EPISODE) {

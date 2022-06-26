@@ -17,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +36,8 @@ import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryPage(
-    navHostController: NavHostController, libraryViewModel: LibraryViewModel
+    navHostController: NavHostController,
+    libraryViewModel: LibraryViewModel
 ) {
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -42,20 +45,29 @@ fun LibraryPage(
         rememberTopAppBarScrollState()
     )
     val viewState = libraryViewModel.stateFlow.collectAsState()
+    val clipboardManager = LocalClipboardManager.current
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         backgroundColor = MaterialTheme.colorScheme.background,
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { showDialog = true },
+                modifier = Modifier
+                    .padding(bottom = 36.dp, end = 24.dp)
+            ) { Icon(Icons.Rounded.RssFeed, null) }
+        },
         topBar =  {
                   Column(
                       horizontalAlignment = Alignment.CenterHorizontally,
                       modifier = Modifier
-                          .background(color = MaterialTheme.colorScheme.tertiaryContainer)                ) {
+                          .background(color = MaterialTheme.colorScheme.primaryContainer)
+                  ) {
                       Text(
                           text = "我 的",
-                          color = MaterialTheme.colorScheme.primary,
+                          color = MaterialTheme.colorScheme.onPrimaryContainer,
                           fontSize = 25.sp,
                           fontWeight = FontWeight.Bold,
                           textAlign = TextAlign.Center,
@@ -66,67 +78,80 @@ fun LibraryPage(
                   }
         },
         content = {
-            Column(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "历史记录",
-                    color = MaterialTheme.colorScheme.primary,
+            Column() {
+                Card(
                     modifier = Modifier
-                        .padding(start = 10.dp, top = 5.dp, bottom = 5.dp)
-                )
-                viewState.value.run {
-                    LazyRow (
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "历史记录",
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
-                            ) {
-                        for (item in episodeList) {
-                            item {
-                                HistoryCard(
-                                    imageModel = item.iTunesInfo.imageString ?: podcastCover,
-                                    title = item.title,
-                                    author = item.author,
-                                    length = item.iTunesInfo.duration,
-                                    progress = 0F,
-                                    onClick = {}
-                                )
+                            .padding(5.dp)
+                    )
+                    viewState.value.run {
+                        LazyRow (
+                            modifier = Modifier
+                                .height(180.dp)
+                        ) {
+                            for (item in episodeList) {
+                                item {
+                                    HistoryCard(
+                                        imageModel = item.iTunesInfo.imageString ?: podcastCover,
+                                        title = item.title,
+                                        author = item.author,
+                                        length = item.iTunesInfo.duration,
+                                        progress = 0F,
+                                        onClick = {}
+                                    )
+                                }
                             }
                         }
                     }
                 }
-                LibraryDivider()
-                Row(
+                Card(
                     modifier = Modifier
-                        .clickable {}
-                        .padding(start = 10.dp, top = 5.dp, bottom = 5.dp)
-                        .fillMaxWidth()
+                        .padding(10.dp)
                 ) {
-                    Icon(
-                        Icons.Rounded.Download,
-                        contentDescription = null
-                    )
-                    Text(
-                        text = "下载内容",
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-                LibraryDivider()
-                Row(
-                    modifier = Modifier
-                        .clickable {}
-                        .padding(start = 10.dp, top = 5.dp, bottom = 5.dp)
-                        .fillMaxWidth()
-                ) {
-                    Icon(
-                        Icons.Rounded.Settings,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "设置",
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .clickable {}
+                                .padding(12.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Icon(
+                                Icons.Rounded.Download,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                            Text(
+                                text = "下载内容",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                        LibraryDivider()
+                        Row(
+                            modifier = Modifier
+                                .clickable {}
+                                .padding(12.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Icon(
+                                Icons.Rounded.Settings,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                            Text(
+                                text = "设置",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -151,26 +176,37 @@ fun HistoryCard(
     progress: Float,
     onClick: () -> Unit
 ) {
-    Row(
+    Column(
         Modifier
             .padding(12.dp)
     ) {
         AsyncImage(
             modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
+                .size(100.dp)
+                .clip(MaterialTheme.shapes.medium)
                 .aspectRatio(1f, matchHeightConstraintsFirst = true),
             model = imageModel,
             contentDescription = null
             )
         Text(
-            text = title
+            text = title,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            fontSize = 10.sp,
+            modifier = Modifier
+                .width(100.dp)
         )
         Text(
-            text = author
+            text = author,
+            fontSize = 10.sp,
+            modifier = Modifier
+                .width(100.dp)
         )
         LinearProgressIndicator(
             progress = progress,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .width(100.dp)
         )
     }
 }

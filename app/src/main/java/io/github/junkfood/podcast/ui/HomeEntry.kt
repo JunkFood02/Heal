@@ -16,6 +16,7 @@ import io.github.junkfood.podcast.ui.destination.podcast.PodcastPage
 import io.github.junkfood.podcast.ui.destination.episode.EpisodePage
 import io.github.junkfood.podcast.ui.destination.library.LibraryPage
 import io.github.junkfood.podcast.ui.destination.library.LibraryViewModel
+import io.github.junkfood.podcast.ui.destination.settings.SettingsPage
 import io.github.junkfood.podcast.ui.theme.PodcastTheme
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -44,6 +45,7 @@ fun HomeEntry() {
                                 .calculateBottomPadding()
                         ),
                     navController = navController,
+
                     startDestination = RouteName.LIBRARY
                 ) {
                     animatedComposable(RouteName.FEED) { FeedPage(navController, feedViewModel) }
@@ -58,6 +60,9 @@ fun HomeEntry() {
                     }
                     animatedComposable(RouteName.LIBRARY) {
                         LibraryPage(navController, libraryViewModel)
+                    }
+                    animatedComposable(RouteName.SETTINGS) {
+                        SettingsPage(navController)
                     }
                 }
             }

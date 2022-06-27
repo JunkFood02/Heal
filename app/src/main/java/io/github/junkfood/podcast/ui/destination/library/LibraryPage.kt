@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
 import io.github.junkfood.podcast.database.model.Episode
+import io.github.junkfood.podcast.ui.common.RouteName
 import io.github.junkfood.podcast.ui.component.BackButton
 import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
 
@@ -137,7 +138,10 @@ fun LibraryPage(
                         LibraryDivider()
                         Row(
                             modifier = Modifier
-                                .clickable {}
+                                .clickable {
+                                    navHostController.navigate(RouteName.SETTINGS) {
+                                        launchSingleTop = true                                    }
+                                }
                                 .padding(12.dp)
                                 .fillMaxWidth()
                         ) {

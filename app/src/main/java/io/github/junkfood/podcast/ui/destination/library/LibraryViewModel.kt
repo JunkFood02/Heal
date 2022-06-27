@@ -26,6 +26,7 @@ class LibraryViewModel @Inject constructor() : ViewModel() {
     }
 
     data class HistoryState(
+        val url: String = "https://justpodmedia.com/rss/left-right.xml",
         val podcastTitle: String = "", val podcastCover: String = "",
         val author: String = "", val description: String = "",
         val episodeList: List<Episode> = ArrayList()

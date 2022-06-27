@@ -21,8 +21,10 @@ interface EpisodeDao {
 
     @Query(
         "SELECT * FROM podcast " +
-                "JOIN episode ON episode.episodeID = podcast.podcastId"
+                "JOIN episode ON episode.id = podcast.id"
     )
     fun loadPodcastAndEpisode(): Flow<Map<Podcast, List<Episode>>>
+
+
 
 }

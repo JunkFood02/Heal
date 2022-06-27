@@ -5,4 +5,5 @@ object RouteName {
     const val EPISODE = "episode"
     const val PODCAST = "podcast"
     const val LIBRARY = "library"
+    const val SETTINGS = "settings"
 }

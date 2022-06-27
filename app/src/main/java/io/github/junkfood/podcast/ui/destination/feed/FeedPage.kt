@@ -1,6 +1,7 @@
 package io.github.junkfood.podcast.ui.destination.feed
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -43,6 +44,7 @@ import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
 fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
 
     val viewState = feedViewModel.stateFlow.collectAsState()
+    val feedDataState = feedViewModel.podcastWithEpisodesFlow.collectAsState(ArrayList())
     val clipboardManager = LocalClipboardManager.current
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(modifier = Modifier
@@ -105,22 +107,24 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                 ColorButton(color = Color.Blue)
             }
 
-            viewState.value.run {
+            feedDataState.value.run {
+                val feedItemList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
                 LazyColumn {
-                    for (i in episodeList.indices) {
-                        val episode = episodeList[i]
-                        item {
-                            PodcastItem(
-                                imageModel = episode.iTunesInfo.imageString ?: podcastCover,
-                                title = podcastTitle,
-                                episodeTitle = episode.title,
-                                episodeDescription = episode.iTunesInfo.summary
-                                    ?: episode.description,
-                                onClick = {
-                                    feedViewModel.jumpToEpisode(i)
-                                    navHostController.navigate(RouteName.EPISODE)
-                                }, episodeDate = episode.pubDate
-                            )
+                    for (item in feedDataState.value) {
+                        for (episode in item.Episodes) {
+                            Log.d("TAG", "FeedPage: "+item.Episodes.size)
+                            item {
+                                PodcastItem(
+                                    imageModel = episode.cover,
+                                    title = item.podcast.title,
+                                    episodeTitle = episode.title,
+                                    episodeDescription = episode.description,
+                                    onClick = {
+//                                        feedViewModel.jumpToEpisode(i)
+//                                        navHostController.navigate(RouteName.EPISODE)
+                                    }, episodeDate = null
+                                )
+                            }
                         }
                     }
                 }

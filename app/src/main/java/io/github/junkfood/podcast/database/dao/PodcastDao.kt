@@ -16,6 +16,9 @@ interface PodcastDao {
     @Delete
     fun delete(podcast: Podcast)
 
+    @Query("select * from podcast where id=:Id ")
+    suspend fun getPodcastById(Id: Long): Podcast
+
     @Query("SELECT * FROM podcast")
     fun getAllPodcasts(): Flow<List<Podcast>>
 

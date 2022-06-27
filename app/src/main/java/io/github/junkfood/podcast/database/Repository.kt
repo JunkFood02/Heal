@@ -14,6 +14,11 @@ object Repository {
     private val podcastDao = db.podcastDao()
     private val recordDao = db.recordDao()
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
+
+    suspend fun getEpisodeById(Id: Long) = episodeDao.getEpisodeById(Id)
+
+    suspend fun getPodcastById(Id: Long) = podcastDao.getPodcastById(Id)
+
     suspend fun importRssData(podcast: Podcast) {
         val podcastId = podcastDao.insert(
             io.github.junkfood.podcast.database.model.Podcast(
@@ -32,7 +37,8 @@ object Repository {
                     cover = episode.iTunesInfo.imageString
                         ?: podcast.imageURL.toExternalForm(),
                     pubDate = episode.pubDate.toString(),
-                    duration = episode.iTunesInfo.duration, author = episode.author
+                    duration = episode.iTunesInfo.duration, author = episode.author,
+                    audioUrl = episode.enclosure.url.toExternalForm()
                 )
             )
         }

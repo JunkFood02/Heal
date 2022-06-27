@@ -35,7 +35,8 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
     Scaffold(modifier = Modifier
         .padding()
         .fillMaxSize()
-        .nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
+        .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
         io.github.junkfood.podcast.ui.component.SmallTopAppBar(
             title = {},
             navigationIcon = {
@@ -131,7 +132,7 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                 color = MaterialTheme.colorScheme.secondary
                             )
                             IconButton(
-                                onClick = { },
+                                onClick  = { },
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             ) {
                                 Icon(

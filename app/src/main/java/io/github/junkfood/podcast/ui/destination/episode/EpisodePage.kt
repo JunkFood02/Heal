@@ -99,11 +99,15 @@ fun EpisodePage(
                             HeadlineSmall(episode.title)
                             Row(modifier = Modifier.padding(top = 3.dp)) {
                                 LabelMedium(
-                                    text = "发布于：" + TextUtil.parseDate(episode.pubDate),
+                                    text = stringResource(R.string.publish_date).format(
+                                        TextUtil.parseDate(
+                                            episode.pubDate
+                                        )
+                                    ),
                                     modifier = Modifier.padding(end = 9.dp)
                                 )
                                 LabelMedium(
-                                    "单集长度：" + episode.iTunesInfo.duration,
+                                    stringResource(R.string.duration).format(episode.iTunesInfo.duration),
                                     modifier = Modifier.padding(end = 18.dp)
                                 )
                             }
@@ -164,7 +168,7 @@ fun EpisodePage(
                         ) {
 
                             Text(
-                                text = "本集内容简介",
+                                text = stringResource(R.string.episode_description),
                                 modifier = Modifier
                                     .padding(top = 18.dp),
                                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
@@ -187,7 +191,8 @@ fun EpisodePage(
                                 modifier = Modifier
                                     .padding(18.dp)
                                     .fillParentMaxWidth()
-                                    .clip(MaterialTheme.shapes.large).aspectRatio(1f),
+                                    .clip(MaterialTheme.shapes.large)
+                                    .aspectRatio(1f),
                                 model = it, contentScale = ContentScale.FillBounds,
                                 contentDescription = null
                             )

@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="follow_system">跟随系统</string>
+    <string name="on">开启</string>
+    <string name="off">关闭</string>
+    <string name="back">返回</string>
+    <string name="more">更多</string>
+    <string name="today">今天</string>
+    <string name="days_before">%d天前</string>
+    <string name="episodes">%d 单集</string>
+    <string name="publish_date">发布时间：%s</string>
+    <string name="duration">单集长度：%s</string>
+    <string name="episode_description">单集内容简介</string>
+</resources>

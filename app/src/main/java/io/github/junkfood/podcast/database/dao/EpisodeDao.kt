@@ -19,12 +19,14 @@ interface EpisodeDao {
     @Query("SELECT * FROM episode")
     fun getAllEpisodes(): Flow<List<Episode>>
 
+    @Query("select * from episode where id=:episodeId")
+    suspend fun getEpisodeById(episodeId: Long): Episode
+
     @Query(
         "SELECT * FROM podcast " +
                 "JOIN episode ON episode.id = podcast.id"
     )
     fun loadPodcastAndEpisode(): Flow<Map<Podcast, List<Episode>>>
-
 
 
 }

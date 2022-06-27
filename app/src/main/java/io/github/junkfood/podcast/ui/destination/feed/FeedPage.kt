@@ -38,6 +38,7 @@ import io.github.junkfood.podcast.ui.common.NavigationUtil.toId
 import io.github.junkfood.podcast.ui.component.FeedItem
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
+import io.github.junkfood.podcast.util.TextUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -128,7 +129,8 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                                 episode.id
                                             )
                                         )
-                                    }, episodeDate = null
+                                    }, episodeDate = TextUtil.formatString(episode.pubDate)
+
                                 )
                             }
 

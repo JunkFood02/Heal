@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.podcast.BaseApplication.Companion.context
 import io.github.junkfood.podcast.database.model.Episode
+import io.github.junkfood.podcast.util.TextUtil
 
 object Repository {
     private val db = Room.databaseBuilder(
@@ -31,7 +32,8 @@ object Repository {
                     description = episode.iTunesInfo.summary ?: episode.description,
                     cover = episode.iTunesInfo.imageString
                         ?: podcast.imageURL.toExternalForm(),
-                    pubDate = episode.pubDate.toString(),
+//                    pubDate = episode.pubDate.toString(),
+                    pubDate = TextUtil.formatDate(episode.pubDate),
                     duration = episode.iTunesInfo.duration, author = episode.author
                 )
             )

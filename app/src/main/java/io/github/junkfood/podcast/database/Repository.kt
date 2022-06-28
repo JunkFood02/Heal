@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.podcast.BaseApplication.Companion.context
 import io.github.junkfood.podcast.database.model.Episode
+import io.github.junkfood.podcast.util.PreferenceUtil
 
 object Repository {
     private val db = Room.databaseBuilder(
@@ -16,9 +17,7 @@ object Repository {
 
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
 
-    fun getEpisodeById(id: Long) = episodeDao.getEpisodeById(id)
-
-    fun getRecordByEpisode(id: Long) = recordDao.searchRecordByEpisode(id)
+    fun getEpisodeAndRecord() = recordDao.getEpisodeAndRecord(PreferenceUtil.getHistory())
 
     suspend fun importRssData(podcast: Podcast) {
         val podcastId = podcastDao.insert(

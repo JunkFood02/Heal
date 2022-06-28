@@ -27,7 +27,7 @@ val coilVersion = "2.1.0"
 val exoPlayerVersion = "2.18.0"
 val retrofitVersion = "2.9.0"
 val rssParserVersion = "0.6.0"
-val isDebug = true
+val isDebug = false
 
 
 android {

@@ -12,7 +12,7 @@ data class Episode(
     val description: String,
     val pubDate: String,
     //val categories: List<String>,
-    val duration: String?,
+    val duration: String,
     val podcastID: Long
 )
 

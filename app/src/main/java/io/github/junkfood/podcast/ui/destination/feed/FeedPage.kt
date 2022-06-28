@@ -37,7 +37,6 @@ import io.github.junkfood.podcast.ui.common.LocalSeedColor
 import io.github.junkfood.podcast.ui.common.RouteName
 import io.github.junkfood.podcast.ui.component.EpisodeItem
 import io.github.junkfood.podcast.ui.component.FeedItem
-import io.github.junkfood.podcast.ui.destination.FeedViewModel
 
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
@@ -118,7 +117,7 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                         for (episode in item.Episodes) {
                             Log.d("TAG", "FeedPage: "+item.Episodes.size)
                             item {
-                                PodcastItem(
+                                FeedItem(
                                     imageModel = episode.cover,
                                     title = item.podcast.title,
                                     episodeTitle = episode.title,

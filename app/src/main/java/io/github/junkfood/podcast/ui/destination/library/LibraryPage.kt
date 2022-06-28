@@ -46,7 +46,7 @@ fun LibraryPage(
         rememberTopAppBarScrollState()
     )
     val viewState = libraryViewModel.stateFlow.collectAsState()
-    val clipboardManager = LocalClipboardManager.current
+    val libraryDataState = libraryViewModel.episodeAndRecordFlow.collectAsState(ArrayList())
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier
@@ -84,7 +84,8 @@ fun LibraryPage(
                         modifier = Modifier
                             .padding(5.dp)
                     )
-                    viewState.value.run {
+                    libraryDataState.value.run {
+                        val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
                         LazyRow (
                             modifier = Modifier
                                 .height(180.dp)
@@ -92,10 +93,10 @@ fun LibraryPage(
                             for (item in episodeList) {
                                 item {
                                     HistoryCard(
-                                        imageModel = item.iTunesInfo.imageString ?: podcastCover,
+                                        imageModel = item.cover,
                                         title = item.title,
                                         author = item.author,
-                                        length = item.iTunesInfo.duration,
+                                        length = item.duration,
                                         progress = 0F,
                                         onClick = {}
                                     )
@@ -133,7 +134,8 @@ fun LibraryPage(
                             modifier = Modifier
                                 .clickable {
                                     navHostController.navigate(RouteName.SETTINGS) {
-                                        launchSingleTop = true                                    }
+                                        launchSingleTop = true
+                                    }
                                 }
                                 .padding(12.dp)
                                 .fillMaxWidth()

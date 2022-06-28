@@ -25,6 +25,6 @@ interface EpisodeDao {
     )
     fun loadPodcastAndEpisode(): Flow<Map<Podcast, List<Episode>>>
 
-
-
+    @Query("SELECT * FROM episode WHERE id = :id")
+    fun getEpisodeById(id: Long): Flow<Episode>
 }

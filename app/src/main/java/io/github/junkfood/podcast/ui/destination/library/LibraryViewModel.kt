@@ -22,7 +22,7 @@ import javax.inject.Inject
 class LibraryViewModel @Inject constructor() : ViewModel() {
     private val mutableStateFlow = MutableStateFlow(HistoryState())
     val stateFlow = mutableStateFlow.asStateFlow()
-    val episodeAndRecordFlow = Repository.getEpisodeAndRecord()
+    val episodeAndRecordFlow = Repository.getEpisodeHistory()
 
     data class HistoryState(
         val url: String = "https://justpodmedia.com/rss/left-right.xml",

@@ -75,14 +75,14 @@ fun LibraryPage(
             Column() {
                 Card(
                     modifier = Modifier
-                        .padding(10.dp)
+                        .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                 ) {
                     Text(
                         text = "历史记录",
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
-                            .padding(5.dp)
+                            .padding(10.dp)
                     )
                     libraryDataState.value.run {
                         val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()

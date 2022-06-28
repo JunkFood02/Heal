@@ -10,5 +10,6 @@ data class Podcast(
     val title: String,
     val author: String,
     val description: String,
+    //val urlL String,
     val coverUrl: String
 )

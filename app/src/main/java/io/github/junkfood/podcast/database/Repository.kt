@@ -13,11 +13,10 @@ object Repository {
     ).build()
     private val episodeDao = db.episodeDao()
     private val podcastDao = db.podcastDao()
-    private val recordDao = db.recordDao()
 
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
 
-    fun getEpisodeAndRecord() = recordDao.getEpisodeAndRecord(PreferenceUtil.getHistory())
+    fun getEpisodeHistory() = episodeDao.getEpisodeById(PreferenceUtil.getHistory())
 
     suspend fun importRssData(podcast: Podcast) {
         val podcastId = podcastDao.insert(

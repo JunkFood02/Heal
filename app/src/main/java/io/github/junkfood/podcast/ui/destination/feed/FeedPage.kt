@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.rounded.ContentPaste
@@ -35,11 +34,10 @@ import io.github.junkfood.podcast.ui.color.palettes.CorePalette
 import io.github.junkfood.podcast.ui.common.LocalDarkTheme
 import io.github.junkfood.podcast.ui.common.LocalSeedColor
 import io.github.junkfood.podcast.ui.common.RouteName
-import io.github.junkfood.podcast.ui.component.EpisodeItem
 import io.github.junkfood.podcast.ui.component.FeedItem
-
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -90,8 +88,6 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                 .statusBarsPadding()
                 .fillMaxSize()
         ) {
-
-
             Row(
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState())
@@ -110,12 +106,23 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                 ColorButton(color = Color.Blue)
             }
 
+            //for test use
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(12.dp),
+                onClick = {
+                    navHostController.navigate(RouteName.LIBRARY)
+                }) {
+                Text("我的")
+            }
+
             feedDataState.value.run {
                 val feedItemList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
                 LazyColumn {
                     for (item in feedDataState.value) {
                         for (episode in item.Episodes) {
-                            Log.d("TAG", "FeedPage: "+item.Episodes.size)
+                            Log.d("TAG", "FeedPage: " + item.Episodes.size)
                             item {
                                 FeedItem(
                                     imageModel = episode.cover,

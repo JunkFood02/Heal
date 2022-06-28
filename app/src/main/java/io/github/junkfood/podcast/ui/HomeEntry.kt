@@ -46,7 +46,7 @@ fun HomeEntry() {
                         ),
                     navController = navController,
 
-                    startDestination = RouteName.LIBRARY
+                    startDestination = RouteName.FEED
                 ) {
                     animatedComposable(RouteName.FEED) { FeedPage(navController, feedViewModel) }
                     animatedComposable(RouteName.EPISODE) {

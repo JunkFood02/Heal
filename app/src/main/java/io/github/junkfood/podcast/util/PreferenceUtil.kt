@@ -119,7 +119,4 @@ object PreferenceUtil {
         idList.reverse()
         return idList.toList()
     }
-
-    fun getEpisodeAndRecord(idList: List<Long>) {
-    }
 }

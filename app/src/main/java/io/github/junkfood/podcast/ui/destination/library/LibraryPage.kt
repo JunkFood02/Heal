@@ -53,13 +53,6 @@ fun LibraryPage(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         backgroundColor = MaterialTheme.colorScheme.background,
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showDialog = true },
-                modifier = Modifier
-                    .padding(bottom = 36.dp, end = 24.dp)
-            ) { Icon(Icons.Rounded.RssFeed, null) }
-        },
         topBar =  {
                   Column(
                       horizontalAlignment = Alignment.CenterHorizontally,

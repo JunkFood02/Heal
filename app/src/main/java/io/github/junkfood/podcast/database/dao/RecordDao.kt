@@ -1,6 +1,7 @@
 package io.github.junkfood.podcast.database.dao
 
 import androidx.room.*
+import io.github.junkfood.podcast.database.model.Episode
 import io.github.junkfood.podcast.database.model.Record
 import kotlinx.coroutines.flow.Flow
 
@@ -16,5 +17,8 @@ interface RecordDao {
     fun delete(vararg record: Record)
 
     @Query("SELECT * FROM record WHERE episodeOwnerId = :episodeId")
-    fun searchRecordByEpisode(episodeId: String): Flow<Record>
+    fun searchRecordByEpisode(episodeId: Long): Flow<Record>
+
+    @Query("SELECT * FROM record WHERE episodeOwnerId IN (:idList)")
+    fun getEpisodeAndRecord(idList: List<Long>): Flow<Map<Record, Episode>>
 }

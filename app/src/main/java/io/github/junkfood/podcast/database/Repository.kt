@@ -13,7 +13,13 @@ object Repository {
     private val episodeDao = db.episodeDao()
     private val podcastDao = db.podcastDao()
     private val recordDao = db.recordDao()
+
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
+
+    fun getEpisodeById(id: Long) = episodeDao.getEpisodeById(id)
+
+    fun getRecordByEpisode(id: Long) = recordDao.searchRecordByEpisode(id)
+
     suspend fun importRssData(podcast: Podcast) {
         val podcastId = podcastDao.insert(
             io.github.junkfood.podcast.database.model.Podcast(

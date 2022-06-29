@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 object PreferenceUtil {
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     private val kv = MMKV.defaultMMKV()
-    private val maxHistoryAmount = 15
+    private const val maxHistoryAmount = 15
 
     data class AppSettings(
         val darkTheme: DarkThemePreference = DarkThemePreference(),
@@ -88,7 +88,7 @@ object PreferenceUtil {
         )
     }
 
-    fun insertHistory(id: Long) {
+    suspend fun insertHistory(id: Long) {
         val set: LinkedHashSet<String> = kv.decodeStringSet("history") as LinkedHashSet<String>
         if (set.size < maxHistoryAmount) {
             if (!set.add(id.toString())) {
@@ -108,7 +108,7 @@ object PreferenceUtil {
         set.clear()
     }
 
-    fun getHistory(): List<Long> {
+    suspend fun getHistory(): List<Long> {
         val idList = arrayOf<Long>()
         val set = kv.decodeStringSet("history", setOf())
         if (set != null) {

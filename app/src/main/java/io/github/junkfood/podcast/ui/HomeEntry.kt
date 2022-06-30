@@ -7,9 +7,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import io.github.junkfood.podcast.ui.common.*
+import io.github.junkfood.podcast.ui.common.NavigationUtil.EPISODE_ID
+import io.github.junkfood.podcast.ui.common.NavigationUtil.withArgument
 import io.github.junkfood.podcast.ui.destination.feed.FeedPage
 import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
 import io.github.junkfood.podcast.ui.destination.podcast.PodcastPage
@@ -45,23 +49,26 @@ fun HomeEntry() {
                                 .calculateBottomPadding()
                         ),
                     navController = navController,
-
-                    startDestination = RouteName.FEED
+                    
+                    startDestination = NavigationUtil.FEED
                 ) {
-                    animatedComposable(RouteName.FEED) { FeedPage(navController, feedViewModel) }
-                    animatedComposable(RouteName.EPISODE) {
+                    animatedComposable(NavigationUtil.FEED) { FeedPage(navController, feedViewModel) }
+                    animatedComposable(
+                        NavigationUtil.EPISODE.withArgument(EPISODE_ID),
+                        arguments = listOf(navArgument(EPISODE_ID) { type = NavType.LongType })
+                    ) { backStackEntry ->
                         EpisodePage(
                             navController,
-                            feedViewModel
+                            backStackEntry.arguments?.getLong(EPISODE_ID) ?: 0
                         )
                     }
-                    animatedComposable(RouteName.PODCAST) {
+                    animatedComposable(NavigationUtil.PODCAST) {
                         PodcastPage(feedViewModel, navController)
                     }
-                    animatedComposable(RouteName.LIBRARY) {
+                    animatedComposable(NavigationUtil.LIBRARY) {
                         LibraryPage(navController, libraryViewModel)
                     }
-                    animatedComposable(RouteName.SETTINGS) {
+                    animatedComposable(NavigationUtil.SETTINGS) {
                         SettingsPage(navController)
                     }
                 }

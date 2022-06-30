@@ -5,6 +5,7 @@ import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.podcast.BaseApplication.Companion.context
 import io.github.junkfood.podcast.database.model.Episode
 import io.github.junkfood.podcast.util.PreferenceUtil
+import io.github.junkfood.podcast.util.TextUtil
 
 object Repository {
     private val db = Room.databaseBuilder(
@@ -17,6 +18,10 @@ object Repository {
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
 
     suspend fun getEpisodeHistory() = episodeDao.getEpisodeById(PreferenceUtil.getHistory())
+
+    suspend fun getEpisodeById(Id: Long) = episodeDao.getEpisodeById(Id)
+
+    suspend fun getPodcastById(Id: Long) = podcastDao.getPodcastById(Id)
 
     suspend fun importRssData(podcast: Podcast) {
         val podcastId = podcastDao.insert(
@@ -35,10 +40,10 @@ object Repository {
                     description = episode.iTunesInfo.summary ?: episode.description,
                     cover = episode.iTunesInfo.imageString
                         ?: podcast.imageURL.toExternalForm(),
-                    pubDate = episode.pubDate.toString(),
+                    pubDate = TextUtil.formatDate(episode.pubDate),
                     duration = episode.iTunesInfo.duration,
                     author = episode.author,
-                    audioString = episode.sourceURL.toString()
+                    audioUrl = episode.enclosure.url.toExternalForm()
                 )
             )
         }

@@ -24,25 +24,26 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
-import io.github.junkfood.podcast.ui.common.RouteName
+import io.github.junkfood.podcast.ui.common.NavigationUtil
 import io.github.junkfood.podcast.ui.component.*
-import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
 import io.github.junkfood.podcast.util.TextUtil
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun EpisodePage(
-    navHostController: NavHostController, feedViewModel: FeedViewModel
+    navHostController: NavHostController,
+    episodeId: Long,
 ) {
+    val episodeViewModel = EpisodeViewModel(episodeId)
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         decayAnimationSpec,
         rememberTopAppBarScrollState()
     )
-    val viewState = feedViewModel.stateFlow.collectAsState()
+    val viewState = episodeViewModel.stateFlow.collectAsState()
     viewState.value.run {
-        val episode = episodeList[currentEpisodeIndex]
+        val episode = viewState.value
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,7 +68,7 @@ fun EpisodePage(
                         Row(
                             modifier = Modifier
                                 .fillParentMaxWidth()
-                                .clickable { navHostController.navigate(RouteName.PODCAST) }
+                                .clickable { navHostController.navigate(NavigationUtil.PODCAST) }
                                 .padding(vertical = 12.dp, horizontal = 18.dp)
                         ) {
                             AsyncImage(
@@ -75,7 +76,7 @@ fun EpisodePage(
                                     .fillMaxWidth(0.25f)
                                     .clip(MaterialTheme.shapes.small)
                                     .aspectRatio(1f, matchHeightConstraintsFirst = true),
-                                model = podcastCover,
+                                model = imageUrl,
                                 contentDescription = null
                             )
                             Column(
@@ -83,7 +84,7 @@ fun EpisodePage(
                                     .padding(horizontal = 18.dp)
                                     .align(Alignment.CenterVertically)
                             ) {
-                                TitleMedium(podcastTitle)
+                                TitleMedium(title)
                                 SubtitleMedium(author)
                             }
 
@@ -107,7 +108,7 @@ fun EpisodePage(
                                     modifier = Modifier.padding(end = 9.dp)
                                 )
                                 LabelMedium(
-                                    stringResource(R.string.duration).format(episode.iTunesInfo.duration),
+                                    stringResource(R.string.duration).format(episode.duration),
                                     modifier = Modifier.padding(end = 18.dp)
                                 )
                             }
@@ -177,7 +178,7 @@ fun EpisodePage(
                             SelectionContainer {
                                 HtmlText(
                                     modifier = Modifier.padding(top = 9.dp),
-                                    text = episode.iTunesInfo.summary ?: episode.description,
+                                    text = episode.description,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     lineHeight = (MaterialTheme.typography.bodyMedium.lineHeight.value + 2f).sp
@@ -185,7 +186,7 @@ fun EpisodePage(
                             }
                         }
                     }
-                    episode.iTunesInfo.imageString?.let {
+                    episode.imageUrl.let {
                         item {
                             AsyncImage(
                                 modifier = Modifier

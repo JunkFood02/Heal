@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
-import io.github.junkfood.podcast.ui.common.RouteName
+import io.github.junkfood.podcast.ui.common.NavigationUtil
 import io.github.junkfood.podcast.ui.component.*
 import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
 
@@ -156,7 +156,7 @@ fun PodcastPage(feedViewModel: FeedViewModel, navHostController: NavHostControll
                                     ?: episode.description,
                                 onClick = {
                                     feedViewModel.jumpToEpisode(i)
-                                    navHostController.navigate(RouteName.EPISODE)
+                                    navHostController.navigate(NavigationUtil.EPISODE)
                                 }, episodeDate = episode.pubDate
                             )
                             Divider(

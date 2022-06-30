@@ -33,10 +33,13 @@ import io.github.junkfood.podcast.ui.color.hct.Hct
 import io.github.junkfood.podcast.ui.color.palettes.CorePalette
 import io.github.junkfood.podcast.ui.common.LocalDarkTheme
 import io.github.junkfood.podcast.ui.common.LocalSeedColor
-import io.github.junkfood.podcast.ui.common.RouteName
+
+import io.github.junkfood.podcast.ui.common.NavigationUtil
+import io.github.junkfood.podcast.ui.common.NavigationUtil.toId
 import io.github.junkfood.podcast.ui.component.FeedItem
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
+import io.github.junkfood.podcast.util.TextUtil
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,7 +135,13 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                     onClick = {
 //                                        feedViewModel.jumpToEpisode(i)
 //                                        navHostController.navigate(RouteName.EPISODE)
-                                    }, episodeDate = null
+                                        navHostController.navigate(
+                                            NavigationUtil.EPISODE.toId(
+                                                episode.id
+                                            )
+                                        )
+                                    }, episodeDate = TextUtil.formatString(episode.pubDate)
+
                                 )
                             }
 

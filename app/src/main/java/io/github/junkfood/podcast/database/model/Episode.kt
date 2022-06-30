@@ -2,13 +2,14 @@ package io.github.junkfood.podcast.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.net.URL
 
 @Entity
 data class Episode(
     @PrimaryKey (autoGenerate = true)val id: Long = 0,
     val author: String,
     val title: String,
-    //val url:String,
+    val audioString: String,
     val cover: String,
     val description: String,
     val pubDate: String,

@@ -16,7 +16,7 @@ object Repository {
 
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
 
-    fun getEpisodeHistory() = episodeDao.getEpisodeById(PreferenceUtil.getHistory())
+    suspend fun getEpisodeHistory() = episodeDao.getEpisodeById(PreferenceUtil.getHistory())
 
     suspend fun importRssData(podcast: Podcast) {
         val podcastId = podcastDao.insert(
@@ -36,7 +36,9 @@ object Repository {
                     cover = episode.iTunesInfo.imageString
                         ?: podcast.imageURL.toExternalForm(),
                     pubDate = episode.pubDate.toString(),
-                    duration = episode.iTunesInfo.duration, author = episode.author
+                    duration = episode.iTunesInfo.duration,
+                    author = episode.author,
+                    audioString = episode.sourceURL.toString()
                 )
             )
         }

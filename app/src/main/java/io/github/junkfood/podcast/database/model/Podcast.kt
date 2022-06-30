@@ -3,6 +3,7 @@ package io.github.junkfood.podcast.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.net.URL
 
 @Entity
 data class Podcast(
@@ -10,6 +11,6 @@ data class Podcast(
     val title: String,
     val author: String,
     val description: String,
-    //val urlL String,
+    val url: String = "",
     val coverUrl: String
 )

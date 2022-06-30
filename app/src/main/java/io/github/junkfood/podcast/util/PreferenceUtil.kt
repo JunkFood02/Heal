@@ -20,12 +20,12 @@ import kotlinx.coroutines.launch
 object PreferenceUtil {
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     private val kv = MMKV.defaultMMKV()
+    private const val maxHistoryAmount = 15
 
     data class AppSettings(
         val darkTheme: DarkThemePreference = DarkThemePreference(),
         val seedColor: Int = DEFAULT_SEED_COLOR
     )
-
 
     const val DARK_THEME = "dark_theme_value"
 
@@ -86,5 +86,37 @@ object PreferenceUtil {
                 )
             ), kv.decodeInt(THEME_COLOR, DEFAULT_SEED_COLOR)
         )
+    }
+
+    suspend fun insertHistory(id: Long) {
+        val set: LinkedHashSet<String> = kv.decodeStringSet("history") as LinkedHashSet<String>
+        if (set.size < maxHistoryAmount) {
+            if (!set.add(id.toString())) {
+                set.remove(id.toString())
+                set.add(id.toString())
+            }
+        }
+        else {
+            if (set.remove(id.toString())) {
+                set.add(id.toString())
+            } else {
+                set.remove(set.iterator().next())
+                set.add(id.toString())
+            }
+        }
+        kv.encode("history", set)
+        set.clear()
+    }
+
+    suspend fun getHistory(): List<Long> {
+        val idList = arrayOf<Long>()
+        val set = kv.decodeStringSet("history", setOf())
+        if (set != null) {
+            for (item in set) {
+                idList[idList.size] = item.toLong()
+            }
+        }
+        idList.reverse()
+        return idList.toList()
     }
 }

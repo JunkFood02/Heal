@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.podcast.BaseApplication.Companion.context
 import io.github.junkfood.podcast.database.model.Episode
+import io.github.junkfood.podcast.util.PreferenceUtil
 import io.github.junkfood.podcast.util.TextUtil
 
 object Repository {
@@ -13,8 +14,10 @@ object Repository {
     ).build()
     private val episodeDao = db.episodeDao()
     private val podcastDao = db.podcastDao()
-    private val recordDao = db.recordDao()
+
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
+
+    suspend fun getEpisodeHistory() = episodeDao.getEpisodeById(PreferenceUtil.getHistory())
 
     suspend fun getEpisodeById(Id: Long) = episodeDao.getEpisodeById(Id)
 
@@ -38,7 +41,8 @@ object Repository {
                     cover = episode.iTunesInfo.imageString
                         ?: podcast.imageURL.toExternalForm(),
                     pubDate = TextUtil.formatDate(episode.pubDate),
-                    duration = episode.iTunesInfo.duration, author = episode.author,
+                    duration = episode.iTunesInfo.duration,
+                    author = episode.author,
                     audioUrl = episode.enclosure.url.toExternalForm()
                 )
             )

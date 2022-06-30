@@ -33,12 +33,14 @@ import io.github.junkfood.podcast.ui.color.hct.Hct
 import io.github.junkfood.podcast.ui.color.palettes.CorePalette
 import io.github.junkfood.podcast.ui.common.LocalDarkTheme
 import io.github.junkfood.podcast.ui.common.LocalSeedColor
+
 import io.github.junkfood.podcast.ui.common.NavigationUtil
 import io.github.junkfood.podcast.ui.common.NavigationUtil.toId
 import io.github.junkfood.podcast.ui.component.FeedItem
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
 import io.github.junkfood.podcast.util.TextUtil
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -89,8 +91,6 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                 .statusBarsPadding()
                 .fillMaxSize()
         ) {
-
-
             Row(
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState())
@@ -107,6 +107,17 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                 ColorButton(color = Color.Red)
                 ColorButton(color = Color.Magenta)
                 ColorButton(color = Color.Blue)
+            }
+
+            //for test use
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(12.dp),
+                onClick = {
+                    navHostController.navigate(RouteName.LIBRARY)
+                }) {
+                Text("我的")
             }
 
             feedDataState.value.run {

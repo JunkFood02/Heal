@@ -19,9 +19,6 @@ interface EpisodeDao {
     fun getAllEpisodes(): Flow<List<Episode>>
 
 
-    @Query("SELECT * FROM episode WHERE id = :id")
-    fun getEpisodeById(id: Long): Flow<Episode>
-
     @Query("SELECT * FROM episode WHERE id IN (:idList)")
     fun getEpisodeById(idList: List<Long>): Flow<List<Episode>>
     

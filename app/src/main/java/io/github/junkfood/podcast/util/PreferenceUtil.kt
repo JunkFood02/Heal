@@ -108,7 +108,7 @@ object PreferenceUtil {
         set.clear()
     }
 
-    suspend fun getHistory(): List<Long> {
+    fun getHistory(): List<Long> {
         val idList = arrayOf<Long>()
         val set = kv.decodeStringSet("history", setOf())
         if (set != null) {

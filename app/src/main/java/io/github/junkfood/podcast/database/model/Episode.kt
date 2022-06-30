@@ -9,7 +9,6 @@ data class Episode(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val author: String,
     val title: String,
-    val audioString: String,
     val cover: String,
     val description: String,
     val pubDate: String,

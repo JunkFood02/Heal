@@ -11,6 +11,7 @@ data class Podcast(
     val title: String,
     val author: String,
     val description: String,
+    @ColumnInfo(defaultValue = "")
     val url: String = "",
     val coverUrl: String
 )

@@ -115,7 +115,7 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                     .align(Alignment.End)
                     .padding(12.dp),
                 onClick = {
-                    navHostController.navigate(RouteName.LIBRARY)
+                    navHostController.navigate(NavigationUtil.LIBRARY)
                 }) {
                 Text("我的")
             }

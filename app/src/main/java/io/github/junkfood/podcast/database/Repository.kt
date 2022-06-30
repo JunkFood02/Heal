@@ -17,7 +17,7 @@ object Repository {
 
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
 
-    suspend fun getEpisodeHistory() = episodeDao.getEpisodeById(PreferenceUtil.getHistory())
+    fun getEpisodeHistory() = episodeDao.getEpisodeById(PreferenceUtil.getHistory())
 
     suspend fun getEpisodeById(Id: Long) = episodeDao.getEpisodeById(Id)
 

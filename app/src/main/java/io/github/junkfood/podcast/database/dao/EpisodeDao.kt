@@ -2,7 +2,6 @@ package io.github.junkfood.podcast.database.dao
 
 import androidx.room.*
 import io.github.junkfood.podcast.database.model.Episode
-import io.github.junkfood.podcast.database.model.Podcast
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,14 +18,15 @@ interface EpisodeDao {
     @Query("SELECT * FROM episode")
     fun getAllEpisodes(): Flow<List<Episode>>
 
+
+    @Query("SELECT * FROM episode WHERE id IN (:idList)")
+    fun getEpisodeById(idList: List<Long>): Flow<List<Episode>>
+    
     @Query("select * from episode where id=:episodeId")
     suspend fun getEpisodeById(episodeId: Long): Episode
 
-    @Query(
-        "SELECT * FROM podcast " +
-                "JOIN episode ON episode.id = podcast.id"
-    )
-    fun loadPodcastAndEpisode(): Flow<Map<Podcast, List<Episode>>>
+
+
 
 
 }

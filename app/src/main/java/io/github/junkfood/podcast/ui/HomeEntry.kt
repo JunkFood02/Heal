@@ -49,7 +49,7 @@ fun HomeEntry() {
                                 .calculateBottomPadding()
                         ),
                     navController = navController,
-
+                    
                     startDestination = NavigationUtil.FEED
                 ) {
                     animatedComposable(NavigationUtil.FEED) { FeedPage(navController, feedViewModel) }

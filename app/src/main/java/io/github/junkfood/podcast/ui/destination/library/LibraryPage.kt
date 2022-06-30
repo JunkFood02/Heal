@@ -38,20 +38,13 @@ fun LibraryPage(
         rememberTopAppBarScrollState()
     )
     val viewState = libraryViewModel.stateFlow.collectAsState()
-    val clipboardManager = LocalClipboardManager.current
+    val libraryDataState = libraryViewModel.episodeAndRecordFlow.collectAsState(ArrayList())
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         backgroundColor = MaterialTheme.colorScheme.background,
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showDialog = true },
-                modifier = Modifier
-                    .padding(bottom = 36.dp, end = 24.dp)
-            ) { Icon(Icons.Rounded.RssFeed, null) }
-        },
         topBar =  {
                   Column(
                       horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,16 +67,17 @@ fun LibraryPage(
             Column() {
                 Card(
                     modifier = Modifier
-                        .padding(10.dp)
+                        .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                 ) {
                     Text(
                         text = "历史记录",
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
-                            .padding(5.dp)
+                            .padding(10.dp)
                     )
-                    viewState.value.run {
+                    libraryDataState.value.run {
+                        val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
                         LazyRow (
                             modifier = Modifier
                                 .height(180.dp)
@@ -91,10 +85,10 @@ fun LibraryPage(
                             for (item in episodeList) {
                                 item {
                                     HistoryCard(
-                                        imageModel = item.iTunesInfo.imageString ?: podcastCover,
+                                        imageModel = item.cover,
                                         title = item.title,
                                         author = item.author,
-                                        length = item.iTunesInfo.duration,
+                                        length = item.duration,
                                         progress = 0F,
                                         onClick = {}
                                     )
@@ -131,6 +125,7 @@ fun LibraryPage(
                         Row(
                             modifier = Modifier
                                 .clickable {
+
                                     navHostController.navigate(NavigationUtil.SETTINGS) {
                                         launchSingleTop = true                                    }
                                 }

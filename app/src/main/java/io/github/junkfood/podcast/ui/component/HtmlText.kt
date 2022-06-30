@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.text.Html
 import android.text.Spanned
 import android.text.style.*
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.text.InlineTextContent
@@ -28,7 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.core.text.getSpans
 
-
+private const val TAG = "HtmlText"
 @Composable
 fun HtmlText(
     modifier: Modifier = Modifier,

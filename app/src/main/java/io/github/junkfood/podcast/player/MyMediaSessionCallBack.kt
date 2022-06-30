@@ -46,8 +46,8 @@ class MyMediaSessionCallBack(
         Log.i(TAG, "onSkipToNext")
         exoPlayer.seekToNext()
         exoPlayer.setPlayWhenReady(true);
-        setPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
-        mediaSession.setMetadata(getMediaMetadata(1));
+//        setPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
+//        mediaSession.setMetadata(getMediaMetadata(1));
         //
     }
 

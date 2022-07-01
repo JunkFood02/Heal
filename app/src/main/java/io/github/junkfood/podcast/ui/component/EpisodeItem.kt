@@ -96,7 +96,11 @@ fun FeedItem(
     episodeTitle: String,
     episodeDescription: String,
     onClick: () -> Unit,
-    episodeDate: Date? = null
+    episodeDate: Date? = null,
+    onPlayButtonClick: () -> Unit,
+    onAddButtonClick: () -> Unit,
+    onDownloadButtonClick: () -> Unit,
+    onMoreButtonClick: () -> Unit
 ) {
     Column(
         Modifier
@@ -172,7 +176,7 @@ fun FeedItem(
 
             Row(modifier = Modifier.weight(1f)) {
                 IconButton(
-                    onClick = { },
+                    onClick = onAddButtonClick,
                     modifier = Modifier.padding()
                 ) {
                     Icon(
@@ -182,7 +186,7 @@ fun FeedItem(
                     )
                 }
                 IconButton(
-                    onClick = { },
+                    onClick = onDownloadButtonClick,
                     modifier = Modifier.padding()
                 ) {
                     Icon(
@@ -192,7 +196,7 @@ fun FeedItem(
                     )
                 }
                 IconButton(
-                    onClick = { },
+                    onClick = onMoreButtonClick,
                     modifier = Modifier.padding()
                 ) {
                     Icon(
@@ -203,7 +207,7 @@ fun FeedItem(
                 }
             }
             FilledIconButton(
-                onClick = { },
+                onClick = onPlayButtonClick,
                 modifier = Modifier
                     .padding(end = 18.dp)
                     .size(32.dp)

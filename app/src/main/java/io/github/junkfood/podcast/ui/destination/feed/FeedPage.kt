@@ -40,9 +40,13 @@ import io.github.junkfood.podcast.ui.component.FeedItem
 import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
 import io.github.junkfood.podcast.util.TextUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
@@ -133,6 +137,7 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                     episodeTitle = episode.title,
                                     episodeDescription = episode.description,
                                     onClick = {
+                                        feedViewModel.insertToHistory(episode.id)
 //                                        feedViewModel.jumpToEpisode(i)
 //                                        navHostController.navigate(RouteName.EPISODE)
                                         navHostController.navigate(
@@ -140,8 +145,14 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                                 episode.id
                                             )
                                         )
-                                    }, episodeDate = TextUtil.formatString(episode.pubDate)
-
+                                    },
+                                    episodeDate = TextUtil.formatString(episode.pubDate),
+                                    onAddButtonClick = {},
+                                    onDownloadButtonClick = {},
+                                    onMoreButtonClick = {},
+                                    onPlayButtonClick = {
+                                        feedViewModel.insertToHistory(episode.id)
+                                    }
                                 )
                             }
 

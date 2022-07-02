@@ -2,6 +2,8 @@ package io.github.junkfood.podcast.ui.destination.library
 
 import androidx.compose.material.Scaffold
 import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,9 +24,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.ui.common.NavigationUtil
+import io.github.junkfood.podcast.ui.common.NavigationUtil.toId
 
+private const val TAG = "LibraryPage"
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -70,27 +75,52 @@ fun LibraryPage(
                         .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth()
                 ) {
-                    Text(
-                        text = "历史记录",
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    Row(
                         modifier = Modifier
-                            .padding(10.dp)
-                    )
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "历史记录",
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier
+                                .padding(10.dp)
+                        )
+                        TextButton(
+                            modifier = Modifier
+                                .padding(end = 10.dp),
+                            onClick = {
+                                libraryViewModel.deleteAllRecords()
+                            }) {
+                            Text("清除记录")
+                        }
+                    }
+
+
                     libraryDataState.value.run {
-                        val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
+                        //val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
                         LazyRow (
                             modifier = Modifier
                                 .height(180.dp)
                         ) {
+                            val episodeList = libraryDataState.value.reversed()
                             for (item in episodeList) {
                                 item {
                                     HistoryCard(
-                                        imageModel = item.cover,
-                                        title = item.title,
-                                        author = item.author,
-                                        length = item.duration,
-                                        progress = 0F,
-                                        onClick = {}
+                                        imageModel = item.episode.cover,
+                                        title = item.episode.title,
+                                        author = item.episode.author,
+                                        length = item.episode.duration,
+                                        progress = item.episode.progress,
+                                        onClick = {
+                                            Log.d(TAG, "LibraryPage: onClick")
+                                            navHostController.navigate(
+                                                NavigationUtil.EPISODE.toId(
+                                                    item.episode.id
+                                                )
+                                            )
+                                            libraryViewModel.insertToHistory(item.episode.id)
+                                        }
                                     )
                                 }
                             }
@@ -127,7 +157,8 @@ fun LibraryPage(
                                 .clickable {
 
                                     navHostController.navigate(NavigationUtil.SETTINGS) {
-                                        launchSingleTop = true                                    }
+                                        launchSingleTop = true
+                                    }
                                 }
                                 .padding(12.dp)
                                 .fillMaxWidth()
@@ -170,6 +201,9 @@ fun HistoryCard(
     Column(
         Modifier
             .padding(12.dp)
+            .clickable {
+                onClick()
+            }
     ) {
         AsyncImage(
             modifier = Modifier

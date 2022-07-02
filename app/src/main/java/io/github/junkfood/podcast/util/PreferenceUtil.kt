@@ -88,35 +88,42 @@ object PreferenceUtil {
         )
     }
 
-    suspend fun insertHistory(id: Long) {
-        val set: LinkedHashSet<String> = kv.decodeStringSet("history") as LinkedHashSet<String>
-        if (set.size < maxHistoryAmount) {
-            if (!set.add(id.toString())) {
-                set.remove(id.toString())
-                set.add(id.toString())
-            }
-        }
-        else {
-            if (set.remove(id.toString())) {
-                set.add(id.toString())
-            } else {
-                set.remove(set.iterator().next())
-                set.add(id.toString())
-            }
-        }
-        kv.encode("history", set)
-        set.clear()
-    }
-
-    fun getHistory(): List<Long> {
-        val idList = arrayOf<Long>()
-        val set = kv.decodeStringSet("history", setOf())
-        if (set != null) {
-            for (item in set) {
-                idList[idList.size] = item.toLong()
-            }
-        }
-        idList.reverse()
-        return idList.toList()
-    }
+//    suspend fun insertHistory(id: Long) {
+//        if (kv.decodeStringSet("history") == null || kv.decodeStringSet("history")!!.size == 0) {
+//            val set = LinkedHashSet<String>()
+//            set.add(id.toString())
+//            kv.encode("history", set)
+//        } else {
+//        val set = kv.decodeStringSet("history") as LinkedHashSet<String>
+//        if (set.size < maxHistoryAmount) {
+//            if (!set.add(id.toString())) {
+//                set.remove(id.toString())
+//                set.add(id.toString())
+//            }
+//        }
+//        else {
+//            if (set.remove(id.toString())) {
+//                set.add(id.toString())
+//            } else {
+//                set.remove(set.iterator().next())
+//                set.add(id.toString())
+//            }
+//        }
+//
+//        kv.encode("history", set)
+//        set.clear()
+//    }
+//    }
+//
+//    fun getHistory(): List<Long> {
+//        val idList = arrayOf<Long>()
+//        val set = kv.decodeStringSet("history", setOf())
+//        if (set != null) {
+//            for (item in set) {
+//                idList[idList.size] = item.toLong()
+//            }
+//        }
+//        idList.reverse()
+//        return idList.toList()
+//    }
 }

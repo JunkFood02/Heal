@@ -51,7 +51,7 @@ class PodcastService : MediaBrowserServiceCompat() {
         mediaSession!!.setPlaybackState(playbackState)
 
         //2. 设置mediaSession回调
-        mediaSession!!.setCallback(this.exoPlayer?.let { MyMediaSessionCallBack(it) })
+        //mediaSession!!.setCallback(this.exoPlayer?.let { MyMediaSessionCallBack(it) })
 
         //3. 设置mediaSessionToken
         setSessionToken(mediaSession!!.sessionToken)

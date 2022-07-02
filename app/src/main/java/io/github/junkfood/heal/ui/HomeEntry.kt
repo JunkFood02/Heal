@@ -48,64 +48,15 @@ fun HomeEntry() {
             seedColor = LocalSeedColor.current
         ) {
 
-            val navController = rememberAnimatedNavController()
+            val navController = LocalNavHostController.current
             val onBackPressed = { navController.popBackStack() }
-            var selectedTab by remember { mutableStateOf(0) }
-            navController.addOnDestinationChangedListener { controller, destination, arguments ->
-                selectedTab = navController.getTopDestinationRoute()
-            }
+
             Scaffold(modifier = Modifier.padding(
                 bottom = WindowInsets.systemBars
                     .asPaddingValues()
                     .calculateBottomPadding()
             ), bottomBar = {
-                NavigationBar {
-                    NavigationBarItem(
-                        selected = selectedTab == 0,
-                        onClick = {
-                            navController.navigate(NavigationGraph.FEED) {
-                                launchSingleTop = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                if (selectedTab != 0) Icons.Outlined.Home else Icons.Filled.Home,
-                                contentDescription = null
-                            )
-                        },
-                        label = { Text(stringResource(R.string.home)) },
-                    )
-                    NavigationBarItem(
-                        selected = selectedTab == 1,
-                        onClick = {
-                            navController.navigate(NavigationGraph.LISTEN) {
-                                launchSingleTop = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                if (selectedTab != 1) Icons.Outlined.PlayArrow else Icons.Filled.PlayArrow,
-                                contentDescription = null
-                            )
-                        },
-                        label = { Text(stringResource(R.string.listen)) },
-                    )
-                    NavigationBarItem(
-                        selected = selectedTab == 2,
-                        onClick = {
-                            navController.navigate(NavigationGraph.LIBRARY) {
-                                launchSingleTop = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                if (selectedTab != 2) Icons.Outlined.CollectionsBookmark else Icons.Filled.CollectionsBookmark,
-                                contentDescription = null
-                            )
-                        },
-                        label = { Text(stringResource(R.string.library)) },
-                    )
-                }
+                NavigationBarImpl()
             }, content = { paddingValues ->
                 val feedViewModel = FeedViewModel()
                 val libraryViewModel = LibraryViewModel()

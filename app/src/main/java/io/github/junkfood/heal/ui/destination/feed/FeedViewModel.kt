@@ -19,6 +19,8 @@ class FeedViewModel : ViewModel() {
     //    init { fetchPodcast() }
     private val mutableStateFlow = MutableStateFlow(FeedViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
+    val episodeAndRecordFlow = Repository.getEpisodeAndRecord()
+
     private val TAG = "FeedViewModel"
     fun fetchPodcast() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -76,7 +78,7 @@ class FeedViewModel : ViewModel() {
     }
 
     data class FeedViewState(
-        val url: String = "https://justpodmedia.com/rss/left-right.xml",
+        val url: String = "https://anchor.fm/s/473e5930/podcast/rss",
         val feedItems: List<FeedItem> = ArrayList()
     )
 

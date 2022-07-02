@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,14 +53,15 @@ fun LibraryPage(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            io.github.junkfood.heal.ui.component.LargeTopAppBar(
+            io.github.junkfood.heal.ui.component.SmallTopAppBar(
                 title = { Text(stringResource(id = R.string.library)) },
                 navigationIcon = { BackButton { navHostController.popBackStack() } },
                 scrollBehavior = scrollBehavior
             )
-        },
+        }, backgroundColor = MaterialTheme.colorScheme.surface,
         content = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
+
                 Card(
                     modifier = Modifier
                         .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
@@ -87,7 +89,7 @@ fun LibraryPage(
                     }
 
 
-                    libraryDataState.value.run {
+/*                    libraryDataState.value.run {
                         //val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
                         LazyRow(
                             modifier = Modifier
@@ -115,7 +117,7 @@ fun LibraryPage(
                                 }
                             }
                         }
-                    }
+                    }*/
                 }
                 Card(
                     modifier = Modifier
@@ -179,6 +181,42 @@ fun LibraryDivider() {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CardContent(imageModel: Any, title: String, timeLeft: String, onClick: () -> Unit) {
+    ElevatedCard(modifier = Modifier
+        .padding(vertical = 6.dp).padding(start = 12.dp)
+        .width(150.dp), onClick = onClick) {
+        AsyncImage(
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.medium)
+                .aspectRatio(1f, matchHeightConstraintsFirst = true),
+            model = imageModel,
+            contentDescription = null
+        )
+        Text(
+            title,
+            modifier = Modifier.padding(
+                top = 9.dp,
+                bottom = 3.dp,
+                start = 12.dp,
+                end = 12.dp
+            ),
+            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            timeLeft,
+            modifier = Modifier.padding(bottom = 15.dp, start = 12.dp, end = 12.dp),
+            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
 @Composable
 fun HistoryCard(
     imageModel: Any,
@@ -197,7 +235,7 @@ fun HistoryCard(
     ) {
         AsyncImage(
             modifier = Modifier
-                .size(100.dp)
+                .size(150.dp)
                 .clip(MaterialTheme.shapes.medium)
                 .aspectRatio(1f, matchHeightConstraintsFirst = true),
             model = imageModel,

@@ -1,25 +1,25 @@
 package io.github.junkfood.heal.ui.destination.feed
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import com.icosillion.podengine.models.Episode
 import io.github.junkfood.heal.ui.common.NavigationGraph
 import io.github.junkfood.heal.ui.common.NavigationGraph.toId
 import io.github.junkfood.heal.ui.component.FeedItem
+import io.github.junkfood.heal.ui.destination.library.CardContent
 import io.github.junkfood.heal.util.TextUtil
 
 
@@ -29,6 +29,8 @@ import io.github.junkfood.heal.util.TextUtil
 fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
 
     val viewState = feedViewModel.stateFlow.collectAsState()
+    val libraryDataState = feedViewModel.episodeAndRecordFlow.collectAsState(ArrayList())
+
     val clipboardManager = LocalClipboardManager.current
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(modifier = Modifier
@@ -73,8 +75,40 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
         ) {
 
             viewState.value.run {
-                val feedItemList = ArrayList<io.github.junkfood.heal.database.model.Episode>()
                 LazyColumn {
+                    item {
+                        Column() {
+                            Text(
+                                "Resume listening",
+                                modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            LazyRow(
+                                modifier = Modifier
+                            ) {
+                                val episodeList = libraryDataState.value.reversed()
+                                for (item in episodeList) {
+                                    item {
+                                        CardContent(
+                                            imageModel = item.episode.cover,
+                                            title = item.episode.title,
+                                            timeLeft = "12 mins left",
+                                            /*length = item.episode.duration,
+                                            progress = item.episode.progress,*/
+                                            onClick = {
+                                                navHostController.navigate(
+                                                    NavigationGraph.EPISODE.toId(
+                                                        item.episode.id
+                                                    )
+                                                )
+//                                                libraryViewModel.insertToHistory(item.episode.id)
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                     for (item in feedItems) {
                         item {
                             FeedItem(
@@ -111,35 +145,3 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
 }
 
 
-@Composable
-fun CardContent(title: String, episode: Episode) {
-
-    AsyncImage(
-        modifier = Modifier
-            .clip(MaterialTheme.shapes.medium)
-            .aspectRatio(1f, matchHeightConstraintsFirst = true),
-        model = episode.iTunesInfo.image,
-        contentDescription = null
-    )
-    Text(
-        episode.title,
-        modifier = Modifier.padding(
-            top = 9.dp,
-            bottom = 3.dp,
-            start = 12.dp,
-            end = 12.dp
-        ),
-        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis
-    )
-    Text(
-        title,
-        modifier = Modifier.padding(bottom = 15.dp, start = 12.dp, end = 12.dp),
-        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis
-    )
-
-}

@@ -54,13 +54,13 @@ fun NavGraphBuilder.fadedComposable(
     arguments = arguments,
     deepLinks = deepLinks,
     enterTransition = {
-        fadeIn(animationSpec = tween(220, delayMillis = 90))
+        fadeIn(animationSpec = tween(300))
     },
     exitTransition = {
         fadeOut(animationSpec = tween(90))
     },
     popEnterTransition = {
-        fadeIn(animationSpec = tween(220, delayMillis = 90))
+        fadeIn(animationSpec = tween(300))
     },
     popExitTransition = {
         fadeOut(animationSpec = tween(90))

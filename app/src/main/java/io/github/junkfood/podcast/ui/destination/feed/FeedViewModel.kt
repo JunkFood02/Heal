@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.junkfood.podcast.BaseApplication.Companion.context
 import io.github.junkfood.podcast.database.Repository
 import io.github.junkfood.podcast.util.PreferenceUtil
+import io.github.junkfood.podcast.util.TextUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -64,7 +65,13 @@ class FeedViewModel @Inject constructor() : ViewModel() {
                         )
                     }
                 }
-                mutableStateFlow.update { stateFlow -> stateFlow.copy(feedItems = feedItems) }
+                feedItems.sortWith { o1: FeedItem, o2: FeedItem ->
+                    TextUtil.compareDate(
+                        o1.pubDate,
+                        o2.pubDate
+                    )
+                }
+                mutableStateFlow.update { stateFlow -> stateFlow.copy(feedItems = feedItems.reversed()) }
             }
         }
     }

@@ -27,11 +27,11 @@ object Repository {
 
     suspend fun getEpisodeById(Id: Long) = episodeDao.getEpisodeById(Id)
 
-    fun getEpisodesByPodcastId(podcastId:Long)= episodeDao.getEpisodesByPodcastId(podcastId)
+    fun getEpisodesByPodcastId(podcastId: Long) = episodeDao.getEpisodesByPodcastId(podcastId)
 
     suspend fun getPodcastById(Id: Long) = podcastDao.getPodcastById(Id)
 
-    fun getPodcastFlowById(Id: Long)= podcastDao.getPodcastFlowById(Id)
+    fun getPodcastFlowById(Id: Long) = podcastDao.getPodcastFlowById(Id)
 
     suspend fun importRssData(podcast: Podcast) {
         val podcastId = podcastDao.insert(
@@ -52,7 +52,7 @@ object Repository {
                         ?: podcast.imageURL.toExternalForm(),
                     pubDate = TextUtil.formatDate(episode.pubDate),
                     duration = episode.iTunesInfo.duration,
-                    author = episode.author,
+                    author = episode.author ?: "",
                     audioUrl = episode.enclosure.url.toExternalForm()
                 )
             )

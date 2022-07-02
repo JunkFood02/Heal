@@ -9,6 +9,7 @@ import com.icosillion.podengine.models.Podcast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.junkfood.podcast.BaseApplication.Companion.context
 import io.github.junkfood.podcast.database.Repository
+import io.github.junkfood.podcast.util.PreferenceUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -69,5 +70,9 @@ class FeedViewModel @Inject constructor() : ViewModel() {
         val episodeList: List<Episode> = ArrayList(), val currentEpisodeIndex: Int = 0
     )
 
-
+    fun insertToHistory(id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Repository.insertRecord(id)
+        }
+    }
 }

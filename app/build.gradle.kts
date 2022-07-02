@@ -13,6 +13,10 @@ val isHiltEnabled = true
 if (isHiltEnabled)
     apply(plugin = "dagger.hilt.android.plugin")
 
+val isHiltEnabled = true
+
+if (isHiltEnabled)
+    apply(plugin = "dagger.hilt.android.plugin")
 
 val versionMajor = 0
 val versionMinor = 0
@@ -25,6 +29,7 @@ val navigationVersion = "2.5.0-rc02"
 val roomVersion = "2.4.2"
 val accompanistVersion = "0.24.11-rc"
 val kotlinVersion = "1.6.21"
+val hiltVersion = "2.42"
 val composeMd3Version = "1.0.0-alpha13"
 val coilVersion = "2.1.0"
 val exoPlayerVersion = "2.18.0"
@@ -35,19 +40,19 @@ val isDebug = false
 
 android {
     compileSdk = 32
-//    if (isDebug) {
-//        val keystorePropertiesFile = rootProject.file("keystore.properties")
-//        val keystoreProperties = Properties()
-////        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-//        signingConfigs {
-//            all {
-//                keyAlias = keystoreProperties["keyAlias"].toString()
-//                keyPassword = keystoreProperties["keyPassword"].toString()
-////                storeFile = file(keystoreProperties["storeFile"]!!)
-////                storePassword = keystoreProperties["storePassword"].toString()
-//            }
-//        }
-//    }
+    if (isDebug) {
+        val keystorePropertiesFile = rootProject.file("keystore.properties")
+        val keystoreProperties = Properties()
+        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+        signingConfigs {
+            all {
+                keyAlias = keystoreProperties["keyAlias"].toString()
+                keyPassword = keystoreProperties["keyPassword"].toString()
+                storeFile = file(keystoreProperties["storeFile"]!!)
+                storePassword = keystoreProperties["storePassword"].toString()
+            }
+        }
+    }
     defaultConfig {
         applicationId = "io.github.junkfood.podcast"
         minSdk = 26
@@ -117,6 +122,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     implementation("io.coil-kt:coil-compose:$coilVersion")
+
     if (isHiltEnabled) {
         implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
         kapt("androidx.hilt:hilt-compiler:1.0.0")
@@ -128,7 +134,6 @@ dependencies {
 
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
-    implementation("com.google.firebase:firebase-firestore-ktx:23.0.2")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("com.tencent:mmkv:1.2.13")
     implementation("androidx.datastore:datastore-preferences:1.0.0")

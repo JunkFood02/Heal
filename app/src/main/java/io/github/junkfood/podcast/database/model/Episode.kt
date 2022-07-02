@@ -2,6 +2,7 @@ package io.github.junkfood.podcast.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.net.URI
 import java.net.URL
 
 @Entity
@@ -16,6 +17,8 @@ data class Episode(
     //val categories: List<String>,
     val duration: String,
     val podcastID: Long,
-    val progress: Float = 0F
+    val progress: Float = 0F,
+    val recordId: Long = 0,
+    //val uri: String
 )
 

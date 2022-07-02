@@ -27,4 +27,9 @@ object TextUtil {
             )
         return df.format(date)
     }
+
+    fun compareDate(s1: String, s2: String): Int {
+        if (s1 == s2) return 0
+        return if (formatString(s1)?.after(formatString(s2)) == true) 1 else -1
+    }
 }

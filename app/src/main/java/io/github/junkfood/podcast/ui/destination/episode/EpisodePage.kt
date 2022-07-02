@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.podcast.R
 import io.github.junkfood.podcast.ui.common.NavigationUtil
+import io.github.junkfood.podcast.ui.common.NavigationUtil.toId
 import io.github.junkfood.podcast.ui.component.*
 import io.github.junkfood.podcast.util.TextUtil
 
@@ -43,7 +44,6 @@ fun EpisodePage(
     )
     val viewState = episodeViewModel.stateFlow.collectAsState()
     viewState.value.run {
-        val episode = viewState.value
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,7 +68,9 @@ fun EpisodePage(
                         Row(
                             modifier = Modifier
                                 .fillParentMaxWidth()
-                                .clickable { navHostController.navigate(NavigationUtil.PODCAST) }
+                                .clickable {
+                                    navHostController.navigate(NavigationUtil.PODCAST.toId(podcastId))
+                                }
                                 .padding(vertical = 12.dp, horizontal = 18.dp)
                         ) {
                             AsyncImage(
@@ -84,7 +86,7 @@ fun EpisodePage(
                                     .padding(horizontal = 18.dp)
                                     .align(Alignment.CenterVertically)
                             ) {
-                                TitleMedium(title)
+                                TitleMedium(podcastTitle)
                                 SubtitleMedium(author)
                             }
 
@@ -97,18 +99,18 @@ fun EpisodePage(
                                 .padding(horizontal = 18.dp)
                                 .padding(top = 6.dp)
                         ) {
-                            HeadlineSmall(episode.title)
+                            HeadlineSmall(title)
                             Row(modifier = Modifier.padding(top = 3.dp)) {
                                 LabelMedium(
                                     text = stringResource(R.string.publish_date).format(
                                         TextUtil.parseDate(
-                                            episode.pubDate
+                                            pubDate
                                         )
                                     ),
                                     modifier = Modifier.padding(end = 9.dp)
                                 )
                                 LabelMedium(
-                                    stringResource(R.string.duration).format(episode.duration),
+                                    stringResource(R.string.duration).format(duration),
                                     modifier = Modifier.padding(end = 18.dp)
                                 )
                             }
@@ -178,7 +180,7 @@ fun EpisodePage(
                             SelectionContainer {
                                 HtmlText(
                                     modifier = Modifier.padding(top = 9.dp),
-                                    text = episode.description,
+                                    text = description,
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     lineHeight = (MaterialTheme.typography.bodyMedium.lineHeight.value + 2f).sp
@@ -186,7 +188,7 @@ fun EpisodePage(
                             }
                         }
                     }
-                    episode.imageUrl.let {
+                    imageUrl.let {
                         item {
                             AsyncImage(
                                 modifier = Modifier

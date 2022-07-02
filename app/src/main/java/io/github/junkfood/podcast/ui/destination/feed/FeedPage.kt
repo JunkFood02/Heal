@@ -41,9 +41,6 @@ import io.github.junkfood.podcast.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.podcast.util.PreferenceUtil.modifyThemeColor
 import io.github.junkfood.podcast.util.TextUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
@@ -52,7 +49,6 @@ import kotlinx.coroutines.launch
 fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
 
     val viewState = feedViewModel.stateFlow.collectAsState()
-    val feedDataState = feedViewModel.podcastWithEpisodesFlow.collectAsState(ArrayList())
     val clipboardManager = LocalClipboardManager.current
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(modifier = Modifier
@@ -124,39 +120,37 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                 Text("我的")
             }
 
-            feedDataState.value.run {
+            viewState.value.run {
                 val feedItemList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
                 LazyColumn {
-                    for (item in feedDataState.value) {
-                        for (episode in item.Episodes) {
-                            Log.d("TAG", "FeedPage: " + item.Episodes.size)
-                            item {
-                                FeedItem(
-                                    imageModel = episode.cover,
-                                    title = item.podcast.title,
-                                    episodeTitle = episode.title,
-                                    episodeDescription = episode.description,
-                                    onClick = {
-                                        feedViewModel.insertToHistory(episode.id)
+                    for (item in feedItems) {
+                        item {
+                            FeedItem(
+                                imageModel = item.imageUrl,
+                                title = item.podcastTitle,
+                                episodeTitle = item.title,
+                                episodeDescription = item.description,
+                                onClick = {
+                                    feedViewModel.insertToHistory(item.episodeId)
 //                                        feedViewModel.jumpToEpisode(i)
 //                                        navHostController.navigate(RouteName.EPISODE)
-                                        navHostController.navigate(
-                                            NavigationUtil.EPISODE.toId(
-                                                episode.id
-                                            )
+                                    navHostController.navigate(
+                                        NavigationUtil.EPISODE.toId(
+                                            item.episodeId
                                         )
-                                    },
-                                    episodeDate = TextUtil.formatString(episode.pubDate),
-                                    onAddButtonClick = {},
-                                    onDownloadButtonClick = {},
-                                    onMoreButtonClick = {},
-                                    onPlayButtonClick = {
-                                        feedViewModel.insertToHistory(episode.id)
-                                    }
-                                )
-                            }
-
+                                    )
+                                },
+                                episodeDate = TextUtil.formatString(item.pubDate),
+                                onAddButtonClick = {},
+                                onDownloadButtonClick = {},
+                                onMoreButtonClick = {},
+                                onPlayButtonClick = {
+                                    feedViewModel.insertToHistory(item.episodeId)
+                                }
+                            )
                         }
+
+
                     }
                 }
             }

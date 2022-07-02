@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import io.github.junkfood.podcast.database.model.EpisodeAndRecord
 import io.github.junkfood.podcast.database.model.Record
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +29,7 @@ interface RecordDao {
     @Query("DELETE FROM record WHERE episodeId = :id")
     fun deleteRecordById(id: Long)
 
+    @Transaction
     @Query("SELECT * FROM record")
     fun getEpisodeAndRecord(): Flow<List<EpisodeAndRecord>>
 

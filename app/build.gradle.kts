@@ -13,10 +13,6 @@ val isHiltEnabled = true
 if (isHiltEnabled)
     apply(plugin = "dagger.hilt.android.plugin")
 
-val isHiltEnabled = true
-
-if (isHiltEnabled)
-    apply(plugin = "dagger.hilt.android.plugin")
 
 val versionMajor = 0
 val versionMinor = 0
@@ -29,7 +25,6 @@ val navigationVersion = "2.5.0-rc02"
 val roomVersion = "2.4.2"
 val accompanistVersion = "0.24.11-rc"
 val kotlinVersion = "1.6.21"
-val hiltVersion = "2.42"
 val composeMd3Version = "1.0.0-alpha13"
 val coilVersion = "2.1.0"
 val exoPlayerVersion = "2.18.0"

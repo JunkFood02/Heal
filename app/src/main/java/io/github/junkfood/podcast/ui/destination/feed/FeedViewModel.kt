@@ -10,19 +10,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.junkfood.podcast.BaseApplication.Companion.context
 import io.github.junkfood.podcast.database.Repository
 import io.github.junkfood.podcast.util.PreferenceUtil
+import io.github.junkfood.podcast.util.TextUtil
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.net.URL
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class FeedViewModel @Inject constructor() : ViewModel() {
     //    init { fetchPodcast() }
     private val mutableStateFlow = MutableStateFlow(FeedViewState())
-    val podcastWithEpisodesFlow = Repository.getPodcastsWithEpisodes()
     val stateFlow = mutableStateFlow.asStateFlow()
     private val TAG = "FeedViewModel"
     fun fetchPodcast() {
@@ -47,27 +47,51 @@ class FeedViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    init {
+        viewModelScope.launch {
+            Repository.getPodcastsWithEpisodes().collect {
+                val feedItems: MutableList<FeedItem> = ArrayList()
+                it.forEach { item ->
+                    item.episodes.forEach { episode ->
+                        feedItems.add(
+                            FeedItem(
+                                episodeId = episode.id,
+                                imageUrl = episode.cover,
+                                podcastTitle = item.podcast.title,
+                                pubDate = episode.pubDate,
+                                title = episode.title,
+                                description = episode.description
+                            )
+                        )
+                    }
+                }
+                feedItems.sortWith { o1: FeedItem, o2: FeedItem ->
+                    TextUtil.compareDate(
+                        o1.pubDate,
+                        o2.pubDate
+                    )
+                }
+                mutableStateFlow.update { stateFlow -> stateFlow.copy(feedItems = feedItems.reversed()) }
+            }
+        }
+    }
+
     fun updateUrl(url: String) {
         mutableStateFlow.update { it.copy(url = url) }
     }
 
-    fun jumpToEpisode(i: Int) {
-        mutableStateFlow.update { it.copy(currentEpisodeIndex = i) }
-    }
-
-    fun toast(item: String) {
-        Toast.makeText(
-            context,
-            item + mutableStateFlow.value.currentEpisodeIndex,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
     data class FeedViewState(
         val url: String = "https://justpodmedia.com/rss/left-right.xml",
-        val podcastTitle: String = "", val podcastCover: String = "",
-        val author: String = "", val description: String = "",
-        val episodeList: List<Episode> = ArrayList(), val currentEpisodeIndex: Int = 0
+        val feedItems: List<FeedItem> = ArrayList()
+    )
+
+    data class FeedItem(
+        val episodeId: Long = 0,
+        val imageUrl: String = "",
+        val podcastTitle: String = "",
+        val pubDate: String = "",
+        val title: String = "",
+        val description: String = "",
     )
 
     fun insertToHistory(id: Long) {

@@ -1,10 +1,12 @@
 package io.github.junkfood.podcast.ui.destination.episode
 
+import androidx.compose.ui.unit.TextUnit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.junkfood.podcast.database.Repository
 import io.github.junkfood.podcast.database.model.Episode
+import io.github.junkfood.podcast.util.TextUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +18,7 @@ import javax.inject.Inject
 class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
 
     data class EpisodeViewState(
+        val podcastId: Long = 0, val podcastTitle: String = "",
         val title: String = "",
         val author: String = "",
         val imageUrl: String = "",
@@ -34,11 +37,14 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
 
             mutableStateFlow.update {
                 it.copy(
+                    podcastId = episode.podcastID,
+                    podcastTitle = podcast.title,
                     title = episode.title,
                     author = episode.author,
                     imageUrl = episode.cover,
                     description = episode.description,
-                    duration = episode.duration.toString()
+                    duration = episode.duration,
+                    pubDate = TextUtil.formatString(episode.pubDate) ?: Date()
                 )
             }
         }

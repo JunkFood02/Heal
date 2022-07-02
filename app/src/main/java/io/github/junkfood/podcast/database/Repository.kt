@@ -4,9 +4,11 @@ import androidx.room.Room
 import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.podcast.BaseApplication.Companion.context
 import io.github.junkfood.podcast.database.model.Episode
+import io.github.junkfood.podcast.database.model.PodcastWithEpisodes
 import io.github.junkfood.podcast.database.model.Record
 import io.github.junkfood.podcast.util.TextUtil
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 object Repository {
     private val db = Room.databaseBuilder(
@@ -25,7 +27,11 @@ object Repository {
 
     suspend fun getEpisodeById(Id: Long) = episodeDao.getEpisodeById(Id)
 
+    fun getEpisodesByPodcastId(podcastId: Long) = episodeDao.getEpisodesByPodcastId(podcastId)
+
     suspend fun getPodcastById(Id: Long) = podcastDao.getPodcastById(Id)
+
+    fun getPodcastFlowById(Id: Long) = podcastDao.getPodcastFlowById(Id)
 
     suspend fun importRssData(podcast: Podcast) {
         val podcastId = podcastDao.insert(
@@ -46,7 +52,7 @@ object Repository {
                         ?: podcast.imageURL.toExternalForm(),
                     pubDate = TextUtil.formatDate(episode.pubDate),
                     duration = episode.iTunesInfo.duration,
-                    author = episode.author,
+                    author = episode.author ?: "",
                     audioUrl = episode.enclosure.url.toExternalForm()
                 )
             )
@@ -57,6 +63,7 @@ object Repository {
         recordDao.deleteRecordById(id)
         recordDao.insertRecord(Record(episodeId = id))
     }
+
 
 //    fun getEpisodeHistoryList(): Flow<List<Episode>> {
 //        val recordList =  recordDao.getRecord()

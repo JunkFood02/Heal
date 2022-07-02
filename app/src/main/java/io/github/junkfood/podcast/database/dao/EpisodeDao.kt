@@ -3,6 +3,7 @@ package io.github.junkfood.podcast.database.dao
 import androidx.room.*
 import io.github.junkfood.podcast.database.model.Episode
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.selects.select
 
 @Dao
 interface EpisodeDao {
@@ -20,7 +21,10 @@ interface EpisodeDao {
 
     @Query("SELECT * FROM episode WHERE id IN (:idList)")
     fun getEpisodeById(idList: List<Long>): Flow<List<Episode>>
-    
+
     @Query("select * from episode where id = :episodeId")
     suspend fun getEpisodeById(episodeId: Long): Episode
+
+    @Query("select * from episode where podcastID=:podcastId")
+    fun getEpisodesByPodcastId(podcastId: Long): Flow<List<Episode>>
 }

@@ -11,8 +11,6 @@ plugins {
 
 val isHiltEnabled = true
 
-if (isHiltEnabled)
-    apply(plugin = "dagger.hilt.android.plugin")
 
 val versionMajor = 0
 val versionMinor = 0

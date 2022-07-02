@@ -14,5 +14,5 @@ pluginManagement {
             maven("https://jitpack.io")
         }
     }
-    rootProject.name = "Podcast"
+    rootProject.name = "Heal"
     include(":app")

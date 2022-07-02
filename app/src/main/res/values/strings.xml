@@ -11,4 +11,8 @@
     <string name="publish_date">Publish on: %s</string>
     <string name="duration">Duration: %s</string>
     <string name="episode_description">Episode description</string>
+    <string name="feed">Feed</string>
+    <string name="home">Home</string>
+    <string name="listen">Listen</string>
+    <string name="library">Library</string>
 </resources>

@@ -14,11 +14,9 @@ class PodcastViewModel constructor(podcastId: Long) : ViewModel() {
     val podcastFlow=Repository.getPodcastFlowById(podcastId)
     val episodeFlow=Repository.getEpisodesByPodcastId(podcastId)
     data class ViewState(
-        val drawerState: ModalBottomSheetState = ModalBottomSheetState(
-            ModalBottomSheetValue.Hidden
-        ),
+        val podcastImageUrl:String="",
     )
-
     private val mutableStateFlow = MutableStateFlow(ViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
+
 }

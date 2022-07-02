@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,8 +23,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.heal.R
 import io.github.junkfood.heal.database.model.Podcast
-import io.github.junkfood.heal.ui.common.NavigationUtil
-import io.github.junkfood.heal.ui.common.NavigationUtil.toId
+import io.github.junkfood.heal.ui.common.NavigationGraph
+import io.github.junkfood.heal.ui.common.NavigationGraph.toId
 import io.github.junkfood.heal.ui.component.*
 import io.github.junkfood.heal.util.TextUtil
 
@@ -46,8 +48,9 @@ fun PodcastPage(
         decayAnimationSpec,
         rememberTopAppBarScrollState()
     )
+    var reverseList by remember { mutableStateOf(false) }
+
     Scaffold(modifier = Modifier
-        .padding()
         .fillMaxSize()
         .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -62,39 +65,75 @@ fun PodcastPage(
                     }
                 }, scrollBehavior = scrollBehavior
             )
-        }, content = {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
-                viewState.value.run {
-                    LazyColumn {
-                        item {
-                            Row(
+        }) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(it)
+        ) {
+            LazyColumn {
+                item {
+                    viewState.value.run {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp, horizontal = 18.dp)
+                        ) {
+                            AsyncImage(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 12.dp, horizontal = 18.dp)
+                                    .fillMaxWidth(0.4f)
+                                    .clip(MaterialTheme.shapes.small)
+                                    .aspectRatio(1f, matchHeightConstraintsFirst = true),
+                                model = podcast.coverUrl,
+                                contentDescription = null
+                            )
+                            Column(
+                                Modifier
+                                    .padding(horizontal = 18.dp)
+                                    .align(Alignment.CenterVertically)
                             ) {
-                                AsyncImage(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.4f)
-                                        .clip(MaterialTheme.shapes.small)
-                                        .aspectRatio(1f, matchHeightConstraintsFirst = true),
-                                    model = podcast.coverUrl,
-                                    contentDescription = null
-                                )
-                                Column(
-                                    Modifier
-                                        .padding(horizontal = 18.dp)
-                                        .align(Alignment.CenterVertically)
-                                ) {
-                                    HeadlineSmall(podcast.title)
-                                    SubtitleMedium(podcast.author)
-                                }
+                                HeadlineSmall(podcast.title)
+                                SubtitleMedium(podcast.author)
                             }
-
                         }
+                        HtmlText(
+                            text = podcast.description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier
+                                .padding(horizontal = 18.dp)
+                                .padding(bottom = 12.dp)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 12.dp, end = 3.dp)
+                        ) {
+                            LabelLarge(
+                                text = stringResource(R.string.episodes).format(episodes.size),
+                                modifier = Modifier.align(Alignment.CenterStart),
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                            IconButton(
+                                onClick = {
+                                    reverseList = !reverseList
+                                },
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            ) {
+                                Icon(
+                                    Icons.Rounded.FilterList,
+                                    null
+                                )
+                            }
+                        }
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                        )
+                    }
+                }
 /*                    item {
 
                         Row(
@@ -123,70 +162,48 @@ fun PodcastPage(
 
                     }*/
 
-                        item {
-                            HtmlText(
-                                text = podcast.description,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier
-                                    .padding(horizontal = 18.dp)
-                                    .padding(bottom = 12.dp)
+                items(if (reverseList) episodes.reversed() else episodes) { episode ->
+                    EpisodeItem(
+                        imageModel = episode.cover,
+                        episodeTitle = episode.title,
+                        episodeDescription = episode.description,
+                        onClick = {
+                            navHostController.navigate(
+                                NavigationGraph.EPISODE.toId(
+                                    episode.id
+                                )
                             )
-                        }
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillParentMaxWidth()
-                                    .padding(start = 12.dp, end = 3.dp)
-                            ) {
-                                LabelLarge(
-                                    text = stringResource(R.string.episodes).format(episodes.size),
-                                    modifier = Modifier.align(Alignment.CenterStart),
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                                IconButton(
-                                    onClick = { },
-                                    modifier = Modifier.align(Alignment.CenterEnd)
-                                ) {
-                                    Icon(
-                                        Icons.Rounded.FilterList,
-                                        null
-                                    )
-                                }
-                            }
-                            Divider(
-                                modifier = Modifier.fillParentMaxWidth(),
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                            )
-                        }
-                        for (i in episodes.indices) {
-                            val episode = episodes[i]
-                            item {
-                                EpisodeItem(
-                                    imageModel = episode.cover,
-                                    episodeTitle = episode.title,
-                                    episodeDescription = episode.description,
-                                    onClick = {
-                                        navHostController.navigate(
-                                            NavigationUtil.EPISODE.toId(
-                                                episode.id
-                                            )
-                                        )
-                                    }, episodeDate = TextUtil.formatString(episode.pubDate)
-                                )
-                                Divider(
-                                    modifier = Modifier
-                                        .fillParentMaxWidth()
-                                        .padding(horizontal = 3.dp),
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                                )
+                        }, episodeDate = TextUtil.formatString(episode.pubDate)
+                    )
+                    Divider(
+                        modifier = Modifier
+                            .fillParentMaxWidth()
+                            .padding(horizontal = 12.dp),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                    )
 
-                            }
-                        }
-                    }
                 }
-            }
-        })
-    FilterDrawer()
 
+            }
+
+        }
+    }
+//    FilterDrawer()
+/*    if (showFilterDialog)
+        AlertDialog(onDismissRequest = {}, dismissButton = {
+            TextButton(onClick = {
+                showFilterDialog = false
+            }) {
+                Text("Cancel")
+            }
+        }, confirmButton = {
+            TextButton(onClick = {}) {
+                Text("Confirm")
+            }
+        }, text = {
+            Column() {
+                for (i in 1..5)
+                    SingleChoiceItem(text = "Select Item $i", selected = i == 1) {}
+            }
+        })*/
 }

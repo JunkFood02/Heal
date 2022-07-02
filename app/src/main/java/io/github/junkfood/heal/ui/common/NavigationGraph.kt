@@ -1,11 +1,12 @@
 package io.github.junkfood.heal.ui.common
 
-object NavigationUtil {
+object NavigationGraph {
     const val FEED = "feed"
     const val EPISODE = "episode"
     const val PODCAST = "podcast"
     const val LIBRARY = "library"
     const val SETTINGS = "settings"
+    const val LISTEN = "listen"
 
     fun String.withArgument(argumentName: String): String = "$this/{$argumentName}"
 

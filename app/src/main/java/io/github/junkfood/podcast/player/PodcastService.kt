@@ -130,7 +130,7 @@ class PodcastService : MediaBrowserServiceCompat() {
     private fun initExoPlayerListener() {
         
 
-//            fun Player.Listener(){         // onPlaybackStateChanged(int state) {
+//            Player.addListener()     // onPlaybackStateChanged(int state) {
 //                var currentPosition = exoPlayer!!. getCurrentPosition ();
 //                var duration = exoPlayer!!. getDuration ();
 //
@@ -175,8 +175,6 @@ class PodcastService : MediaBrowserServiceCompat() {
 //        )
     }
 
-    private fun setPlaybackState(playbackState: Any?) {
 
-    }
 }
 

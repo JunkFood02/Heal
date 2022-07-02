@@ -64,7 +64,7 @@ class FeedViewModel @Inject constructor() : ViewModel() {
     }
 
     data class FeedViewState(
-        val url: String = "https://justpodmedia.com/rss/left-right.xml",
+        val url: String = "https://storyfm.cn/feed/episodes",
         val podcastTitle: String = "", val podcastCover: String = "",
         val author: String = "", val description: String = "",
         val episodeList: List<Episode> = ArrayList(), val currentEpisodeIndex: Int = 0
@@ -73,6 +73,12 @@ class FeedViewModel @Inject constructor() : ViewModel() {
     fun insertToHistory(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             Repository.insertRecord(id)
+        }
+    }
+
+    fun getLastEpisode() {
+        viewModelScope.launch(Dispatchers.IO) {
+
         }
     }
 }

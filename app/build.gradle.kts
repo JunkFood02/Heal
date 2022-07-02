@@ -8,10 +8,6 @@ plugins {
     id("kotlin-kapt")
     id("org.jetbrains.kotlin.android")
 }
-val isHiltEnabled = true
-
-if (isHiltEnabled)
-    apply(plugin = "dagger.hilt.android.plugin")
 
 
 val versionMajor = 0
@@ -30,7 +26,6 @@ val coilVersion = "2.1.0"
 val exoPlayerVersion = "2.18.0"
 val retrofitVersion = "2.9.0"
 val rssParserVersion = "0.6.0"
-val hiltVersion = "2.42"
 val isDebug = false
 
 android {
@@ -49,7 +44,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId = "io.github.junkfood.podcast"
+        applicationId = "io.github.junkfood.heal"
         minSdk = 26
         targetSdk = 32
         versionCode = versionMajor * 1000 + versionMinor * 100 + versionPatch * 10 + versionBuild
@@ -118,12 +113,6 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:$coilVersion")
 
-    if (isHiltEnabled) {
-        implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-        kapt("androidx.hilt:hilt-compiler:1.0.0")
-        implementation("com.google.dagger:hilt-android:$hiltVersion")
-        kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    }
 
     implementation("com.google.android.exoplayer:exoplayer:$exoPlayerVersion")
 

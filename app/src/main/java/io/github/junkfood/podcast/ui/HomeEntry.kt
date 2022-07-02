@@ -13,6 +13,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import io.github.junkfood.podcast.ui.common.*
 import io.github.junkfood.podcast.ui.common.NavigationUtil.EPISODE_ID
+import io.github.junkfood.podcast.ui.common.NavigationUtil.PODCAST_ID
 import io.github.junkfood.podcast.ui.common.NavigationUtil.withArgument
 import io.github.junkfood.podcast.ui.destination.feed.FeedPage
 import io.github.junkfood.podcast.ui.destination.feed.FeedViewModel
@@ -49,10 +50,15 @@ fun HomeEntry() {
                                 .calculateBottomPadding()
                         ),
                     navController = navController,
-                    
+
                     startDestination = NavigationUtil.FEED
                 ) {
-                    animatedComposable(NavigationUtil.FEED) { FeedPage(navController, feedViewModel) }
+                    animatedComposable(NavigationUtil.FEED) {
+                        FeedPage(
+                            navController,
+                            feedViewModel
+                        )
+                    }
                     animatedComposable(
                         NavigationUtil.EPISODE.withArgument(EPISODE_ID),
                         arguments = listOf(navArgument(EPISODE_ID) { type = NavType.LongType })
@@ -62,8 +68,14 @@ fun HomeEntry() {
                             backStackEntry.arguments?.getLong(EPISODE_ID) ?: 0
                         )
                     }
-                    animatedComposable(NavigationUtil.PODCAST) {
-                        PodcastPage(feedViewModel, navController)
+                    animatedComposable(
+                        NavigationUtil.PODCAST.withArgument(PODCAST_ID),
+                        arguments = listOf(navArgument(PODCAST_ID) { type = NavType.LongType })
+                    ) { backStackEntry ->
+                        PodcastPage(
+                            navController,
+                            backStackEntry.arguments?.getLong(PODCAST_ID) ?: 0
+                        )
                     }
                     animatedComposable(NavigationUtil.LIBRARY) {
                         LibraryPage(navController, libraryViewModel)

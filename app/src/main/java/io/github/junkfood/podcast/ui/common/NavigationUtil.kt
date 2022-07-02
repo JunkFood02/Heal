@@ -11,5 +11,6 @@ object NavigationUtil {
 
     fun String.toId(Id: Long): String = "$this/$Id"
 
-    const val EPISODE_ID = "episodeID"
+    const val EPISODE_ID = "episode_id"
+    const val PODCAST_ID = "podcast_id"
 }

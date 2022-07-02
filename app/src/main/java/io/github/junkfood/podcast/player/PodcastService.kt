@@ -20,8 +20,9 @@ import io.github.junkfood.podcast.database.model.Episode
 class PodcastService : MediaBrowserServiceCompat() {
     private var exoPlayer: ExoPlayer? = null
     private var mediaSession: MediaSessionCompat? = null
+    private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private val TAG = "PodcastService"
-    private lateinit var episodes : List<Episode>//传入的数据集？？
+    private lateinit var episodes : List<Episode>//传入的数据集
 
     /**
      * 当服务收到onCreate（）生命周期回调方法时，它应该执行以下步骤：
@@ -32,12 +33,28 @@ class PodcastService : MediaBrowserServiceCompat() {
     override fun onCreate() {
         Log.i(TAG, "onCreate: ")
         super.onCreate()
+        exoPlayer = ExoPlayer.Builder(applicationContext).build()
         //1. 创建并初始化MediaSession
-        mediaSession = MediaSessionCompat(applicationContext, TAG)
-        mediaSession!!.setFlags(
-            MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+        mediaSession = MediaSessionCompat(applicationContext, TAG).apply {
+            setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
                     or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-        )
+            )
+
+            // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
+            stateBuilder = PlaybackStateCompat.Builder()
+                .setActions(PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                )
+            setPlaybackState(stateBuilder.build())
+
+
+            // MySessionCallback() has methods that handle callbacks from a media controller
+            setCallback(MyMediaSessionCallBack(exoPlayer!!))
+
+            // Set the session's token so that client activities can communicate with it.
+            setSessionToken(sessionToken)
+        }
+
         val playbackState = PlaybackStateCompat.Builder()
             .setActions(
                 (PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
@@ -50,14 +67,6 @@ class PodcastService : MediaBrowserServiceCompat() {
             .build()
         mediaSession!!.setPlaybackState(playbackState)
 
-        //2. 设置mediaSession回调
-        //mediaSession!!.setCallback(this.exoPlayer?.let { MyMediaSessionCallBack(it) })
-
-        //3. 设置mediaSessionToken
-        setSessionToken(mediaSession!!.sessionToken)
-
-        //创建播放器实例
-        exoPlayer = ExoPlayer.Builder(applicationContext).build()
     }
 
     override fun onGetRoot(
@@ -176,6 +185,10 @@ class PodcastService : MediaBrowserServiceCompat() {
     }
 
     private fun setPlaybackState(playbackState: Any?) {
+
+    }
+
+    inner class PodcastServiceBinder: Binder() {
 
     }
 }

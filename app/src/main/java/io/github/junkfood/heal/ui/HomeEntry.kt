@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.*
@@ -131,7 +132,9 @@ fun HomeEntry() {
 
                     animatedComposable(
                         NavigationGraph.EPISODE.withArgument(EPISODE_ID),
-                        arguments = listOf(navArgument(EPISODE_ID) { type = NavType.LongType })
+                        arguments = listOf(navArgument(EPISODE_ID) {
+                            type = NavType.LongType
+                        })
                     ) { backStackEntry ->
                         EpisodePage(
                             navController,
@@ -140,16 +143,18 @@ fun HomeEntry() {
                     }
                     animatedComposable(
                         NavigationGraph.PODCAST.withArgument(PODCAST_ID),
-                        arguments = listOf(navArgument(PODCAST_ID) { type = NavType.LongType })
+                        arguments = listOf(navArgument(PODCAST_ID) {
+                            type = NavType.LongType
+                        })
                     ) { backStackEntry ->
                         PodcastPage(
                             navController,
                             backStackEntry.arguments?.getLong(PODCAST_ID) ?: 0
                         )
                     }
-
-
                 }
+
+
             })
         }
     }

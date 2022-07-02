@@ -17,6 +17,7 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
         val podcastId: Long = 0, val podcastTitle: String = "",
         val title: String = "",
         val author: String = "",
+        val podcastImageUrl: String = "",
         val imageUrl: String = "",
         val description: String = "",
         val duration: String = "",
@@ -35,8 +36,9 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
                 it.copy(
                     podcastId = episode.podcastID,
                     podcastTitle = podcast.title,
+                    podcastImageUrl = podcast.coverUrl,
                     title = episode.title,
-                    author = episode.author,
+                    author = podcast.author,
                     imageUrl = episode.cover,
                     description = episode.description,
                     duration = episode.duration,

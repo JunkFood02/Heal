@@ -47,6 +47,7 @@ fun EpisodePage(
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
+                .padding()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             backgroundColor = MaterialTheme.colorScheme.surface,
             topBar = {
@@ -69,7 +70,11 @@ fun EpisodePage(
                             modifier = Modifier
                                 .fillParentMaxWidth()
                                 .clickable {
-                                    navHostController.navigate(NavigationGraph.PODCAST.toId(podcastId))
+                                    navHostController.navigate(
+                                        NavigationGraph.PODCAST.toId(
+                                            podcastId
+                                        )
+                                    )
                                 }
                                 .padding(vertical = 12.dp, horizontal = 18.dp)
                         ) {
@@ -78,7 +83,7 @@ fun EpisodePage(
                                     .fillMaxWidth(0.25f)
                                     .clip(MaterialTheme.shapes.small)
                                     .aspectRatio(1f, matchHeightConstraintsFirst = true),
-                                model = imageUrl,
+                                model = podcastImageUrl,
                                 contentDescription = null
                             )
                             Column(

@@ -3,10 +3,11 @@ package io.github.junkfood.heal.ui.destination.library
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Download
@@ -17,17 +18,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import io.github.junkfood.heal.R
 import io.github.junkfood.heal.ui.common.NavigationGraph
 import io.github.junkfood.heal.ui.common.NavigationGraph.toId
+import io.github.junkfood.heal.ui.component.BackButton
 
 private const val TAG = "LibraryPage"
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -45,29 +48,18 @@ fun LibraryPage(
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier
+            .padding()
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        backgroundColor = MaterialTheme.colorScheme.background,
-        topBar =  {
-                  Column(
-                      horizontalAlignment = Alignment.CenterHorizontally,
-                      modifier = Modifier
-                          .background(color = MaterialTheme.colorScheme.primaryContainer)
-                  ) {
-                      Text(
-                          text = "我 的",
-                          color = MaterialTheme.colorScheme.onPrimaryContainer,
-                          fontSize = 25.sp,
-                          fontWeight = FontWeight.Bold,
-                          textAlign = TextAlign.Center,
-                          modifier = Modifier
-                              .padding(top = 30.dp, bottom = 5.dp)
-                              .fillMaxWidth()
-                      )
-                  }
+        topBar = {
+            io.github.junkfood.heal.ui.component.LargeTopAppBar(
+                title = { Text(stringResource(id = R.string.library)) },
+                navigationIcon = { BackButton { navHostController.popBackStack() } },
+                scrollBehavior = scrollBehavior
+            )
         },
         content = {
-            Column() {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
                 Card(
                     modifier = Modifier
                         .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
@@ -97,7 +89,7 @@ fun LibraryPage(
 
                     libraryDataState.value.run {
                         //val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
-                        LazyRow (
+                        LazyRow(
                             modifier = Modifier
                                 .height(180.dp)
                         ) {
@@ -210,7 +202,7 @@ fun HistoryCard(
                 .aspectRatio(1f, matchHeightConstraintsFirst = true),
             model = imageModel,
             contentDescription = null
-            )
+        )
         Text(
             text = title,
             maxLines = 2,

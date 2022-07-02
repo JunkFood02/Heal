@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.text.Html
 import android.text.Spanned
 import android.text.style.*
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.text.InlineTextContent
@@ -28,6 +29,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.core.text.getSpans
 
+private const val TAG = "HtmlText"
+lateinit var annotations: List<AnnotatedString.Range<String>>
 
 @Composable
 fun HtmlText(
@@ -61,7 +64,7 @@ fun HtmlText(
     val annotatedString =
         Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY)
             .toAnnotatedString(urlSpanStyle, timeStampSpanStyle)
-
+    annotations = annotatedString.getStringAnnotations(0, annotatedString.length)
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
@@ -71,16 +74,16 @@ fun HtmlText(
                 detectTapGestures(onTap = { pos ->
                     layoutResult.value?.let { layoutResult ->
                         val position = layoutResult.getOffsetForPosition(pos)
-                        annotatedString
-                            .getStringAnnotations(position, position)
-                            .firstOrNull()
-                            ?.let { sa ->
+                        annotations.forEach { sa ->
+                            if (position >= sa.start && position <= sa.end) {
                                 if (sa.tag == "url") { // NON-NLS
                                     uriHandler.openUri(sa.item)
                                 } else if (sa.tag == "timeStamp") {
                                     Toast.makeText(context, sa.item, Toast.LENGTH_SHORT).show()
                                 }
+                                return@detectTapGestures
                             }
+                        }
                     }
                 })
             },

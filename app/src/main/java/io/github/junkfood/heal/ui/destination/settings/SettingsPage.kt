@@ -182,7 +182,7 @@ fun ColorButton(modifier: Modifier = Modifier, color: Color) {
     val state2 = animateDpAsState(targetValue = if (currentColor) 18.dp else 0.dp)
     ElevatedCard(modifier = modifier
         .padding(4.dp)
-        .size(72.dp), onClick = { PreferenceUtil.modifyThemeColor(seedColor) }) {
+        .size(72.dp), onClick = { PreferenceUtil.modifyThemeSeedColor(seedColor) }) {
         Box(Modifier.fillMaxSize()) {
             Box(
                 modifier = modifier

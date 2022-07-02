@@ -21,8 +21,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.heal.R
 import io.github.junkfood.heal.database.model.Podcast
-import io.github.junkfood.heal.ui.common.NavigationUtil
-import io.github.junkfood.heal.ui.common.NavigationUtil.toId
+import io.github.junkfood.heal.ui.common.NavigationGraph
+import io.github.junkfood.heal.ui.common.NavigationGraph.toId
 import io.github.junkfood.heal.ui.component.*
 import io.github.junkfood.heal.util.TextUtil
 
@@ -168,7 +168,7 @@ fun PodcastPage(
                                     episodeDescription = episode.description,
                                     onClick = {
                                         navHostController.navigate(
-                                            NavigationUtil.EPISODE.toId(
+                                            NavigationGraph.EPISODE.toId(
                                                 episode.id
                                             )
                                         )

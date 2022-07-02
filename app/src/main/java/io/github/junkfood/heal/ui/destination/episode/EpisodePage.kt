@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.heal.R
-import io.github.junkfood.heal.ui.common.NavigationUtil
-import io.github.junkfood.heal.ui.common.NavigationUtil.toId
+import io.github.junkfood.heal.ui.common.NavigationGraph
+import io.github.junkfood.heal.ui.common.NavigationGraph.toId
 import io.github.junkfood.heal.ui.component.*
 import io.github.junkfood.heal.util.TextUtil
 
@@ -69,7 +69,7 @@ fun EpisodePage(
                             modifier = Modifier
                                 .fillParentMaxWidth()
                                 .clickable {
-                                    navHostController.navigate(NavigationUtil.PODCAST.toId(podcastId))
+                                    navHostController.navigate(NavigationGraph.PODCAST.toId(podcastId))
                                 }
                                 .padding(vertical = 12.dp, horizontal = 18.dp)
                         ) {

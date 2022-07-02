@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class org.xml.sax.** {*;}
+-keep class javax.xml.** {*;}
+-keep class org.apache.harmony.xml.** {*;}
+-keep class org.dom4j.** {*;}

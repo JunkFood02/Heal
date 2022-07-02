@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import io.github.junkfood.heal.ui.common.NavigationUtil
-import io.github.junkfood.heal.ui.common.NavigationUtil.toId
+import io.github.junkfood.heal.ui.common.NavigationGraph
+import io.github.junkfood.heal.ui.common.NavigationGraph.toId
 
 private const val TAG = "LibraryPage"
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -113,7 +113,7 @@ fun LibraryPage(
                                         onClick = {
                                             Log.d(TAG, "LibraryPage: onClick")
                                             navHostController.navigate(
-                                                NavigationUtil.EPISODE.toId(
+                                                NavigationGraph.EPISODE.toId(
                                                     item.episode.id
                                                 )
                                             )
@@ -154,7 +154,7 @@ fun LibraryPage(
                             modifier = Modifier
                                 .clickable {
 
-                                    navHostController.navigate(NavigationUtil.SETTINGS) {
+                                    navHostController.navigate(NavigationGraph.SETTINGS) {
                                         launchSingleTop = true
                                     }
                                 }

@@ -9,7 +9,6 @@ import com.google.android.exoplayer2.util.Log
 
 class PlayerActivity : Activity() {
 
-
     var playbackState = PlaybackStateCompat.fromPlaybackState(mediaController.playbackState)
 /*
     当用户点击了播放/暂停按钮后，获取当前的播放状态，

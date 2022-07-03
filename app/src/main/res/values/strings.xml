@@ -16,4 +16,7 @@
     <string name="listen">Listen</string>
     <string name="library">Library</string>
     <string name="minutes_left">%d mins left</string>
+    <string name="subscriptions">Subscriptions</string>
+    <string name="resume_listening">Resume listening</string>
+    <string name="latest_episodes">Latest episodes</string>
 </resources>

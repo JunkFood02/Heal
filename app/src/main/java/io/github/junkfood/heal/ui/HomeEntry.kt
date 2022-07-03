@@ -35,6 +35,7 @@ import io.github.junkfood.heal.ui.destination.listen.ListenPage
 import io.github.junkfood.heal.ui.destination.podcast.PodcastPage
 import io.github.junkfood.heal.ui.destination.podcast.PodcastViewModel
 import io.github.junkfood.heal.ui.destination.settings.SettingsPage
+import io.github.junkfood.heal.ui.destination.subscription.SubscriptionPage
 import io.github.junkfood.heal.ui.theme.PodcastTheme
 
 private const val TAG = "HomeEntry"
@@ -103,6 +104,9 @@ fun HomeEntry() {
                             navController,
                             backStackEntry.arguments?.getLong(PODCAST_ID) ?: 0
                         )
+                    }
+                    animatedComposable(NavigationGraph.SUBSCRIPTIONS) {
+                        SubscriptionPage()
                     }
                 }
 

@@ -27,13 +27,14 @@ import com.google.android.material.color.DynamicColors
 import io.github.junkfood.heal.ui.color.hct.Hct
 import io.github.junkfood.heal.ui.color.palettes.CorePalette
 import io.github.junkfood.heal.ui.common.LocalDarkTheme
+import io.github.junkfood.heal.ui.common.LocalNavHostController
 import io.github.junkfood.heal.ui.common.LocalSeedColor
 import io.github.junkfood.heal.ui.component.BackButton
 import io.github.junkfood.heal.ui.theme.ColorScheme
 import io.github.junkfood.heal.util.PreferenceUtil
 
 @Composable
-fun SettingsPage(navController: NavController) {
+fun SettingsPage(navController: NavController = LocalNavHostController.current) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.statusBarsPadding()

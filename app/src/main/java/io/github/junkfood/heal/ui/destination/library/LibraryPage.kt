@@ -129,7 +129,7 @@ fun LibraryPage(
                     ) {
                         Row(
                             modifier = Modifier
-                                .clickable {}
+                                .clickable { navHostController.navigate(NavigationGraph.SUBSCRIPTIONS) }
                                 .padding(12.dp)
                                 .fillMaxWidth()
                         ) {
@@ -184,9 +184,12 @@ fun LibraryDivider() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardContent(imageModel: Any, title: String, timeLeft: String, onClick: () -> Unit) {
-    ElevatedCard(modifier = Modifier
-        .padding(vertical = 6.dp).padding(start = 12.dp)
-        .width(150.dp), onClick = onClick) {
+    ElevatedCard(
+        modifier = Modifier
+            .padding(vertical = 6.dp)
+            .padding(start = 12.dp)
+            .width(150.dp), onClick = onClick
+    ) {
         AsyncImage(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.medium)

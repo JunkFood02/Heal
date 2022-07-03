@@ -76,55 +76,58 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
 
             viewState.value.run {
                 LazyColumn {
-                    item {
-                        Column() {
-                            Text(
-                                "Resume listening",
-                                modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            LazyRow(
-                                modifier = Modifier
-                            ) {
-                                val episodeList = libraryDataState.value.reversed()
-                                for (item in episodeList) {
-                                    item {
-                                        CardContent(
-                                            imageModel = item.episode.cover,
-                                            title = item.episode.title,
-                                            timeLeft = stringResource(R.string.minutes_left).format(
-                                                (item.episode.progress * 60000 / 6000).toInt()
-                                            ),
-                                            /*length = item.episode.duration,
-                                            progress = item.episode.progress,*/
-                                            onClick = {
-                                                navHostController.navigate(
-                                                    NavigationGraph.EPISODE.toId(
-                                                        item.episode.id
+                    if (libraryDataState.value.isNotEmpty())
+                        item {
+                            Column {
+                                Text(
+                                    stringResource(R.string.resume_listening),
+                                    modifier = Modifier.padding(
+                                        horizontal = 18.dp,
+                                        vertical = 12.dp
+                                    ),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                LazyRow(
+                                    modifier = Modifier
+                                ) {
+                                    val episodeList = libraryDataState.value.reversed()
+                                    for (item in episodeList) {
+                                        item {
+                                            CardContent(
+                                                imageModel = item.episode.cover,
+                                                title = item.episode.title,
+                                                timeLeft = stringResource(R.string.minutes_left).format(
+                                                    (item.episode.progress * 60000 / 6000).toInt()
+                                                ),
+                                                /*length = item.episode.duration,
+                                                progress = item.episode.progress,*/
+                                                onClick = {
+                                                    navHostController.navigate(
+                                                        NavigationGraph.EPISODE.toId(
+                                                            item.episode.id
+                                                        )
                                                     )
-                                                )
 //                                                libraryViewModel.insertToHistory(item.episode.id)
-                                            }
-                                        )
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
                     item {
-                        Text(
-                            "Latest episodes",
-                            modifier = Modifier
-                                .padding(horizontal = 18.dp)
-                                .padding(top = 12.dp, bottom = 6.dp),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
+                        if (feedItems.isNotEmpty())
+                            Text(
+                                stringResource(R.string.latest_episodes),
+                                modifier = Modifier
+                                    .padding(horizontal = 18.dp)
+                                    .padding(top = 12.dp, bottom = 6.dp),
+                                style = MaterialTheme.typography.titleMedium,
+                            )
                     }
-
                     for (item in feedItems) {
                         item {
-
                             FeedItem(
                                 imageModel = item.imageUrl,
                                 title = item.podcastTitle,

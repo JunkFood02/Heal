@@ -30,6 +30,10 @@ fun NavigationBarImpl() {
             onClick = {
                 navController.navigate(NavigationGraph.FEED) {
                     launchSingleTop = true
+                    restoreState = true
+                    popUpTo(NavigationGraph.FEED){
+                        saveState = true
+                    }
                 }
             },
             icon = {
@@ -45,6 +49,10 @@ fun NavigationBarImpl() {
             onClick = {
                 navController.navigate(NavigationGraph.LISTEN) {
                     launchSingleTop = true
+                    restoreState = true
+                    popUpTo(NavigationGraph.FEED){
+                        saveState = true
+                    }
                 }
             },
             icon = {
@@ -60,6 +68,10 @@ fun NavigationBarImpl() {
             onClick = {
                 navController.navigate(NavigationGraph.LIBRARY) {
                     launchSingleTop = true
+                    restoreState = true
+                    popUpTo(NavigationGraph.FEED){
+                        saveState = true
+                    }
                 }
             },
             icon = {

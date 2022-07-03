@@ -1,6 +1,7 @@
 package io.github.junkfood.heal.ui.destination.episode
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,13 +23,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.heal.R
 import io.github.junkfood.heal.ui.common.NavigationGraph
 import io.github.junkfood.heal.ui.common.NavigationGraph.toId
 import io.github.junkfood.heal.ui.component.*
+import io.github.junkfood.heal.ui.destination.podcast.PodcastViewModelFactory
 import io.github.junkfood.heal.util.TextUtil
+
+private const val TAG = "EpisodePage"
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
@@ -35,15 +42,19 @@ import io.github.junkfood.heal.util.TextUtil
 fun EpisodePage(
     navHostController: NavHostController,
     episodeId: Long,
+    episodeViewModel: EpisodeViewModel = viewModel(
+        viewModelStoreOwner = LocalViewModelStoreOwner.current!!,
+        factory = EpisodeViewModelProvider(episodeId)
+    )
 ) {
-    val episodeViewModel = EpisodeViewModel(episodeId)
+
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         decayAnimationSpec,
         rememberTopAppBarScrollState()
     )
     val viewState = episodeViewModel.stateFlow.collectAsState()
-    viewState.value.run {
+    with(viewState.value) {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()

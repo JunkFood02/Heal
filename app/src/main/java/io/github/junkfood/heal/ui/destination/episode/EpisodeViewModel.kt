@@ -1,6 +1,7 @@
 package io.github.junkfood.heal.ui.destination.episode
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.util.TextUtil
@@ -27,7 +28,7 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
     private val mutableStateFlow = MutableStateFlow(EpisodeViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
 
-    init {
+    private fun initEpisodeContent() {
         viewModelScope.launch(Dispatchers.IO) {
             val episode = Repository.getEpisodeById(episodeId)
             val podcast = Repository.getPodcastById(episode.podcastID)
@@ -48,4 +49,14 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
         }
     }
 
+    init {
+        initEpisodeContent()
+    }
+
+}
+
+class EpisodeViewModelProvider(private val episodeId: Long) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return EpisodeViewModel(episodeId) as T
+    }
 }

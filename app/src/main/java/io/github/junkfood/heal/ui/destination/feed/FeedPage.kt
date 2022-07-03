@@ -1,10 +1,7 @@
 package io.github.junkfood.heal.ui.destination.feed
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
@@ -13,9 +10,13 @@ import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import io.github.junkfood.heal.R
 import io.github.junkfood.heal.ui.common.NavigationGraph
 import io.github.junkfood.heal.ui.common.NavigationGraph.toId
 import io.github.junkfood.heal.ui.component.FeedItem
@@ -27,7 +28,6 @@ import io.github.junkfood.heal.util.TextUtil
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
-
     val viewState = feedViewModel.stateFlow.collectAsState()
     val libraryDataState = feedViewModel.episodeAndRecordFlow.collectAsState(ArrayList())
 
@@ -81,7 +81,8 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                             Text(
                                 "Resume listening",
                                 modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
-                                style = MaterialTheme.typography.titleLarge
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.SemiBold
                             )
                             LazyRow(
                                 modifier = Modifier
@@ -92,7 +93,9 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                         CardContent(
                                             imageModel = item.episode.cover,
                                             title = item.episode.title,
-                                            timeLeft = "12 mins left",
+                                            timeLeft = stringResource(R.string.minutes_left).format(
+                                                (item.episode.progress * 60000 / 6000).toInt()
+                                            ),
                                             /*length = item.episode.duration,
                                             progress = item.episode.progress,*/
                                             onClick = {
@@ -109,8 +112,19 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                             }
                         }
                     }
+                    item {
+                        Text(
+                            "Latest episodes",
+                            modifier = Modifier
+                                .padding(horizontal = 18.dp)
+                                .padding(top = 12.dp, bottom = 6.dp),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+
                     for (item in feedItems) {
                         item {
+
                             FeedItem(
                                 imageModel = item.imageUrl,
                                 title = item.podcastTitle,
@@ -134,8 +148,14 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                     feedViewModel.insertToHistory(item.episodeId)
                                 }
                             )
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(0.5f.dp)
+                                    .clip(MaterialTheme.shapes.extraLarge),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                            )
                         }
-
 
                     }
                 }

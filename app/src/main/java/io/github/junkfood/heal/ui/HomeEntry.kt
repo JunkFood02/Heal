@@ -33,6 +33,7 @@ import io.github.junkfood.heal.ui.destination.library.LibraryPage
 import io.github.junkfood.heal.ui.destination.library.LibraryViewModel
 import io.github.junkfood.heal.ui.destination.listen.ListenPage
 import io.github.junkfood.heal.ui.destination.podcast.PodcastPage
+import io.github.junkfood.heal.ui.destination.podcast.PodcastViewModel
 import io.github.junkfood.heal.ui.destination.settings.SettingsPage
 import io.github.junkfood.heal.ui.theme.PodcastTheme
 
@@ -65,16 +66,16 @@ fun HomeEntry() {
                     navController = navController,
                     startDestination = NavigationGraph.FEED
                 ) {
-                    fadedComposable(NavigationGraph.FEED) {
+                    animatedComposable(NavigationGraph.FEED) {
                         FeedPage(
                             navController,
                             feedViewModel
                         )
                     }
-                    fadedComposable(NavigationGraph.LISTEN) {
+                    animatedComposable(NavigationGraph.LISTEN) {
                         ListenPage(navController)
                     }
-                    fadedComposable(NavigationGraph.LIBRARY) {
+                    animatedComposable(NavigationGraph.LIBRARY) {
                         LibraryPage(navController, libraryViewModel)
                     }
                     animatedComposable(NavigationGraph.SETTINGS) {

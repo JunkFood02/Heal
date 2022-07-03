@@ -15,4 +15,5 @@
     <string name="home">Home</string>
     <string name="listen">Listen</string>
     <string name="library">Library</string>
+    <string name="minutes_left">%d mins left</string>
 </resources>

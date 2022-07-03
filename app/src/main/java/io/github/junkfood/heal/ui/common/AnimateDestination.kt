@@ -67,3 +67,4 @@ fun NavGraphBuilder.fadedComposable(
     },
     content = content
 )
+

@@ -22,9 +22,12 @@ class PodcastViewModel constructor(var podcastId: Long) :
         val podcastImageUrl: String = "",
     )
 
+    fun unsubscribePodcast() {
+
+    }
+
     private val mutableStateFlow = MutableStateFlow(ViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
-
 }
 
 class PodcastViewModelFactory(private val podcastId: Long) : ViewModelProvider.Factory {

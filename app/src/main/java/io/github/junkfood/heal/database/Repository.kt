@@ -36,7 +36,9 @@ object Repository {
                 title = podcast.title,
                 description = podcast.description,
                 author = podcast.iTunesInfo.author.toString(),
-                coverUrl = podcast.imageURL.toExternalForm()
+                coverUrl = podcast.imageURL.toExternalForm(),
+                url = podcast.link.toExternalForm(),
+                feedUrl = podcast.feedURL.toExternalForm()
             )
         )
         for (episode in podcast.episodes) {
@@ -48,7 +50,7 @@ object Repository {
                     cover = episode.iTunesInfo.imageString
                         ?: podcast.imageURL.toExternalForm(),
                     pubDate = TextUtil.formatDate(episode.pubDate),
-                    duration = episode.iTunesInfo.duration,
+                    duration = episode.enclosure.length,
                     author = episode.author ?: "",
                     audioUrl = episode.enclosure.url.toExternalForm()
                 )

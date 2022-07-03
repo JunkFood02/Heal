@@ -19,4 +19,11 @@
     <string name="subscriptions">Subscriptions</string>
     <string name="resume_listening">Resume listening</string>
     <string name="latest_episodes">Latest episodes</string>
+    <string name="unsubscribe">Unsubscribe</string>
+    <string name="podcast_settings">Podcast settings</string>
+    <string name="open_url">Open URL</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="unsubscribe_msg">Are you sure you want to unsubscribe \"%s\"? This operation will delete all downloaded episodes at the same time and cannot be undone.</string>
+    <string name="open_rss">Open RSS feed</string>
 </resources>

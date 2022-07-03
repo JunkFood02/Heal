@@ -17,7 +17,7 @@ import java.net.URL
 class SubscriptionViewModel : ViewModel() {
     val subscriptionFlow = Repository.getPodcastsWithEpisodes()
 
-    data class ViewState(val url: String = "")
+    data class ViewState(val url: String = "https://anchor.fm/s/473e5930/podcast/rss")
 
     private val mutableStateFlow = MutableStateFlow(ViewState())
     val urlState = mutableStateFlow.asStateFlow()

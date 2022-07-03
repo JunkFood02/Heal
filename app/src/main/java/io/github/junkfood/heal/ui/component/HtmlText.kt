@@ -148,11 +148,11 @@ fun Spanned.toAnnotatedString(
             addStyle(urlSpanStyle, start, end)
             addStringAnnotation("url", urlSpan.url, start, end) // NON-NLS
         }
-        colorSpans.forEach { colorSpan ->
+/*        colorSpans.forEach { colorSpan ->
             val start = getSpanStart(colorSpan)
             val end = getSpanEnd(colorSpan)
             addStyle(SpanStyle(color = Color(colorSpan.foregroundColor)), start, end)
-        }
+        }*/
         styleSpans.forEach { styleSpan ->
             val start = getSpanStart(styleSpan)
             val end = getSpanEnd(styleSpan)

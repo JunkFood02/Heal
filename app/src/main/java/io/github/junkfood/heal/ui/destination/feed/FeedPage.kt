@@ -31,43 +31,12 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
     val viewState = feedViewModel.stateFlow.collectAsState()
     val libraryDataState = feedViewModel.episodeAndRecordFlow.collectAsState(ArrayList())
 
-    val clipboardManager = LocalClipboardManager.current
-    var showDialog by remember { mutableStateOf(false) }
-    Scaffold(modifier = Modifier
-        .padding()
-        .fillMaxSize(), floatingActionButton = {
-        FloatingActionButton(
-            onClick = { showDialog = true },
-            modifier = Modifier
-                .padding(bottom = 36.dp, end = 24.dp)
-        ) { Icon(Icons.Rounded.RssFeed, null) }
-    }) {
+    Scaffold(
+        modifier = Modifier
+            .padding()
+            .fillMaxSize()
+    ) {
 
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text("RSS Feed") },
-                text = {
-                    TextField(
-                        value = viewState.value.url,
-                        onValueChange = { feedViewModel.updateUrl(it) }, trailingIcon = {
-                            IconButton(
-                                onClick = {
-                                    clipboardManager.getText()?.text?.let {
-                                        feedViewModel.updateUrl(it)
-                                    }
-                                }) { Icon(Icons.Rounded.ContentPaste, null) }
-                        })
-                },
-                confirmButton = {
-                    TextButton(onClick = {
-                        feedViewModel.fetchPodcast()
-                        showDialog = false
-                    }) {
-                        Text("Fetch podcast")
-                    }
-                })
-        }
         Column(
             Modifier
                 .statusBarsPadding()

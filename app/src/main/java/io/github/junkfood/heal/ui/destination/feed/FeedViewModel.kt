@@ -22,27 +22,7 @@ class FeedViewModel : ViewModel() {
     val episodeAndRecordFlow = Repository.getEpisodeAndRecord()
 
     private val TAG = "FeedViewModel"
-    fun fetchPodcast() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val podcast = Podcast(
-                    URL(mutableStateFlow.value.url)
-                )
-                Log.d(TAG, "fetchPodcast: ")
-                Repository.importRssData(podcast)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                launch(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        "Error fetching podcast",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
 
-        }
-    }
 
     init {
         viewModelScope.launch {

@@ -18,8 +18,9 @@ import io.github.junkfood.heal.database.model.Episode
 class PodcastService : MediaBrowserServiceCompat() {
     private var exoPlayer: ExoPlayer? = null
     private var mediaSession: MediaSessionCompat? = null
+    private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private val TAG = "PodcastService"
-    private lateinit var episodes : List<Episode>//传入的数据集？？
+    private lateinit var episodes : List<Episode>//传入的数据集
 
     /**
      * 当服务收到onCreate（）生命周期回调方法时，它应该执行以下步骤：
@@ -30,12 +31,28 @@ class PodcastService : MediaBrowserServiceCompat() {
     override fun onCreate() {
         Log.i(TAG, "onCreate: ")
         super.onCreate()
+        exoPlayer = ExoPlayer.Builder(applicationContext).build()
         //1. 创建并初始化MediaSession
-        mediaSession = MediaSessionCompat(applicationContext, TAG)
-        mediaSession!!.setFlags(
-            MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+        mediaSession = MediaSessionCompat(applicationContext, TAG).apply {
+            setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
                     or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-        )
+            )
+
+            // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
+            stateBuilder = PlaybackStateCompat.Builder()
+                .setActions(PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                )
+            setPlaybackState(stateBuilder.build())
+
+
+            // MySessionCallback() has methods that handle callbacks from a media controller
+            setCallback(MyMediaSessionCallBack(exoPlayer!!))
+
+            // Set the session's token so that client activities can communicate with it.
+            setSessionToken(sessionToken)
+        }
+
         val playbackState = PlaybackStateCompat.Builder()
             .setActions(
                 (PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE
@@ -48,14 +65,6 @@ class PodcastService : MediaBrowserServiceCompat() {
             .build()
         mediaSession!!.setPlaybackState(playbackState)
 
-        //2. 设置mediaSession回调
-        //mediaSession!!.setCallback(this.exoPlayer?.let { MyMediaSessionCallBack(it) })
-
-        //3. 设置mediaSessionToken
-        setSessionToken(mediaSession!!.sessionToken)
-
-        //创建播放器实例
-        exoPlayer = ExoPlayer.Builder(applicationContext).build()
     }
 
     override fun onGetRoot(
@@ -74,19 +83,19 @@ class PodcastService : MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         Log.i(TAG, "onLoadChildren: parentId=" + parentId)
-        var mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
+        val mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
 
         when {
             !TextUtils.equals("media_root_id", parentId) -> {
             }
         }
 
-        var episodeList = mutableListOf<Episode>()//getMusicEntityList();
+        val episodeList = mutableListOf<Episode>()//getMusicEntityList();
 //创建播放列表
-        var num = 0
-        var last = 10
+        val num = 0
+        val last = 10
 
-        var metadata = MediaMetadata.Builder()
+        val metadata = MediaMetadata.Builder()
 
         for (i in num..last) {
             var episode = episodeList.add(episodes[i])
@@ -100,7 +109,7 @@ class PodcastService : MediaBrowserServiceCompat() {
                 metadata.setAlbumArtist(episodes[i].author)
                 metadata.setDisplayTitle(episodes[i].description)
                 metadata.setDisplayTitle(episodes[i].title)
-                    //数据初始化
+                //数据初始化
 
 
                 if (0 == i) {
@@ -126,7 +135,7 @@ class PodcastService : MediaBrowserServiceCompat() {
     }
 
     private fun initExoPlayerListener() {
-        
+
 
 //            fun Player.Listener(){         // onPlaybackStateChanged(int state) {
 //                var currentPosition = exoPlayer!!. getCurrentPosition ();
@@ -176,5 +185,7 @@ class PodcastService : MediaBrowserServiceCompat() {
     private fun setPlaybackState(playbackState: Any?) {
 
     }
+
+
 }
 

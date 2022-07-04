@@ -1,9 +1,12 @@
 
 package io.github.junkfood.heal.player
 
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo.TAG
+import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.util.Log
 
 /**
@@ -15,12 +18,25 @@ class MyMediaSessionCallBack(
 
     ) : MediaSessionCompat.Callback() {
 
+    private var queueIndex = -1
+
+    private val playList: List<MediaSessionCompat.QueueItem> = ArrayList<MediaSessionCompat.QueueItem>()
+
+    lateinit var preparedMedia: MediaMetadataCompat
+
+    override fun onPrepare() {
+        if (queueIndex < 0 && playList.isEmpty()) {
+            return;
+        }
+        //var mediaId = playList.
+    }
 
     override fun onPlay() {
         super.onPlay()
 
         Log.i(TAG, "onPlay: ")
         exoPlayer.play()
+
 
 
     }
@@ -46,8 +62,8 @@ class MyMediaSessionCallBack(
         Log.i(TAG, "onSkipToNext")
         exoPlayer.seekToNext()
         exoPlayer.setPlayWhenReady(true);
-//        setPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
-//        mediaSession.setMetadata(getMediaMetadata(1));
+//        setPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT)
+//        mediaSession.setMetadata(getMediaMetadata(1))
         //
     }
 

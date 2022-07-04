@@ -20,8 +20,6 @@ object Repository {
 
     fun getEpisodeAndRecord() = recordDao.getEpisodeAndRecord()
 
-    suspend fun getLastRecord() = recordDao.getLastRecord()
-
     suspend fun deleteAllRecords() = recordDao.deleteAllRecords()
 
     suspend fun getEpisodeById(Id: Long) = episodeDao.getEpisodeById(Id)

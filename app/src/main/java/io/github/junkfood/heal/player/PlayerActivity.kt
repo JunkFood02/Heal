@@ -9,7 +9,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 class PlayerActivity : Activity() {
 
     lateinit var mediaBrowser: MediaBrowserCompat
-    var sessionToken = mediaBrowser.getSessionToken();
+    var sessionToken = mediaBrowser.getSessionToken()
 
     //建立连接之后再创建MediaController
     var mediaController = MediaControllerCompat.getMediaController(this@PlayerActivity)

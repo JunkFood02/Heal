@@ -83,19 +83,19 @@ class PodcastService : MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         Log.i(TAG, "onLoadChildren: parentId=" + parentId)
-        var mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
+        val mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
 
         when {
             !TextUtils.equals("media_root_id", parentId) -> {
             }
         }
 
-        var episodeList = mutableListOf<Episode>()//getMusicEntityList();
+        val episodeList = mutableListOf<Episode>()//getMusicEntityList();
 //创建播放列表
-        var num = 0
-        var last = 10
+        val num = 0
+        val last = 10
 
-        var metadata = MediaMetadata.Builder()
+        val metadata = MediaMetadata.Builder()
 
         for (i in num..last) {
             var episode = episodeList.add(episodes[i])
@@ -109,7 +109,7 @@ class PodcastService : MediaBrowserServiceCompat() {
                 metadata.setAlbumArtist(episodes[i].author)
                 metadata.setDisplayTitle(episodes[i].description)
                 metadata.setDisplayTitle(episodes[i].title)
-                    //数据初始化
+                //数据初始化
 
 
                 if (0 == i) {
@@ -135,7 +135,7 @@ class PodcastService : MediaBrowserServiceCompat() {
     }
 
     private fun initExoPlayerListener() {
-        
+
 
 //            fun Player.Listener(){         // onPlaybackStateChanged(int state) {
 //                var currentPosition = exoPlayer!!. getCurrentPosition ();
@@ -186,8 +186,6 @@ class PodcastService : MediaBrowserServiceCompat() {
 
     }
 
-    inner class PodcastServiceBinder: Binder() {
 
-    }
 }
 

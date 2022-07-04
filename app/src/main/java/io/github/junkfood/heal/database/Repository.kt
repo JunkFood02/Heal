@@ -2,10 +2,13 @@ package io.github.junkfood.heal.database
 
 import androidx.room.Room
 import com.icosillion.podengine.models.Podcast
+import io.github.junkfood.heal.BaseApplication.Companion.applicationScope
 import io.github.junkfood.heal.BaseApplication.Companion.context
 import io.github.junkfood.heal.database.model.Episode
 import io.github.junkfood.heal.database.model.Record
 import io.github.junkfood.heal.util.TextUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object Repository {
     private val db = Room.databaseBuilder(
@@ -16,9 +19,22 @@ object Repository {
     private val podcastDao = db.podcastDao()
     private val recordDao = db.recordDao()
 
+    fun unsubscribePodcastById(Id: Long) {
+        applicationScope.launch(Dispatchers.IO) {
+            recordDao.getRecord().forEach {
+                if (episodeDao.getEpisodeById(it.episodeId).podcastID == Id)
+                    recordDao.deleterecord(it)
+            }
+            podcastDao.deletePodcastById(Id)
+            episodeDao.deleteAllEpisodesByPodcastId(Id)
+        }
+    }
+
     fun getPodcastsWithEpisodes() = podcastDao.getPodcastsWithEpisodes()
 
-    fun getEpisodeAndRecord() = recordDao.getEpisodeAndRecord()
+    fun getPodcasts() = podcastDao.getAllPodcasts()
+
+    fun getEpisodeAndRecord() = recordDao.getEpisodeAndRecordFlow()
 
     suspend fun deleteAllRecords() = recordDao.deleteAllRecords()
 

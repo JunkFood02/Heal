@@ -9,7 +9,7 @@
     <string name="days_before">%d天前</string>
     <string name="episodes">%d 单集</string>
     <string name="publish_date">发布时间：%s</string>
-    <string name="duration">单集长度：%s</string>
+    <string name="duration">单集长度：%s 分</string>
     <string name="episode_description">单集内容简介</string>
     <string name="home">主页</string>
     <string name="listen">收听</string>
@@ -40,4 +40,9 @@
     <string name="episode_title_sample">Ep23 单集标题示例用文字</string>
     <string name="podcast_author_sample">播客作者</string>
     <string name="podcast_title_sample">播客标题</string>
+    <string name="downloads">已下载单集</string>
+    <string name="queue">播放队列</string>
+    <string name="history">历史记录</string>
+    <string name="subscribe_rss">订阅 RSS 流</string>
+    <string name="fetch_podcast">获取播客信息</string>
 </resources>

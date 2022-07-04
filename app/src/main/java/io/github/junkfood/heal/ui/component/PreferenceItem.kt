@@ -147,7 +147,7 @@ fun PreferenceItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp, 20.dp),
+                .padding(16.dp, 20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             icon?.let {

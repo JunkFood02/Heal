@@ -49,10 +49,10 @@ fun SettingsPage(navController: NavController = LocalNavHostController.current) 
             SmallTopAppBar(
                 title = {},
                 navigationIcon = { BackButton { navController.popBackStack() } },
-                modifier = Modifier.padding()
+                modifier = Modifier.padding(start = 8.dp)
             )
             Text(
-                modifier = Modifier.padding(start = 16.dp, top = 48.dp),
+                modifier = Modifier.padding(start = 24.dp, top = 48.dp),
                 text = stringResource(R.string.settings),
                 style = MaterialTheme.typography.headlineLarge
             )
@@ -83,51 +83,7 @@ fun SettingsPage(navController: NavController = LocalNavHostController.current) 
                     icon = Icons.Rounded.Info
                 ) {
                 }
-                /*Row(
-                    modifier = Modifier
-                        .horizontalScroll(rememberScrollState())
-                        .padding(12.dp)
-                ) {
-                    if (DynamicColors.isDynamicColorAvailable()) {
-                        ColorButton(
-                            color = dynamicDarkColorScheme(
-                                LocalContext.current
-                            ).primary
-                        )
-                        ColorButton(
-                            color = dynamicDarkColorScheme(
-                                LocalContext.current
-                            ).tertiary
-                        )
-                    }
-                    ColorButton(
-                        color = Color(
-                            ColorScheme.DEFAULT_SEED_COLOR
-                        )
-                    )
-                    ColorButton(color = Color.Yellow)
-                    ColorButton(
-                        color = Color(
-                            Hct.from(
-                                60.0,
-                                150.0,
-                                70.0
-                            ).toInt()
-                        )
-                    )
-                    ColorButton(
-                        color = Color(
-                            Hct.from(
-                                125.0,
-                                50.0,
-                                60.0
-                            ).toInt()
-                        )
-                    )
-                    ColorButton(color = Color.Red)
-                    ColorButton(color = Color.Magenta)
-                    ColorButton(color = Color.Blue)
-                }*/
+                
             }
         }
     }
@@ -141,7 +97,7 @@ fun SettingItem(title: String, description: String, icon: ImageVector?, onClick:
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(9.dp, 20.dp),
+                .padding(12.dp, 20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             icon?.let {

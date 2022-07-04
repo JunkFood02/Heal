@@ -9,7 +9,7 @@
     <string name="days_before">%d days before</string>
     <string name="episodes">%d Episodes</string>
     <string name="publish_date">Publish on: %s</string>
-    <string name="duration">Duration: %s</string>
+    <string name="duration">Duration: %s min</string>
     <string name="episode_description">Episode description</string>
     <string name="feed">Feed</string>
     <string name="home">Home</string>
@@ -43,4 +43,9 @@
     <string name="episode_title_sample">Ep23: Episode title sample text</string>
     <string name="podcast_author_sample">Podcast author</string>
     <string name="podcast_title_sample">Podcast title</string>
+    <string name="downloads">Downloads</string>
+    <string name="queue">Queue</string>
+    <string name="history">History</string>
+    <string name="subscribe_rss">Subscribe RSS feed</string>
+    <string name="fetch_podcast">Fetch podcast</string>
 </resources>

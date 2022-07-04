@@ -11,19 +11,20 @@ import androidx.lifecycle.ViewModelProvider
 import io.github.junkfood.heal.database.Repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 
-class PodcastViewModel constructor(var podcastId: Long) :
+class PodcastViewModel constructor(private val podcastId: Long) :
     ViewModel() {
 
-    var podcastFlow = Repository.getPodcastFlowById(podcastId)
-    var episodeFlow = Repository.getEpisodesByPodcastId(podcastId)
+    var podcastFlow = Repository.getPodcastFlowById(podcastId).filterNotNull()
+    var episodeFlow = Repository.getEpisodesByPodcastId(podcastId).filterNotNull()
 
     data class ViewState(
         val podcastImageUrl: String = "",
     )
 
     fun unsubscribePodcast() {
-
+        Repository.unsubscribePodcastById(podcastId)
     }
 
     private val mutableStateFlow = MutableStateFlow(ViewState())

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -23,8 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.google.android.material.color.DynamicColors
@@ -68,12 +71,12 @@ fun AppearancePreferences(navHostController: NavHostController = LocalNavHostCon
             io.github.junkfood.heal.ui.component.LargeTopAppBar(
                 title = {
                     Text(
-                        modifier = Modifier.padding(),
+                        modifier = Modifier.padding(start = 8.dp),
                         text = stringResource(id = R.string.user_interface),
                     )
                 }, navigationIcon = {
                     IconButton(
-                        modifier = Modifier.padding(),
+                        modifier = Modifier.padding(start = 8.dp),
                         onClick = { navHostController.popBackStack() }
                     ) {
                         Icon(
@@ -208,96 +211,6 @@ fun AppearancePreferences(navHostController: NavHostController = LocalNavHostCon
 @Composable
 @Preview
 fun EpisodePagePreview() {
-    Column(modifier = Modifier
-        .padding(vertical = 12.dp, horizontal = 6.dp)
-        .clip(MaterialTheme.shapes.large)
-        .clickable { }) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 9.dp)
-        ) {
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth(0.25f)
-                    .clip(MaterialTheme.shapes.small)
-                    .aspectRatio(1f, matchHeightConstraintsFirst = true),
-                model = R.drawable.sample,
-                contentDescription = null
-            )
-            Column(
-                Modifier
-                    .padding(horizontal = 12.dp)
-                    .align(Alignment.CenterVertically)
-            ) {
-                TitleMedium(stringResource(R.string.podcast_title_sample))
-                SubtitleMedium(stringResource(R.string.podcast_author_sample))
-            }
 
-        }
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .padding(top = 6.dp)
-        ) {
-            HeadlineSmall(stringResource(R.string.episode_title_sample))
-            Row(modifier = Modifier.padding(top = 3.dp)) {
-                LabelMedium(
-                    text = stringResource(R.string.publish_date).format(TextUtil.parseDate(Date())),
-                    modifier = Modifier.padding(end = 9.dp)
-                )
-                LabelMedium(
-                    stringResource(R.string.duration).format("26:38"),
-                    modifier = Modifier.padding(end = 18.dp)
-                )
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 9.dp, bottom = 12.dp)
-                .padding(),
-            horizontalArrangement = Arrangement.End
-        ) {
-
-            Row(modifier = Modifier.weight(1f)) {
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier.padding()
-                ) {
-                    Icon(
-                        Icons.Rounded.PlaylistAdd,
-                        null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier.padding()
-                ) {
-                    Icon(
-                        Icons.Rounded.DownloadForOffline,
-                        null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier.padding()
-                ) {
-                    Icon(
-                        Icons.Rounded.Share,
-                        null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            }
-            FilledIconButton(
-                onClick = { },
-                modifier = Modifier.padding(end = 9.dp)
-            ) { Icon(Icons.Rounded.PlayArrow, null) }
-
-        }
-    }
 }
 

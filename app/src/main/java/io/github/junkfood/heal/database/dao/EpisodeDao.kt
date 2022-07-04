@@ -15,6 +15,9 @@ interface EpisodeDao {
     @Delete
     fun delete(episode: Episode)
 
+    @Query("delete from episode where podcastID=:podcastId")
+    fun deleteAllEpisodesByPodcastId(podcastId: Long)
+
     @Query("SELECT * FROM episode")
     fun getAllEpisodes(): Flow<List<Episode>>
 

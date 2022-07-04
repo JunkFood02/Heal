@@ -13,8 +13,8 @@ interface PodcastDao {
     @Insert
     fun insert(podcast: Podcast): Long
 
-    @Delete
-    fun delete(podcast: Podcast)
+    @Query("delete from podcast where id=:Id")
+    fun deletePodcastById(Id: Long)
 
     @Query("select * from podcast where id=:Id ")
     suspend fun getPodcastById(Id: Long): Podcast

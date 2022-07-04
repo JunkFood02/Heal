@@ -27,6 +27,6 @@ interface RecordDao {
 
     @Transaction
     @Query("SELECT * FROM record")
-    fun getEpisodeAndRecord(): Flow<List<EpisodeAndRecord>>
+    fun getEpisodeAndRecordFlow(): Flow<List<EpisodeAndRecord>>
 
 }

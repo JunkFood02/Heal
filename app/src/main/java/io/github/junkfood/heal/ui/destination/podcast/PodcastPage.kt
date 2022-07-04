@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.heal.R
+import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.database.model.Podcast
 import io.github.junkfood.heal.ui.common.LocalNavHostController
 import io.github.junkfood.heal.ui.common.NavigationGraph
@@ -72,8 +73,8 @@ fun PodcastPage(
                 TextButton(
                     onClick = {
                         showDeletePodcastDialog = false
-                        podcastViewModel.unsubscribePodcast()
                         navHostController.popBackStack(NavigationGraph.FEED, inclusive = false)
+                        Repository.unsubscribePodcastById(podcastId)
                     }) {
                     Text(stringResource(R.string.confirm))
                 }

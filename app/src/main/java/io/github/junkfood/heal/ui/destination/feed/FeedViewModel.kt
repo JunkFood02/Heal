@@ -11,6 +11,7 @@ import io.github.junkfood.heal.util.TextUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.net.URL
@@ -19,7 +20,7 @@ class FeedViewModel : ViewModel() {
     //    init { fetchPodcast() }
     private val mutableStateFlow = MutableStateFlow(FeedViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
-    val episodeAndRecordFlow = Repository.getEpisodeAndRecord()
+    val episodeAndRecordFlow = Repository.getEpisodeAndRecord().filterNotNull()
 
     private val TAG = "FeedViewModel"
 
@@ -28,7 +29,15 @@ class FeedViewModel : ViewModel() {
         viewModelScope.launch {
             Repository.getPodcastsWithEpisodes().collect {
                 val feedItems: MutableList<FeedItem> = ArrayList()
+                val podcastItems: MutableList<PodcastItem> = ArrayList()
                 it.forEach { item ->
+                    podcastItems.add(
+                        PodcastItem(
+                            podcastId = item.podcast.id,
+                            title = item.podcast.title,
+                            imageUrl = item.podcast.coverUrl
+                        )
+                    )
                     item.episodes.forEach { episode ->
                         feedItems.add(
                             FeedItem(
@@ -48,7 +57,12 @@ class FeedViewModel : ViewModel() {
                         o2.pubDate
                     )
                 }
-                mutableStateFlow.update { stateFlow -> stateFlow.copy(feedItems = feedItems.reversed()) }
+                mutableStateFlow.update { stateFlow ->
+                    stateFlow.copy(
+                        feedItems = feedItems.reversed(),
+                        podcastItems = podcastItems
+                    )
+                }
             }
         }
     }
@@ -59,7 +73,8 @@ class FeedViewModel : ViewModel() {
 
     data class FeedViewState(
         val url: String = "https://anchor.fm/s/473e5930/podcast/rss",
-        val feedItems: List<FeedItem> = ArrayList()
+        val feedItems: List<FeedItem> = ArrayList(),
+        val podcastItems: List<PodcastItem> = ArrayList()
     )
 
     data class FeedItem(
@@ -69,6 +84,11 @@ class FeedViewModel : ViewModel() {
         val pubDate: String = "",
         val title: String = "",
         val description: String = "",
+    )
+
+    data class PodcastItem(
+        val podcastId: Long = 0,
+        val title: String = "", val imageUrl: String = ""
     )
 
     fun insertToHistory(id: Long) {

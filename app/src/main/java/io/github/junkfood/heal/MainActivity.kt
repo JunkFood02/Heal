@@ -19,8 +19,10 @@ import androidx.core.view.WindowCompat
 import io.github.junkfood.heal.player.MyMediaSessionCallBack
 import io.github.junkfood.heal.player.PodcastService
 import io.github.junkfood.heal.ui.HomeEntry
+import io.github.junkfood.heal.util.PreferenceUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
     lateinit var mediaBrowser: MediaBrowserCompat
@@ -59,6 +61,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+        runBlocking {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(PreferenceUtil.getLanguageConfiguration()))
+        }
+        
         mediaBrowser = MediaBrowserCompat(
 
             this,

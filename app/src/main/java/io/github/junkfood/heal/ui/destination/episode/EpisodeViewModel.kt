@@ -1,6 +1,7 @@
 package io.github.junkfood.heal.ui.destination.episode
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.util.TextUtil
@@ -17,6 +18,7 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
         val podcastId: Long = 0, val podcastTitle: String = "",
         val title: String = "",
         val author: String = "",
+        val podcastImageUrl: String = "",
         val imageUrl: String = "",
         val description: String = "",
         val duration: String = "",
@@ -26,7 +28,7 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
     private val mutableStateFlow = MutableStateFlow(EpisodeViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
 
-    init {
+    private fun initEpisodeContent() {
         viewModelScope.launch(Dispatchers.IO) {
             val episode = Repository.getEpisodeById(episodeId)
             val podcast = Repository.getPodcastById(episode.podcastID)
@@ -35,15 +37,26 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
                 it.copy(
                     podcastId = episode.podcastID,
                     podcastTitle = podcast.title,
+                    podcastImageUrl = podcast.coverUrl,
                     title = episode.title,
-                    author = episode.author,
+                    author = podcast.author,
                     imageUrl = episode.cover,
                     description = episode.description,
-                    duration = episode.duration,
+                    duration = episode.duration.toString(),
                     pubDate = TextUtil.formatString(episode.pubDate) ?: Date()
                 )
             }
         }
     }
 
+    init {
+        initEpisodeContent()
+    }
+
+}
+
+class EpisodeViewModelProvider(private val episodeId: Long) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return EpisodeViewModel(episodeId) as T
+    }
 }

@@ -9,6 +9,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.rounded.Aod
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.sharp.Aod
 import androidx.compose.material.icons.sharp.Download
 import androidx.compose.material.icons.sharp.Info
@@ -21,19 +25,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.material.color.DynamicColors
+import io.github.junkfood.heal.R
 import io.github.junkfood.heal.ui.color.hct.Hct
 import io.github.junkfood.heal.ui.color.palettes.CorePalette
 import io.github.junkfood.heal.ui.common.LocalDarkTheme
+import io.github.junkfood.heal.ui.common.LocalNavHostController
 import io.github.junkfood.heal.ui.common.LocalSeedColor
+import io.github.junkfood.heal.ui.common.NavigationGraph
 import io.github.junkfood.heal.ui.component.BackButton
 import io.github.junkfood.heal.ui.theme.ColorScheme
 import io.github.junkfood.heal.util.PreferenceUtil
 
 @Composable
-fun SettingsPage(navController: NavController) {
+fun SettingsPage(navController: NavController = LocalNavHostController.current) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.statusBarsPadding()
@@ -45,36 +53,37 @@ fun SettingsPage(navController: NavController) {
             )
             Text(
                 modifier = Modifier.padding(start = 24.dp, top = 48.dp),
-                text = "设置",
+                text = stringResource(R.string.settings),
                 style = MaterialTheme.typography.headlineLarge
             )
             Column(modifier = Modifier.padding(top = 24.dp)) {
                 SettingItem(
-                    title = "下载设置",
-                    description = "",
-                    icon = Icons.Sharp.Download
+                    title = stringResource(R.string.playback),
+                    description = stringResource(R.string.playback_desc),
+                    icon = Icons.Rounded.PlayArrow
                 ) {
                 }
                 SettingItem(
-                    title = "播放设置",
-                    description = "",
-                    icon = Icons.Sharp.Aod
+                    title = stringResource(R.string.download),
+                    description = stringResource(R.string.download_settings_desc),
+                    icon = Icons.Rounded.Download
                 ) {
                 }
                 SettingItem(
-                    title = "关于",
-                    description = "",
-                    icon = Icons.Sharp.Info
+                    title = stringResource(R.string.user_interface),
+                    description = stringResource(R.string.user_interface_desc),
+                    icon = Icons.Rounded.Aod
+                ) {
+                    navController.navigate(NavigationGraph.APPEARANCE)
+                }
+
+                SettingItem(
+                    title = stringResource(R.string.about),
+                    description = stringResource(R.string.about_desc),
+                    icon = Icons.Rounded.Info
                 ) {
                 }
-                Text(
-                    text = "主题颜色",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier
-                        .padding(12.dp)
-                )
-                Row(
+                /*Row(
                     modifier = Modifier
                         .horizontalScroll(rememberScrollState())
                         .padding(12.dp)
@@ -118,7 +127,7 @@ fun SettingsPage(navController: NavController) {
                     ColorButton(color = Color.Red)
                     ColorButton(color = Color.Magenta)
                     ColorButton(color = Color.Blue)
-                }
+                }*/
             }
         }
     }
@@ -182,7 +191,7 @@ fun ColorButton(modifier: Modifier = Modifier, color: Color) {
     val state2 = animateDpAsState(targetValue = if (currentColor) 18.dp else 0.dp)
     ElevatedCard(modifier = modifier
         .padding(4.dp)
-        .size(72.dp), onClick = { PreferenceUtil.modifyThemeColor(seedColor) }) {
+        .size(72.dp), onClick = { PreferenceUtil.modifyThemeSeedColor(seedColor) }) {
         Box(Modifier.fillMaxSize()) {
             Box(
                 modifier = modifier

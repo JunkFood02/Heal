@@ -12,11 +12,15 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import io.github.junkfood.heal.player.MyMediaSessionCallBack
 import io.github.junkfood.heal.player.PodcastService
 import io.github.junkfood.heal.ui.HomeEntry
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     lateinit var mediaBrowser: MediaBrowserCompat
@@ -86,6 +90,16 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         //MediaControllerCompat.getMediaController(this)?.unregisterCallback()
         mediaBrowser.disconnect()
+    }
+
+    companion object {
+        fun setLanguage(locale: String) {
+            if (locale.isEmpty()) return
+            BaseApplication.applicationScope.launch(Dispatchers.Main) {
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(locale))
+            }
+        }
+
     }
 }
 

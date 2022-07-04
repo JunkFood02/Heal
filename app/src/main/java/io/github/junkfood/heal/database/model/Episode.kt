@@ -13,7 +13,7 @@ data class Episode(
     val pubDate: String,
     val audioUrl: String,//
     //val categories: List<String>,
-    val duration: String,
+    val duration: Long,
     val podcastID: Long,
     val progress: Float = 0F,
     val recordId: Long = 0,

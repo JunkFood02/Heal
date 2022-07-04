@@ -19,28 +19,10 @@ class FeedViewModel : ViewModel() {
     //    init { fetchPodcast() }
     private val mutableStateFlow = MutableStateFlow(FeedViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
-    private val TAG = "FeedViewModel"
-    fun fetchPodcast() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val podcast = Podcast(
-                    URL(mutableStateFlow.value.url)
-                )
-                Log.d(TAG, "fetchPodcast: ")
-                Repository.importRssData(podcast)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                launch(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        "Error fetching podcast",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+    val episodeAndRecordFlow = Repository.getEpisodeAndRecord()
 
-        }
-    }
+    private val TAG = "FeedViewModel"
+
 
     init {
         viewModelScope.launch {
@@ -76,7 +58,7 @@ class FeedViewModel : ViewModel() {
     }
 
     data class FeedViewState(
-        val url: String = "https://justpodmedia.com/rss/left-right.xml",
+        val url: String = "https://anchor.fm/s/473e5930/podcast/rss",
         val feedItems: List<FeedItem> = ArrayList()
     )
 

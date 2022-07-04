@@ -21,7 +21,7 @@ val navigationVersion = "2.5.0-rc02"
 val roomVersion = "2.4.2"
 val accompanistVersion = "0.24.11-rc"
 val kotlinVersion = "1.6.21"
-val composeMd3Version = "1.0.0-alpha13"
+val composeMd3Version = "1.0.0-alpha14"
 val coilVersion = "2.1.0"
 val exoPlayerVersion = "2.18.0"
 val retrofitVersion = "2.9.0"
@@ -29,20 +29,18 @@ val rssParserVersion = "0.6.0"
 val isDebug = false
 
 android {
-    compileSdk = 32
-    if (isDebug) {
-        val keystorePropertiesFile = rootProject.file("keystore.properties")
-        val keystoreProperties = Properties()
-        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-        signingConfigs {
-            all {
-                keyAlias = keystoreProperties["keyAlias"].toString()
-                keyPassword = keystoreProperties["keyPassword"].toString()
-                storeFile = file(keystoreProperties["storeFile"]!!)
-                storePassword = keystoreProperties["storePassword"].toString()
-            }
-        }
+    signingConfigs {
+//        getByName("debug") {
+//            val keystorePropertiesFile = rootProject.file("keystore.properties")
+//            val keystoreProperties = Properties()
+//            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+//            storeFile = file(file(keystoreProperties["storeFile"]!!))
+//            keyAlias = keystoreProperties["keyAlias"].toString()
+//            keyPassword = keystoreProperties["keyPassword"].toString()
+//            storePassword = keystoreProperties["storePassword"].toString()
+//        }
     }
+    compileSdk = 32
     defaultConfig {
         applicationId = "io.github.junkfood.heal"
         minSdk = 26
@@ -58,10 +56,11 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -120,10 +119,8 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("com.tencent:mmkv:1.2.13")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("com.icosillion.podengine:podengine:2.4.1")
-    implementation("org.apache.commons:commons-lang3:3.12.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

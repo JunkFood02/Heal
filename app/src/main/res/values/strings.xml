@@ -11,4 +11,33 @@
     <string name="publish_date">Publish on: %s</string>
     <string name="duration">Duration: %s</string>
     <string name="episode_description">Episode description</string>
+    <string name="feed">Feed</string>
+    <string name="home">Home</string>
+    <string name="listen">Listen</string>
+    <string name="library">Library</string>
+    <string name="minutes_left">%d mins left</string>
+    <string name="subscriptions">Subscriptions</string>
+    <string name="resume_listening">Resume listening</string>
+    <string name="latest_episodes">Latest episodes</string>
+    <string name="unsubscribe">Unsubscribe</string>
+    <string name="podcast_settings">Podcast settings</string>
+    <string name="open_url">Open URL</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="unsubscribe_msg">Are you sure you want to unsubscribe \"%s\"? This will delete all downloaded episodes at the same time and cannot be undone.</string>
+    <string name="open_rss">Open RSS feed</string>
+    <string name="playback">Playback</string>
+    <string name="playback_desc">Control, timer, player settings</string>
+    <string name="download">Download</string>
+    <string name="download_settings_desc">Download directory, storage management</string>
+    <string name="user_interface">User Interface</string>
+    <string name="user_interface_desc">Color theming, dark theme, language</string>
+    <string name="defaults">Defaults</string>
+    <string name="la_zh_CN" translatable="false">简体中文</string>
+    <string name="la_en_US" translatable="false">English</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="interface_language">Interface language</string>
+    <string name="about">About</string>
+    <string name="about_desc"><![CDATA[Credits & open source]]></string>
+    <string name="settings">Settings</string>
 </resources>

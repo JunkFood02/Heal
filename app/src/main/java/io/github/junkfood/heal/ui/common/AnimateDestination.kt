@@ -41,3 +41,30 @@ fun NavGraphBuilder.animatedComposable(
     },
     content = content
 )
+
+
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.fadedComposable(
+    route: String,
+    arguments: List<NamedNavArgument> = emptyList(),
+    deepLinks: List<NavDeepLink> = emptyList(),
+    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+) = composable(
+    route = route,
+    arguments = arguments,
+    deepLinks = deepLinks,
+    enterTransition = {
+        fadeIn(animationSpec = tween(300))
+    },
+    exitTransition = {
+        fadeOut(animationSpec = tween(90))
+    },
+    popEnterTransition = {
+        fadeIn(animationSpec = tween(300))
+    },
+    popExitTransition = {
+        fadeOut(animationSpec = tween(90))
+    },
+    content = content
+)
+

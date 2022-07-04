@@ -44,6 +44,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
         </activity>
     </application>
 

@@ -40,4 +40,7 @@
     <string name="about">About</string>
     <string name="about_desc"><![CDATA[Credits & open source]]></string>
     <string name="settings">Settings</string>
+    <string name="episode_title_sample">Ep23: Episode title sample text</string>
+    <string name="podcast_author_sample">Podcast author</string>
+    <string name="podcast_title_sample">Podcast title</string>
 </resources>

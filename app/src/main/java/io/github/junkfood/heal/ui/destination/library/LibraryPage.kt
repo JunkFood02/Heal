@@ -51,12 +51,10 @@ fun LibraryPage(
         modifier = Modifier
             .padding()
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        ,
         topBar = {
-            io.github.junkfood.heal.ui.component.SmallTopAppBar(
+            io.github.junkfood.heal.ui.component.LargeTopAppBar(
                 title = { Text(stringResource(id = R.string.library)) },
-                navigationIcon = { BackButton { navHostController.popBackStack() } },
-                scrollBehavior = scrollBehavior
             )
         }, backgroundColor = MaterialTheme.colorScheme.surface,
         content = {
@@ -88,36 +86,6 @@ fun LibraryPage(
                         }
                     }
 
-
-/*                    libraryDataState.value.run {
-                        //val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
-                        LazyRow(
-                            modifier = Modifier
-                                .height(180.dp)
-                        ) {
-                            val episodeList = libraryDataState.value.reversed()
-                            for (item in episodeList) {
-                                item {
-                                    HistoryCard(
-                                        imageModel = item.episode.cover,
-                                        title = item.episode.title,
-                                        author = item.episode.author,
-                                        length = item.episode.duration,
-                                        progress = item.episode.progress,
-                                        onClick = {
-                                            Log.d(TAG, "LibraryPage: onClick")
-                                            navHostController.navigate(
-                                                NavigationGraph.EPISODE.toId(
-                                                    item.episode.id
-                                                )
-                                            )
-                                            libraryViewModel.insertToHistory(item.episode.id)
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }*/
                 }
                 Card(
                     modifier = Modifier

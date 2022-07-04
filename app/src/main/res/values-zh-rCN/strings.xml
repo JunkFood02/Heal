@@ -37,4 +37,7 @@
     <string name="about">关于</string>
     <string name="about_desc">开源软件</string>
     <string name="settings">设置</string>
+    <string name="episode_title_sample">Ep23 单集标题示例用文字</string>
+    <string name="podcast_author_sample">播客作者</string>
+    <string name="podcast_title_sample">播客标题</string>
 </resources>

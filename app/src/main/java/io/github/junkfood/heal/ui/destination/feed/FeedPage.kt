@@ -1,16 +1,20 @@
 package io.github.junkfood.heal.ui.destination.feed
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material.icons.rounded.RssFeed
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,109 +34,113 @@ import io.github.junkfood.heal.util.TextUtil
 fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel) {
     val viewState = feedViewModel.stateFlow.collectAsState()
     val libraryDataState = feedViewModel.episodeAndRecordFlow.collectAsState(ArrayList())
-
+    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        decayAnimationSpec,
+        rememberTopAppBarScrollState()
+    )
     Scaffold(
         modifier = Modifier
             .padding()
             .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
+            io.github.junkfood.heal.ui.component.SmallTopAppBar(title = {}, actions = {
+                IconButton(onClick = { navHostController.navigate(NavigationGraph.SETTINGS) }) {
+                    Icon(Icons.Outlined.Settings, null)
+                }
+            }, scrollBehavior = scrollBehavior)
+        }
     ) {
-
-        Column(
-            Modifier
-                .statusBarsPadding()
-                .fillMaxSize()
-        ) {
-
-            viewState.value.run {
-                LazyColumn {
-                    if (libraryDataState.value.isNotEmpty())
-                        item {
-                            Column {
-                                Text(
-                                    stringResource(R.string.resume_listening),
-                                    modifier = Modifier.padding(
-                                        horizontal = 18.dp,
-                                        vertical = 12.dp
-                                    ),
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                                LazyRow(
-                                    modifier = Modifier
-                                ) {
-                                    val episodeList = libraryDataState.value.reversed()
-                                    for (item in episodeList) {
-                                        item {
-                                            CardContent(
-                                                imageModel = item.episode.cover,
-                                                title = item.episode.title,
-                                                timeLeft = stringResource(R.string.minutes_left).format(
-                                                    (item.episode.progress * 60000 / 6000).toInt()
-                                                ),
-                                                /*length = item.episode.duration,
-                                                progress = item.episode.progress,*/
-                                                onClick = {
-                                                    navHostController.navigate(
-                                                        NavigationGraph.EPISODE.toId(
-                                                            item.episode.id
-                                                        )
+        viewState.value.run {
+            LazyColumn(modifier = Modifier.padding(it)) {
+                if (libraryDataState.value.isNotEmpty())
+                    item {
+                        Column {
+                            Text(
+                                stringResource(R.string.resume_listening),
+                                modifier = Modifier.padding(
+                                    horizontal = 18.dp,
+                                    vertical = 12.dp
+                                ),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            LazyRow(
+                                modifier = Modifier
+                            ) {
+                                val episodeList = libraryDataState.value.reversed()
+                                for (item in episodeList) {
+                                    item {
+                                        CardContent(
+                                            imageModel = item.episode.cover,
+                                            title = item.episode.title,
+                                            timeLeft = stringResource(R.string.minutes_left).format(
+                                                (item.episode.progress * 60000 / 6000).toInt()
+                                            ),
+                                            /*length = item.episode.duration,
+                                            progress = item.episode.progress,*/
+                                            onClick = {
+                                                navHostController.navigate(
+                                                    NavigationGraph.EPISODE.toId(
+                                                        item.episode.id
                                                     )
+                                                )
 //                                                libraryViewModel.insertToHistory(item.episode.id)
-                                                }
-                                            )
-                                        }
+                                            }
+                                        )
                                     }
                                 }
                             }
                         }
-                    item {
-                        if (feedItems.isNotEmpty())
-                            Text(
-                                stringResource(R.string.latest_episodes),
-                                modifier = Modifier
-                                    .padding(horizontal = 18.dp)
-                                    .padding(top = 12.dp, bottom = 6.dp),
-                                style = MaterialTheme.typography.titleMedium,
-                            )
                     }
-                    for (item in feedItems) {
-                        item {
-                            FeedItem(
-                                imageModel = item.imageUrl,
-                                title = item.podcastTitle,
-                                episodeTitle = item.title,
-                                episodeDescription = item.description,
-                                onClick = {
-                                    feedViewModel.insertToHistory(item.episodeId)
+                item {
+                    if (feedItems.isNotEmpty())
+                        Text(
+                            stringResource(R.string.latest_episodes),
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp)
+                                .padding(top = 12.dp, bottom = 6.dp),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                }
+                for (item in feedItems) {
+                    item {
+                        FeedItem(
+                            imageModel = item.imageUrl,
+                            title = item.podcastTitle,
+                            episodeTitle = item.title,
+                            episodeDescription = item.description,
+                            onClick = {
+                                feedViewModel.insertToHistory(item.episodeId)
 //                                        feedViewModel.jumpToEpisode(i)
 //                                        navHostController.navigate(RouteName.EPISODE)
-                                    navHostController.navigate(
-                                        NavigationGraph.EPISODE.toId(
-                                            item.episodeId
-                                        )
+                                navHostController.navigate(
+                                    NavigationGraph.EPISODE.toId(
+                                        item.episodeId
                                     )
-                                },
-                                episodeDate = TextUtil.formatString(item.pubDate),
-                                onAddButtonClick = {},
-                                onDownloadButtonClick = {},
-                                onMoreButtonClick = {},
-                                onPlayButtonClick = {
-                                    feedViewModel.insertToHistory(item.episodeId)
-                                }
-                            )
-                            Divider(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(0.5f.dp)
-                                    .clip(MaterialTheme.shapes.extraLarge),
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                            )
-                        }
-
+                                )
+                            },
+                            episodeDate = TextUtil.formatString(item.pubDate),
+                            onAddButtonClick = {},
+                            onDownloadButtonClick = {},
+                            onMoreButtonClick = {},
+                            onPlayButtonClick = {
+                                feedViewModel.insertToHistory(item.episodeId)
+                            }
+                        )
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(0.5f.dp)
+                                .clip(MaterialTheme.shapes.extraLarge),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                        )
                     }
+
                 }
             }
         }
+
     }
 }
 

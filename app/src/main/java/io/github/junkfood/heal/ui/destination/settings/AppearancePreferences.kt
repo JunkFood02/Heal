@@ -1,6 +1,7 @@
 package io.github.junkfood.heal.ui.destination.settings
 
 import androidx.compose.animation.rememberSplineBasedDecay
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,15 +10,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.rounded.DownloadForOffline
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.PlaylistAdd
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.google.android.material.color.DynamicColors
 import io.github.junkfood.heal.MainActivity
 import io.github.junkfood.heal.ui.common.LocalDarkTheme
@@ -26,15 +35,16 @@ import io.github.junkfood.heal.util.PreferenceUtil
 import io.github.junkfood.heal.util.PreferenceUtil.LANGUAGE
 import io.github.junkfood.heal.R
 import io.github.junkfood.heal.ui.color.hct.Hct
-import io.github.junkfood.heal.ui.component.ConfirmButton
-import io.github.junkfood.heal.ui.component.DismissButton
-import io.github.junkfood.heal.ui.component.PreferenceItem
-import io.github.junkfood.heal.ui.component.SingleChoiceItem
+import io.github.junkfood.heal.ui.common.NavigationGraph
+import io.github.junkfood.heal.ui.common.NavigationGraph.toId
+import io.github.junkfood.heal.ui.component.*
 import io.github.junkfood.heal.ui.theme.ColorScheme.DEFAULT_SEED_COLOR
 import io.github.junkfood.heal.util.PreferenceUtil.DarkThemePreference.Companion.FOLLOW_SYSTEM
 import io.github.junkfood.heal.util.PreferenceUtil.DarkThemePreference.Companion.OFF
 import io.github.junkfood.heal.util.PreferenceUtil.DarkThemePreference.Companion.ON
 import io.github.junkfood.heal.util.PreferenceUtil.getLanguageConfiguration
+import io.github.junkfood.heal.util.TextUtil
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,19 +63,18 @@ fun AppearancePreferences(navHostController: NavHostController = LocalNavHostCon
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            LargeTopAppBar(
+            io.github.junkfood.heal.ui.component.LargeTopAppBar(
                 title = {
                     Text(
-                        modifier = Modifier.padding(start = 8.dp),
+                        modifier = Modifier.padding(),
                         text = stringResource(id = R.string.user_interface),
                     )
                 }, navigationIcon = {
                     IconButton(
-                        modifier = Modifier.padding(start = 8.dp),
-                        onClick = {navHostController.popBackStack()}
+                        modifier = Modifier.padding(),
+                        onClick = { navHostController.popBackStack() }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBack,
@@ -80,6 +89,8 @@ fun AppearancePreferences(navHostController: NavHostController = LocalNavHostCon
                     .padding(it)
                     .verticalScroll(rememberScrollState())
             ) {
+                EpisodePagePreview()
+
 /*                var showcase by remember { mutableStateOf(false) }
                 PreferenceSwitch(
                     title = stringResource(R.string.color_theming),
@@ -92,7 +103,8 @@ fun AppearancePreferences(navHostController: NavHostController = LocalNavHostCon
                     Row(
                         modifier = Modifier
                             .horizontalScroll(rememberScrollState())
-                            .padding(horizontal = 14.dp, vertical = 12.dp)
+                            .padding(horizontal = 9.dp)
+                            .padding(bottom = 6.dp)
                     ) {
                         if (DynamicColors.isDynamicColorAvailable()) {
                             ColorButton(color = dynamicDarkColorScheme(LocalContext.current).primary)
@@ -192,10 +204,100 @@ fun AppearancePreferences(navHostController: NavHostController = LocalNavHostCon
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EpisodePagePreview(){
-    Column() {
-        
+@Preview
+fun EpisodePagePreview() {
+    Column(modifier = Modifier
+        .padding(vertical = 12.dp, horizontal = 6.dp)
+        .clip(MaterialTheme.shapes.large)
+        .clickable { }) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 9.dp)
+        ) {
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth(0.25f)
+                    .clip(MaterialTheme.shapes.small)
+                    .aspectRatio(1f, matchHeightConstraintsFirst = true),
+                model = R.drawable.sample,
+                contentDescription = null
+            )
+            Column(
+                Modifier
+                    .padding(horizontal = 12.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
+                TitleMedium(stringResource(R.string.podcast_title_sample))
+                SubtitleMedium(stringResource(R.string.podcast_author_sample))
+            }
+
+        }
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(top = 6.dp)
+        ) {
+            HeadlineSmall(stringResource(R.string.episode_title_sample))
+            Row(modifier = Modifier.padding(top = 3.dp)) {
+                LabelMedium(
+                    text = stringResource(R.string.publish_date).format(TextUtil.parseDate(Date())),
+                    modifier = Modifier.padding(end = 9.dp)
+                )
+                LabelMedium(
+                    stringResource(R.string.duration).format("26:38"),
+                    modifier = Modifier.padding(end = 18.dp)
+                )
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 9.dp, bottom = 12.dp)
+                .padding(),
+            horizontalArrangement = Arrangement.End
+        ) {
+
+            Row(modifier = Modifier.weight(1f)) {
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier.padding()
+                ) {
+                    Icon(
+                        Icons.Rounded.PlaylistAdd,
+                        null,
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier.padding()
+                ) {
+                    Icon(
+                        Icons.Rounded.DownloadForOffline,
+                        null,
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier.padding()
+                ) {
+                    Icon(
+                        Icons.Rounded.Share,
+                        null,
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+            FilledIconButton(
+                onClick = { },
+                modifier = Modifier.padding(end = 9.dp)
+            ) { Icon(Icons.Rounded.PlayArrow, null) }
+
+        }
     }
 }
 

@@ -49,10 +49,10 @@ fun SettingsPage(navController: NavController = LocalNavHostController.current) 
             SmallTopAppBar(
                 title = {},
                 navigationIcon = { BackButton { navController.popBackStack() } },
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding()
             )
             Text(
-                modifier = Modifier.padding(start = 24.dp, top = 48.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 48.dp),
                 text = stringResource(R.string.settings),
                 style = MaterialTheme.typography.headlineLarge
             )
@@ -141,7 +141,7 @@ fun SettingItem(title: String, description: String, icon: ImageVector?, onClick:
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp, 20.dp),
+                .padding(9.dp, 20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             icon?.let {

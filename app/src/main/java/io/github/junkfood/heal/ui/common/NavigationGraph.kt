@@ -8,6 +8,7 @@ object NavigationGraph {
     const val SETTINGS = "settings"
     const val LISTEN = "listen"
     const val SUBSCRIPTIONS = "subscriptions"
+    const val APPEARANCE = "appearance"
 
     fun String.withArgument(argumentName: String): String = "$this/{$argumentName}"
 

@@ -3,9 +3,13 @@ package io.github.junkfood.heal
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import io.github.junkfood.heal.ui.HomeEntry
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,5 +24,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        fun setLanguage(locale: String) {
+            if (locale.isEmpty()) return
+            BaseApplication.applicationScope.launch(Dispatchers.Main) {
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(locale))
+            }
+        }
+    }
 }
 

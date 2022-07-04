@@ -17,14 +17,43 @@ object PreferenceUtil {
     private val kv = MMKV.defaultMMKV()
     private const val maxHistoryAmount = 15
 
+    fun updateValue(key: String, b: Boolean) = kv.encode(key, b)
+    fun updateInt(key: String, int: Int) = kv.encode(key, int)
+    fun getInt(key: String, int: Int) = kv.decodeInt(key, int)
+    fun getValue(key: String): Boolean = kv.decodeBool(key, false)
+    fun getValue(key: String, b: Boolean): Boolean = kv.decodeBool(key, b)
+    fun getString(key: String): String? = kv.decodeString(key)
+    fun updateString(key: String, string: String) = kv.encode(key, string)
+
+    const val SIMPLIFIED_CHINESE = 1
+    const val ENGLISH = 2
+    const val LANGUAGE = "language"
+    const val DARK_THEME = "dark_theme_value"
+    private const val THEME_COLOR = "theme_color"
+
+
     data class AppSettings(
         val darkTheme: DarkThemePreference = DarkThemePreference(),
         val seedColor: Int = DEFAULT_SEED_COLOR
     )
 
-    const val DARK_THEME = "dark_theme_value"
+    @Composable
+    fun getLanguageDesc(language: Int = kv.decodeInt(LANGUAGE)): String {
+        return when (language) {
+            SIMPLIFIED_CHINESE -> stringResource(R.string.la_zh_CN)
+            ENGLISH -> stringResource(R.string.la_en_US)
+            else -> stringResource(R.string.defaults)
+        }
+    }
 
-    private const val THEME_COLOR = "theme_color"
+    fun getLanguageConfiguration(language: Int = kv.decodeInt(LANGUAGE)): String {
+        return when (language) {
+            SIMPLIFIED_CHINESE -> "zh-CN"
+            ENGLISH -> "en-US"
+            else -> ""
+        }
+    }
+
 
     class DarkThemePreference(var darkThemeValue: Int = FOLLOW_SYSTEM) {
         companion object {
@@ -62,6 +91,15 @@ object PreferenceUtil {
         )
     )
     val AppSettingsStateFlow = mutableAppSettingsStateFlow.asStateFlow()
+
+    fun switchDarkThemeMode(mode: Int) {
+        applicationScope.launch(Dispatchers.IO) {
+            mutableAppSettingsStateFlow.update {
+                it.copy(darkTheme = DarkThemePreference(mode))
+            }
+            kv.encode(DARK_THEME, mode)
+        }
+    }
 
     fun modifyThemeSeedColor(colorArgb: Int) {
         applicationScope.launch(Dispatchers.IO) {

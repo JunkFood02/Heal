@@ -34,6 +34,7 @@ import io.github.junkfood.heal.ui.destination.library.LibraryViewModel
 import io.github.junkfood.heal.ui.destination.listen.ListenPage
 import io.github.junkfood.heal.ui.destination.podcast.PodcastPage
 import io.github.junkfood.heal.ui.destination.podcast.PodcastViewModel
+import io.github.junkfood.heal.ui.destination.settings.AppearancePreferences
 import io.github.junkfood.heal.ui.destination.settings.SettingsPage
 import io.github.junkfood.heal.ui.destination.subscription.SubscriptionPage
 import io.github.junkfood.heal.ui.theme.PodcastTheme
@@ -107,6 +108,9 @@ fun HomeEntry() {
                     }
                     animatedComposable(NavigationGraph.SUBSCRIPTIONS) {
                         SubscriptionPage()
+                    }
+                    animatedComposable(NavigationGraph.APPEARANCE) {
+                        AppearancePreferences()
                     }
                 }
 

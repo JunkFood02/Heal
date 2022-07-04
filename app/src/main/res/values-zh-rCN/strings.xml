@@ -25,4 +25,16 @@
     <string name="cancel">取消</string>
     <string name="unsubscribe_msg">你确定要取消订阅 “%s” 吗？这个操作同时会删除所有已下载的单集并且无法撤销。</string>
     <string name="open_rss">打开 RSS 流</string>
+    <string name="playback">播放</string>
+    <string name="playback_desc">播放控制、定时、播放器设置</string>
+    <string name="download">下载</string>
+    <string name="download_settings_desc">下载目录、储存管理</string>
+    <string name="defaults">默认</string>
+    <string name="dark_theme">深色模式</string>
+    <string name="interface_language">界面语言</string>
+    <string name="user_interface">用户界面</string>
+    <string name="user_interface_desc">动态色彩、深色模式、界面语言</string>
+    <string name="about">关于</string>
+    <string name="about_desc">开源软件</string>
+    <string name="settings">设置</string>
 </resources>

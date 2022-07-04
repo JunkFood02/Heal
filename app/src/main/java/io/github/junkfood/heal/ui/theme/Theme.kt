@@ -8,6 +8,10 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.github.junkfood.heal.ui.theme.ColorScheme.darkColorSchemeFromColor
 import io.github.junkfood.heal.ui.theme.ColorScheme.lightColorSchemeFromColor
 
+fun Color.applyOpacity(enabled: Boolean): Color {
+    return if (enabled) this else this.copy(alpha = 0.62f)
+}
+
 @Composable
 fun PodcastTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

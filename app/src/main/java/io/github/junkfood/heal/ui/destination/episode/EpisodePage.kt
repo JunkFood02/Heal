@@ -212,7 +212,7 @@ fun EpisodePage(
                                     .fillParentMaxWidth()
                                     .clip(MaterialTheme.shapes.large)
                                     .aspectRatio(1f),
-                                model = it, contentScale = ContentScale.FillBounds,
+                                model = it, contentScale = ContentScale.Crop,
                                 contentDescription = null
                             )
                         }

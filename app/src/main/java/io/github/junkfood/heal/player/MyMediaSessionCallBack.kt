@@ -3,6 +3,7 @@ package io.github.junkfood.heal.player
 
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo.TAG
 import com.google.android.exoplayer2.MediaMetadata
@@ -61,8 +62,8 @@ class MyMediaSessionCallBack(
         Log.i(TAG, "onSkipToNext")
         exoPlayer.seekToNext()
         exoPlayer.setPlayWhenReady(true);
-//        setPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT);
-//        mediaSession.setMetadata(getMediaMetadata(1));
+//        setPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_NEXT)
+//        mediaSession.setMetadata(getMediaMetadata(1))
         //
     }
 

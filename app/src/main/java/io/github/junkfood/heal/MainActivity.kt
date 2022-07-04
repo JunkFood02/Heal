@@ -3,11 +3,11 @@ package io.github.junkfood.heal
 import android.content.ComponentName
 import android.media.AudioManager
 import android.media.session.MediaController
-import android.media.session.MediaSession
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.MediaControllerCompat.getMediaController
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.compose.setContent
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                 MediaControllerCompat.setMediaController(this@MainActivity, mediaController)
             }
 
-//            buildTransportControls()
+            buildTransportControls()
         }
 
         override fun onConnectionFailed() {
@@ -48,12 +48,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private var controllerCallback = object : MediaControllerCompat.Callback() {
+    private val controllerCallback = object : MediaControllerCompat.Callback() {
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {}
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {}
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,9 +89,36 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onStop() {
         super.onStop()
-        //MediaControllerCompat.getMediaController(this)?.unregisterCallback()
+        getMediaController(this)?.unregisterCallback(controllerCallback)
         mediaBrowser.disconnect()
     }
+
+    fun buildTransportControls() {
+        MainActivity.Companion.mediaController = getMediaController(this@MainActivity)
+
+        // Grab the view for the play/pause button
+//        playPause = findViewById<ImageView>(R.id.play_pause).apply {
+//            setOnClickListener {
+//                // Since this is a play/pause button, you'll need to test the current state
+//                // and choose the action accordingly
+//
+//                val pbState = mediaController.playbackState.state
+//                if (pbState == PlaybackStateCompat.STATE_PLAYING) {
+//                    mediaController.transportControls.pause()
+//                } else {
+//                    mediaController.transportControls.play()
+//                }
+//            }
+//        }
+
+        // Display the initial state
+        val metadata = mediaController.metadata
+        val pbState = mediaController.playbackState
+
+        // Register a Callback to stay in sync
+        getMediaController(this)?.registerCallback(controllerCallback)
+    }
+
 
     companion object {
         fun setLanguage(locale: String) {
@@ -100,6 +128,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        lateinit var mediaController: MediaControllerCompat
     }
 }
 

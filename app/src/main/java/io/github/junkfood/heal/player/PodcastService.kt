@@ -12,22 +12,34 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.util.Log
+import io.github.junkfood.heal.MainActivity
 import io.github.junkfood.heal.database.model.Episode
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 
 class PodcastService : MediaBrowserServiceCompat() {
-    private var exoPlayer: ExoPlayer? = null
-    private var mediaSession: MediaSessionCompat? = null
+
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private val TAG = "PodcastService"
     private lateinit var episodes: List<Episode>//传入的数据集
 
-    /**
-     * 当服务收到onCreate（）生命周期回调方法时，它应该执行以下步骤：
-     * 1. 创建并初始化media session
-     * 2. 设置media session回调
-     * 3. 设置media session token
-     */
+    companion object {
+        lateinit var exoPlayer: ExoPlayer
+        lateinit var mediaSession: MediaSessionCompat
+
+
+        val progress: Flow<Float> = flow {
+            while (true) {
+                val progress = (exoPlayer.contentPosition / exoPlayer.contentDuration).toFloat()
+                emit(progress)
+                delay(100)
+            }
+        }
+
+     }
+
     override fun onCreate() {
         Log.i(TAG, "onCreate: ")
         super.onCreate()
@@ -49,7 +61,7 @@ class PodcastService : MediaBrowserServiceCompat() {
 
 
             // MySessionCallback() has methods that handle callbacks from a media controller
-            setCallback(MyMediaSessionCallBack(exoPlayer!!))
+            setCallback(MyMediaSessionCallBack(exoPlayer))
 
             // Set the session's token so that client activities can communicate with it.
             setSessionToken(sessionToken)
@@ -65,7 +77,7 @@ class PodcastService : MediaBrowserServiceCompat() {
                         PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SEEK_TO)
             )
             .build()
-        mediaSession!!.setPlaybackState(playbackState)
+        mediaSession.setPlaybackState(playbackState)
 
     }
 
@@ -118,7 +130,7 @@ class PodcastService : MediaBrowserServiceCompat() {
 
 
                 if (0 == i) {
-                    mediaSession?.setMetadata(MediaMetadataCompat.fromMediaMetadata(metadata))//setMetadata(metadataCompat)
+                    mediaSession.setMetadata(MediaMetadataCompat.fromMediaMetadata(metadata))//setMetadata(metadataCompat)
                 }
 
                 mediaItems.add(
@@ -129,7 +141,7 @@ class PodcastService : MediaBrowserServiceCompat() {
                     )
                 )
 
-                exoPlayer?.addMediaItem(MediaItem.fromUri(episodes[i].audioUrl))
+                exoPlayer.addMediaItem(MediaItem.fromUri(episodes[i].audioUrl))
             }
         }
         //当设置多首歌曲组成队列时报错
@@ -138,12 +150,20 @@ class PodcastService : MediaBrowserServiceCompat() {
         result.sendResult(mediaItems)
         Log.i(TAG, "onLoadChildren: addMediaItem")
 
-//        initExoPlayerListener()
+        mediaSession.controller?.playbackState?.let { initExoPlayerListener(it) }
 
-        exoPlayer?.prepare()
+
+        exoPlayer.prepare()
         Log.i(TAG, "onLoadChildren: prepare")
 
     }
+
+
+    //TODO
+    private fun initExoPlayerListener(state: PlaybackStateCompat) {
+//            mediaSession?.setPlaybackState(state)
+
+
 
 
 //            fun Player.Listener(){         // onPlaybackStateChanged(int state) {
@@ -194,6 +214,8 @@ class PodcastService : MediaBrowserServiceCompat() {
 private fun setPlaybackState(playbackState: Any?) {
 
 }
+
+
 
 
 

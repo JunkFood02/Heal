@@ -12,15 +12,33 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.util.Log
+import io.github.junkfood.heal.MainActivity
 import io.github.junkfood.heal.database.model.Episode
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 
 class PodcastService : MediaBrowserServiceCompat() {
-    private var exoPlayer: ExoPlayer? = null
-    private var mediaSession: MediaSessionCompat? = null
+
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private val TAG = "PodcastService"
     private lateinit var episodes : List<Episode>//传入的数据集
+
+    companion object {
+        lateinit var exoPlayer: ExoPlayer
+        lateinit var mediaSession: MediaSessionCompat
+
+
+        val progress: Flow<Float> = flow {
+            while (true) {
+                val progress = (exoPlayer.contentPosition / exoPlayer.contentDuration).toFloat()
+                emit(progress)
+                delay(100)
+            }
+        }
+
+     }
 
     /**
      * 当服务收到onCreate（）生命周期回调方法时，它应该执行以下步骤：
@@ -47,7 +65,7 @@ class PodcastService : MediaBrowserServiceCompat() {
 
 
             // MySessionCallback() has methods that handle callbacks from a media controller
-            setCallback(MyMediaSessionCallBack(exoPlayer!!))
+            setCallback(MyMediaSessionCallBack(exoPlayer))
 
             // Set the session's token so that client activities can communicate with it.
             setSessionToken(sessionToken)
@@ -127,34 +145,18 @@ class PodcastService : MediaBrowserServiceCompat() {
         result.sendResult(mediaItems)
         Log.i(TAG, "onLoadChildren: addMediaItem")
 
-        initExoPlayerListener()
+        mediaSession?.controller?.playbackState?.let { initExoPlayerListener(it) }
 
         exoPlayer?.prepare()
         Log.i(TAG, "onLoadChildren: prepare")
 
     }
 
-<<<<<<< HEAD
-    private fun initExoPlayerListener() {
-=======
-/*    inner class ExoPlayerListener() {
-        override fun onPlaybackStateChange(state: PlaybackStateCompat) {
-            mediaSession?.setPlaybackState(state)
 
-            when (state.playbackState) {
-                is PlaybackStateCompat.ACTION_PLAY -> {
-                }
-                is PlaybackStateCompat.ACTION_PLAY_PAUSE -> {
-
-                }
-            }
-            }
-
-        }*/
-
-        private fun initExoPlayerListener(state: PlaybackStateCompat) {
+    //TODO
+    private fun initExoPlayerListener(state: PlaybackStateCompat) {
 //            mediaSession?.setPlaybackState(state)
->>>>>>> 0c0655e (ListenPage WIP)
+
 
 
 //            fun Player.Listener(){         // onPlaybackStateChanged(int state) {
@@ -208,4 +210,6 @@ class PodcastService : MediaBrowserServiceCompat() {
 
 
 }
+
+
 

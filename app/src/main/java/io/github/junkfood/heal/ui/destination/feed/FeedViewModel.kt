@@ -20,7 +20,7 @@ class FeedViewModel : ViewModel() {
     //    init { fetchPodcast() }
     private val mutableStateFlow = MutableStateFlow(FeedViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
-    val episodeAndRecordFlow = Repository.getEpisodeAndRecord().filterNotNull()
+    val episodeAndRecodFlow = Repository.getEpisodeAndRecord().filterNotNull()
 
     private val TAG = "FeedViewModel"
 

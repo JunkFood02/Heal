@@ -37,8 +37,6 @@ class MyMediaSessionCallBack(
         Log.i(TAG, "onPlay: ")
         exoPlayer.play()
 
-
-
     }
 
     override fun onPause() {
@@ -72,4 +70,6 @@ class MyMediaSessionCallBack(
 
         Log.i(TAG, "onSkipToNext")
     }
+
+
 }

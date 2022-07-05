@@ -16,6 +16,7 @@ import java.util.*
 class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
 
     data class EpisodeViewState(
+        val episodeId: Long = 0,
         val podcastId: Long = 0, val podcastTitle: String = "",
         val title: String = "",
         val author: String = "",
@@ -29,12 +30,13 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
     private val mutableStateFlow = MutableStateFlow(EpisodeViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
 
-    private fun initEpisodeContent() {
+    fun initEpisodeContent() {
         viewModelScope.launch(Dispatchers.IO) {
             val episode = Repository.getEpisodeById(episodeId)
             val podcast = Repository.getPodcastById(episode.podcastID)
             mutableStateFlow.update {
                 it.copy(
+                    episodeId = episodeId,
                     podcastId = episode.podcastID,
                     podcastTitle = podcast.title,
                     podcastImageUrl = podcast.coverUrl,

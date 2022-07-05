@@ -3,8 +3,10 @@ package io.github.junkfood.heal.ui.destination.listen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player.Listener
 import io.github.junkfood.heal.MainActivity
 import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.database.model.Episode
@@ -45,18 +47,19 @@ class ListenViewModel : ViewModel() {
                 if (exoPlayer.mediaItemCount == 0 || exoPlayer.currentMediaItem!!.mediaId != episode.id.toString()) {
                     exoPlayer.setMediaItem(mediaItem)
                     exoPlayer.prepare()
+                    exoPlayer.seekTo((episode.duration * episode.progress).toLong())
                 }
             }
         }
 
         viewModelScope.launch(Dispatchers.Main) {
             while (true) {
-                delay(200)
+                delay(300)
                 mutableStateFlow.update {
                     it.copy(
                         isPlaying = exoPlayer.playbackState == ExoPlayer.STATE_READY && exoPlayer.isPlaying,
                         progress = getProgress(),
-                        duration = exoPlayer.duration
+                        duration = if (exoPlayer.duration == C.TIME_UNSET) episode.duration else exoPlayer.duration
                     )
                 }
                 withContext(Dispatchers.IO) {
@@ -101,7 +104,7 @@ class ListenViewModel : ViewModel() {
         exoPlayer.setPlaybackSpeed(speed)
     }
 
-    fun seekTo(progress: Float) {
+    fun seekToProgress(progress: Float) {
         exoPlayer.seekTo((exoPlayer.duration * progress).toLong())
     }
 

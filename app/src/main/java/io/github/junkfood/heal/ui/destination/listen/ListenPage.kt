@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -76,12 +77,14 @@ fun ListenPage(
                     ) {
                         Text(
                             modifier = Modifier
-                                .padding(bottom = 3.dp).clip(MaterialTheme.shapes.large)
+                                .padding(bottom = 3.dp)
+                                .clip(MaterialTheme.shapes.large)
                                 .clickable {
                                     navHostController.navigate(
                                         NavigationGraph.EPISODE.toId(episodeId)
                                     )
-                                }.padding(6.dp),
+                                }
+                                .padding(12.dp, 6.dp),
                             text = episodeTitle,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -92,19 +95,20 @@ fun ListenPage(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
-                                .clip(MaterialTheme.shapes.large).clickable {
+                                .clip(MaterialTheme.shapes.large)
+                                .clickable {
                                     navHostController.navigate(
                                         NavigationGraph.PODCAST.toId(podcastId)
                                     )
                                 }
-                                .padding(6.dp)
+                                .padding(12.dp, 6.dp)
                         )
                         var slider by remember { mutableStateOf(0f) }
                         Slider(
                             value = progress,
                             onValueChange = { slider = it },
                             modifier = Modifier.padding(top = 12.dp),
-                            onValueChangeFinished = { listenViewModel.seekTo(slider) }
+                            onValueChangeFinished = { listenViewModel.seekToProgress(slider) }
                         )
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Text(
@@ -140,7 +144,7 @@ fun ListenPage(
                             text = "Drag me!"
                         )*/
                         val speedList = listOf(1.0f, 1.2f, 1.5f, 0.8f)
-                        var speedIndex by remember { mutableStateOf(0) }
+                        var speedIndex by rememberSaveable { mutableStateOf(0) }
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()

@@ -143,7 +143,9 @@ fun ListenPage(
                             IconButton(modifier = Modifier.size(48.dp), onClick = {}) {
                                 Icon(Icons.Outlined.Replay10, null, modifier = Modifier.size(28.dp))
                             }
-                            FilledIconButton(modifier = Modifier.size(54.dp), onClick = {}) {
+                            FilledIconButton(modifier = Modifier.size(54.dp), onClick = {
+                                listenViewModel.playOrPause()
+                            }) {
                                 Icon(Icons.Rounded.PlayArrow, null, modifier = Modifier.size(36.dp))
                             }
                             IconButton(modifier = Modifier.size(48.dp), onClick = {}) {

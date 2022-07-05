@@ -1,27 +1,31 @@
 package io.github.junkfood.heal.ui.destination.listen
 
-import android.support.v4.media.session.MediaControllerCompat
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.ViewModel
 
 import io.github.junkfood.heal.MainActivity
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.viewModelScope
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import io.github.junkfood.heal.database.Repository
-import io.github.junkfood.heal.player.PodcastService
+import io.github.junkfood.heal.database.model.Episode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.math.log
 
 class ListenViewModel : ViewModel() {
-    val mediaController = MainActivity.Companion.mediaController
-
+    val exoPlayer = MainActivity.exoPlayer
+    private val TAG = "ListenViewModel"
     val latestRecord = Repository.getLatestRecord().filterNotNull()
     val mutableStateFlow = MutableStateFlow(ViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
+    lateinit var episode: Episode
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+
+        viewModelScope.launch (Dispatchers.Main) {
             latestRecord.collect {
                 val episode = it.episode
                 val podcast = Repository.getPodcastById(it.episode.podcastID)
@@ -32,8 +36,12 @@ class ListenViewModel : ViewModel() {
                         imageUrl = episode.cover, duration = episode.duration
                     )
                 }
+                val mediaItem = MediaItem.fromUri(episode.audioUrl)
+                exoPlayer.setMediaItem(mediaItem)
             }
         }
+
+
     }
 
     data class ViewState(
@@ -43,30 +51,35 @@ class ListenViewModel : ViewModel() {
         val duration: Long = 0
     )
 
-    fun getProgress() = PodcastService.progress
+    fun getProgress(): Float {
+        return (exoPlayer.currentPosition / exoPlayer.duration).toFloat()
+
+    }
 
     fun setPlayBackSpeed(speed: Float) {
-        mediaController.transportControls.setPlaybackSpeed(speed)
+        exoPlayer.setPlaybackSpeed(speed)
     }
 
     fun seekTo(pos: Long) {
-        mediaController.transportControls.seekTo(pos)
+
     }
 
     fun skipToNext() {
-        mediaController.transportControls.skipToNext()
     }
 
     fun skipToPrevious() {
-        mediaController.transportControls.skipToPrevious()
+
     }
 
     fun playOrPause() {
-        if (mediaController.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-            mediaController.transportControls.pause()
+        Log.d(TAG, "playOrPause")
+        if (exoPlayer.isPlaying) {
+            exoPlayer.pause()
         } else {
-            mediaController.transportControls.play()
+            exoPlayer.prepare()
+            exoPlayer.play()
         }
     }
+
 
 }

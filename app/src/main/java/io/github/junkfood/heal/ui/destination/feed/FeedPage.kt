@@ -77,7 +77,7 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                                         imageModel = item.episode.cover,
                                         title = item.episode.title,
                                         timeLeft = stringResource(R.string.minutes_left).format(
-                                            (item.episode.progress * 60000 / 6000).toInt()
+                                            ((1f-item.episode.progress) * (item.episode.duration / 60000L)).toInt()
                                         ),
                                         /*length = item.episode.duration,
                                         progress = item.episode.progress,*/
@@ -127,7 +127,6 @@ fun FeedPage(navHostController: NavHostController, feedViewModel: FeedViewModel)
                             episodeTitle = item.title,
                             episodeDescription = item.description,
                             onClick = {
-                                feedViewModel.insertToHistory(item.episodeId)
 //                                        feedViewModel.jumpToEpisode(i)
 //                                        navHostController.navigate(RouteName.EPISODE)
                                 navHostController.navigate(

@@ -14,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,11 +29,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.heal.R
+import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.ui.common.NavigationGraph
 import io.github.junkfood.heal.ui.common.NavigationGraph.toId
 import io.github.junkfood.heal.ui.component.*
 import io.github.junkfood.heal.ui.destination.podcast.PodcastViewModelFactory
 import io.github.junkfood.heal.util.TextUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private const val TAG = "EpisodePage"
 
@@ -47,13 +51,14 @@ fun EpisodePage(
         factory = EpisodeViewModelProvider(episodeId)
     )
 ) {
-
+    val coroutineScope = rememberCoroutineScope()
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         decayAnimationSpec,
         rememberTopAppBarScrollState()
     )
     val viewState = episodeViewModel.stateFlow.collectAsState()
+    if (viewState.value.episodeId != episodeId) episodeViewModel.initEpisodeContent()
     with(viewState.value) {
         Scaffold(
             modifier = Modifier
@@ -174,7 +179,11 @@ fun EpisodePage(
                                 }
                             }
                             FilledIconButton(
-                                onClick = { },
+                                onClick = {
+                                    coroutineScope.launch(Dispatchers.IO) {
+                                        Repository.insertRecord(episodeId)
+                                    }
+                                },
                                 modifier = Modifier.padding(end = 9.dp)
                             ) { Icon(Icons.Rounded.PlayArrow, null) }
 

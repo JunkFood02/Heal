@@ -31,7 +31,7 @@ fun NavigationBarImpl() {
                 navController.navigate(NavigationGraph.FEED) {
                     launchSingleTop = true
                     restoreState = true
-                    popUpTo(NavigationGraph.FEED){
+                    popUpTo(NavigationGraph.FEED) {
                         saveState = true
                     }
                 }
@@ -47,13 +47,15 @@ fun NavigationBarImpl() {
         NavigationBarItem(
             selected = selectedTab == 1,
             onClick = {
-                navController.navigate(NavigationGraph.LISTEN) {
-                    launchSingleTop = true
-                    restoreState = true
-                    popUpTo(NavigationGraph.FEED){
-                        saveState = true
+                if (selectedTab == 1) navController.popBackStack(NavigationGraph.LISTEN, false)
+                else
+                    navController.navigate(NavigationGraph.LISTEN) {
+                        launchSingleTop = true
+                        restoreState = true
+                        popUpTo(NavigationGraph.FEED) {
+                            saveState = true
+                        }
                     }
-                }
             },
             icon = {
                 Icon(
@@ -69,7 +71,7 @@ fun NavigationBarImpl() {
                 navController.navigate(NavigationGraph.LIBRARY) {
                     launchSingleTop = true
                     restoreState = true
-                    popUpTo(NavigationGraph.FEED){
+                    popUpTo(NavigationGraph.FEED) {
                         saveState = true
                     }
                 }

@@ -5,9 +5,14 @@ import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.heal.BaseApplication.Companion.applicationScope
 import io.github.junkfood.heal.BaseApplication.Companion.context
 import io.github.junkfood.heal.database.model.Episode
+import io.github.junkfood.heal.database.model.EpisodeAndRecord
 import io.github.junkfood.heal.database.model.Record
+import io.github.junkfood.heal.util.PreferenceUtil
 import io.github.junkfood.heal.util.TextUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
 object Repository {
@@ -42,7 +47,16 @@ object Repository {
 
     fun getEpisodesByPodcastId(podcastId: Long) = episodeDao.getEpisodesByPodcastId(podcastId)
 
-    fun getLatestRecord() = recordDao.getLastRecord()
+    //fun getLatestRecord() = recordDao.getLastRecord()
+
+    fun getLatestRecord(): Flow<EpisodeAndRecord> {
+        return recordDao.getEpisodeAndRecordFlow().mapNotNull {
+            it.last()
+        }
+    }
+
+    suspend fun updateEpisode(episode: Episode) = episodeDao.update(episode)
+
 
     suspend fun getPodcastById(Id: Long) = podcastDao.getPodcastById(Id)
 

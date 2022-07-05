@@ -31,4 +31,7 @@ interface RecordDao {
 
     @Query("SELECT * FROM record")
     fun getLastRecord(): Flow<EpisodeAndRecord>
+
+    @Query("SELECT * FROM record WHERE episodeId = :id")
+    fun getRecordById(id:Long) : Flow<EpisodeAndRecord>
 }

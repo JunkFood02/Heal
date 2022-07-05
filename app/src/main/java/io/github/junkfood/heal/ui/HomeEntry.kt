@@ -76,7 +76,7 @@ fun HomeEntry() {
                         )
                     }
                     animatedComposable(NavigationGraph.LISTEN) {
-                        ListenPage(navController, ListenViewModel())
+                        ListenPage(navController)
                     }
                     animatedComposable(NavigationGraph.LIBRARY) {
                         LibraryPage(navController, libraryViewModel)

@@ -1,74 +1,69 @@
 package io.github.junkfood.heal.ui.destination.listen
 
 import android.annotation.SuppressLint
-import android.media.browse.MediaBrowser
-import android.support.v4.media.session.PlaybackStateCompat
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DownloadForOffline
-import androidx.compose.material.icons.outlined.SkipNext
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.PlaylistAdd
-import androidx.compose.material.icons.rounded.SkipPrevious
+
+
+import androidx.compose.material.icons.outlined.MoreVert
+
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import io.github.junkfood.heal.MainActivity
-import io.github.junkfood.heal.player.MyMediaSessionCallBack
+import coil.compose.AsyncImage
+import io.github.junkfood.heal.R
+import io.github.junkfood.heal.ui.common.LocalNavHostController
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ListenPage(navHostController: NavHostController) {
-    Scaffold(modifier = Modifier
-        .padding()
-        .fillMaxSize()) {
-        Column() {
-            Row(modifier = Modifier.weight(1f)) {
+@Preview
+fun ListenPage(navHostController: NavHostController = LocalNavHostController.current) {
+    Scaffold(
+        modifier = Modifier
+            .padding()
+            .fillMaxSize(), topBar = {
+            io.github.junkfood.heal.ui.component.SmallTopAppBar(actions = {
                 IconButton(
-                    onClick = {
-                        val mediaController = MainActivity.Companion.mediaController
-                        val pbState = mediaController.playbackState.state
-                        if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-                            mediaController.transportControls.pause()
-                        } else {
-                            mediaController.transportControls.play()
-                        }
-                    },
-                    modifier = Modifier.padding()
-                ) {
-                    Icon(
-                        Icons.Rounded.PlayArrow,
-                        null,
-                        tint = MaterialTheme.colorScheme.secondary
+
+                    onClick = {}) {
+                    Icon(Icons.Outlined.MoreVert, null)
+                }
+            })
+        }, content = {
+            Column(modifier = Modifier.padding(it)) {
+                Column(modifier = Modifier.weight(7f), verticalArrangement = Arrangement.Center) {
+                    AsyncImage(
+                        modifier = Modifier
+                            .aspectRatio(1f, true)
+                            .padding(24.dp)
+                            .clip(MaterialTheme.shapes.large),
+                        model = R.drawable.sample,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
                     )
                 }
-                IconButton(
-                    onClick = {  },
-                    modifier = Modifier.padding()
+                Column(
+                    modifier = Modifier.weight(3f),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Icon(
-                        Icons.Outlined.SkipNext,
-                        null,
-                        tint = MaterialTheme.colorScheme.secondary
+                    Text(
+                        modifier = Modifier.padding(12.dp),
+                        text = "Episode Title very very long!!",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                }
-                IconButton(
-                    onClick = {  },
-                    modifier = Modifier.padding()
-                ) {
-                    Icon(
-                        Icons.Rounded.SkipPrevious,
-                        null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
+                    Text(text = "Episode Title very very long!!")
+
                 }
             }
         }
-    }
+    )
 }

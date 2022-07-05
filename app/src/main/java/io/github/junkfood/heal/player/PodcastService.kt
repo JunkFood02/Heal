@@ -134,7 +134,27 @@ class PodcastService : MediaBrowserServiceCompat() {
 
     }
 
+<<<<<<< HEAD
     private fun initExoPlayerListener() {
+=======
+/*    inner class ExoPlayerListener() {
+        override fun onPlaybackStateChange(state: PlaybackStateCompat) {
+            mediaSession?.setPlaybackState(state)
+
+            when (state.playbackState) {
+                is PlaybackStateCompat.ACTION_PLAY -> {
+                }
+                is PlaybackStateCompat.ACTION_PLAY_PAUSE -> {
+
+                }
+            }
+            }
+
+        }*/
+
+        private fun initExoPlayerListener(state: PlaybackStateCompat) {
+//            mediaSession?.setPlaybackState(state)
+>>>>>>> 0c0655e (ListenPage WIP)
 
 
 //            fun Player.Listener(){         // onPlaybackStateChanged(int state) {

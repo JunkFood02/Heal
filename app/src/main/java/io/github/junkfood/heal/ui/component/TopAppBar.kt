@@ -76,8 +76,8 @@ fun MediumTopAppBar(
 
 @Composable
 fun SmallTopAppBar(
-    title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    title: @Composable () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(0.dp),
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},

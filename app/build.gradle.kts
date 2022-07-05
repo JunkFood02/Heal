@@ -30,15 +30,15 @@ val isDebug = false
 
 android {
     signingConfigs {
-//        getByName("debug") {
-//            val keystorePropertiesFile = rootProject.file("keystore.properties")
-//            val keystoreProperties = Properties()
-//            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-//            storeFile = file(file(keystoreProperties["storeFile"]!!))
-//            keyAlias = keystoreProperties["keyAlias"].toString()
-//            keyPassword = keystoreProperties["keyPassword"].toString()
-//            storePassword = keystoreProperties["storePassword"].toString()
-//        }
+        getByName("debug") {
+            val keystorePropertiesFile = rootProject.file("keystore.properties")
+            val keystoreProperties = Properties()
+            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+            storeFile = file(file(keystoreProperties["storeFile"]!!))
+            keyAlias = keystoreProperties["keyAlias"].toString()
+            keyPassword = keystoreProperties["keyPassword"].toString()
+            storePassword = keystoreProperties["storePassword"].toString()
+        }
     }
     compileSdk = 32
     defaultConfig {

@@ -42,6 +42,8 @@ object Repository {
 
     fun getEpisodesByPodcastId(podcastId: Long) = episodeDao.getEpisodesByPodcastId(podcastId)
 
+    fun getLatestRecord() = recordDao.getLastRecord()
+
     suspend fun getPodcastById(Id: Long) = podcastDao.getPodcastById(Id)
 
     fun getPodcastFlowById(Id: Long) = podcastDao.getPodcastFlowById(Id)

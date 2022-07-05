@@ -32,13 +32,17 @@ import coil.compose.AsyncImage
 import com.google.android.material.slider.Slider
 import io.github.junkfood.heal.R
 import io.github.junkfood.heal.ui.common.LocalNavHostController
+import io.github.junkfood.heal.util.TextUtil
 import kotlin.math.roundToInt
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
-@Preview
-fun ListenPage(navHostController: NavHostController = LocalNavHostController.current) {
+fun ListenPage(
+    navHostController: NavHostController = LocalNavHostController.current,
+    listenViewModel: ListenViewModel
+) {
+    val viewState = listenViewModel.stateFlow.collectAsState()
     Scaffold(
         modifier = Modifier
             .padding()
@@ -52,95 +56,106 @@ fun ListenPage(navHostController: NavHostController = LocalNavHostController.cur
                 }
             })
         }, content = { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues)) {
-                Column(modifier = Modifier.weight(5f), verticalArrangement = Arrangement.Center) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .aspectRatio(1f, true)
-                            .padding(24.dp)
-                            .clip(MaterialTheme.shapes.large),
-                        model = R.drawable.sample,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(3f)
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        modifier = Modifier.padding(bottom = 3.dp),
-                        text = "Episode Title is very very very long!!",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                    Text(
-                        text = "Author name",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    var progress by remember { mutableStateOf(0f) }
-                    Slider(
-                        value = progress,
-                        onValueChange = { progress = it },
-                        modifier = Modifier.padding(top = 12.dp)
-                    )
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            "0:00",
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.align(Alignment.CenterStart)
-                        )
-                        Text(
-                            "1:59:48",
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.align(Alignment.CenterEnd)
+            viewState.value.run {
+                Column(modifier = Modifier.padding(paddingValues)) {
+                    Column(
+                        modifier = Modifier.weight(5f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .aspectRatio(1f, true)
+                                .padding(24.dp)
+                                .clip(MaterialTheme.shapes.large),
+                            model = imageUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
                         )
                     }
-                    /*LinearProgressIndicator(
+                    Column(
                         modifier = Modifier
+                            .weight(3f)
                             .fillMaxWidth()
-                            .padding(top = 24.dp, bottom = 12.dp)
-                            .clip(MaterialTheme.shapes.small)
-                    )*/
-                    /*var offsetX by remember { mutableStateOf(0f) }
-                    Text(
-                        modifier = Modifier
-                            .offset { IntOffset(offsetX.roundToInt(), 0) }
-                            .draggable(
-                                orientation = Orientation.Horizontal,
-                                state = rememberDraggableState { delta ->
-                                    offsetX += delta
-                                }
-                            ),
-                        text = "Drag me!"
-                    )*/
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                            .padding(horizontal = 24.dp),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        IconButton(onClick = {}) {
-                            Text(text = "0.8x", fontWeight = FontWeight.Bold)
+                        Text(
+                            modifier = Modifier.padding(bottom = 3.dp),
+                            text = title,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                        Text(
+                            text = podcastTitle,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        var progress by remember { mutableStateOf(0f) }
+                        Slider(
+                            value = progress,
+                            onValueChange = { progress = it },
+                            modifier = Modifier.padding(top = 12.dp)
+                        )
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                TextUtil.durationToText(
+                                    (duration * progress).toLong()
+                                ),
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier.align(Alignment.CenterStart)
+                            )
+                            Text(
+                                TextUtil.durationToText(duration),
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
                         }
-                        IconButton(modifier = Modifier.size(48.dp), onClick = {}) {
-                            Icon(Icons.Outlined.Replay10, null, modifier = Modifier.size(28.dp))
-                        }
-                        FilledIconButton(modifier = Modifier.size(54.dp), onClick = {}) {
-                            Icon(Icons.Rounded.PlayArrow, null, modifier = Modifier.size(36.dp))
-                        }
-                        IconButton(modifier = Modifier.size(48.dp), onClick = {}) {
-                            Icon(Icons.Outlined.Forward30, null, modifier = Modifier.size(28.dp))
-                        }
-                        IconButton(onClick = {}) {
-                            Icon(Icons.Filled.DarkMode, null)
+                        /*LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 24.dp, bottom = 12.dp)
+                                .clip(MaterialTheme.shapes.small)
+                        )*/
+                        /*var offsetX by remember { mutableStateOf(0f) }
+                        Text(
+                            modifier = Modifier
+                                .offset { IntOffset(offsetX.roundToInt(), 0) }
+                                .draggable(
+                                    orientation = Orientation.Horizontal,
+                                    state = rememberDraggableState { delta ->
+                                        offsetX += delta
+                                    }
+                                ),
+                            text = "Drag me!"
+                        )*/
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            IconButton(onClick = {}) {
+                                Text(text = "0.8x", fontWeight = FontWeight.Bold)
+                            }
+                            IconButton(modifier = Modifier.size(48.dp), onClick = {}) {
+                                Icon(Icons.Outlined.Replay10, null, modifier = Modifier.size(28.dp))
+                            }
+                            FilledIconButton(modifier = Modifier.size(54.dp), onClick = {}) {
+                                Icon(Icons.Rounded.PlayArrow, null, modifier = Modifier.size(36.dp))
+                            }
+                            IconButton(modifier = Modifier.size(48.dp), onClick = {}) {
+                                Icon(
+                                    Icons.Outlined.Forward30,
+                                    null,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
+                            IconButton(onClick = {}) {
+                                Icon(Icons.Filled.DarkMode, null)
+                            }
                         }
                     }
                 }

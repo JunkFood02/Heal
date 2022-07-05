@@ -38,7 +38,7 @@ class PodcastService : MediaBrowserServiceCompat() {
             }
         }
 
-     }
+    }
 
     override fun onCreate() {
         Log.i(TAG, "onCreate: ")
@@ -164,8 +164,6 @@ class PodcastService : MediaBrowserServiceCompat() {
 //            mediaSession?.setPlaybackState(state)
 
 
-
-
 //            fun Player.Listener(){         // onPlaybackStateChanged(int state) {
 //                var currentPosition = exoPlayer!!. getCurrentPosition ();
 //                var duration = exoPlayer!!. getDuration ();
@@ -209,10 +207,11 @@ class PodcastService : MediaBrowserServiceCompat() {
 //            }
 //        }
 //        )
-}
+    }
 
-private fun setPlaybackState(playbackState: Any?) {
+    private fun setPlaybackState(playbackState: Any?) {
 
+    }
 }
 
 

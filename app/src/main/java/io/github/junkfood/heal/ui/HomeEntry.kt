@@ -32,6 +32,7 @@ import io.github.junkfood.heal.ui.destination.feed.FeedViewModel
 import io.github.junkfood.heal.ui.destination.library.LibraryPage
 import io.github.junkfood.heal.ui.destination.library.LibraryViewModel
 import io.github.junkfood.heal.ui.destination.listen.ListenPage
+import io.github.junkfood.heal.ui.destination.listen.ListenViewModel
 import io.github.junkfood.heal.ui.destination.podcast.PodcastPage
 import io.github.junkfood.heal.ui.destination.podcast.PodcastViewModel
 import io.github.junkfood.heal.ui.destination.settings.AppearancePreferences
@@ -75,7 +76,7 @@ fun HomeEntry() {
                         )
                     }
                     animatedComposable(NavigationGraph.LISTEN) {
-                        ListenPage(navController)
+                        ListenPage(navController, ListenViewModel())
                     }
                     animatedComposable(NavigationGraph.LIBRARY) {
                         LibraryPage(navController, libraryViewModel)

@@ -6,24 +6,46 @@ import androidx.lifecycle.ViewModel
 
 import io.github.junkfood.heal.MainActivity
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.lifecycle.viewModelScope
+import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.player.PodcastService
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-class ListenViewModel: ViewModel() {
+class ListenViewModel : ViewModel() {
     val mediaController = MainActivity.Companion.mediaController
 
-    val state: Flow<PlaybackStateCompat> = flow {
-        while (true) {
-            val state = mediaController.playbackState
+    val latestRecord = Repository.getLatestRecord().filterNotNull()
+    val mutableStateFlow = MutableStateFlow(ViewState())
+    val stateFlow = mutableStateFlow.asStateFlow()
 
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            latestRecord.collect {
+                val episode = it.episode
+                val podcast = Repository.getPodcastById(it.episode.podcastID)
+                mutableStateFlow.update { viewState ->
+                    viewState.copy(
+                        title = episode.title,
+                        podcastTitle = podcast.title,
+                        imageUrl = episode.cover, duration = episode.duration
+                    )
+                }
+            }
         }
-
     }
+
+    data class ViewState(
+        val title: String = "",
+        val podcastTitle: String = "",
+        val imageUrl: String = "",
+        val duration: Long = 0
+    )
 
     fun getProgress() = PodcastService.progress
 
-    fun setPlayBackSpeed(speed: Float){
+    fun setPlayBackSpeed(speed: Float) {
         mediaController.transportControls.setPlaybackSpeed(speed)
     }
 
@@ -40,11 +62,11 @@ class ListenViewModel: ViewModel() {
     }
 
     fun playOrPause() {
-       if (mediaController.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-           mediaController.transportControls.pause()
-       } else {
-           mediaController.transportControls.play()
-       }
+        if (mediaController.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+            mediaController.transportControls.pause()
+        } else {
+            mediaController.transportControls.play()
+        }
     }
 
 }

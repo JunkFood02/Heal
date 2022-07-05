@@ -29,17 +29,17 @@ val rssParserVersion = "0.6.0"
 val isDebug = false
 
 android {
-//    signingConfigs {
-//        getByName("debug") {
-//            val keystorePropertiesFile = rootProject.file("keystore.properties")
-//            val keystoreProperties = Properties()
-//            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-//            storeFile = file(file(keystoreProperties["storeFile"]!!))
-//            keyAlias = keystoreProperties["keyAlias"].toString()
-//            keyPassword = keystoreProperties["keyPassword"].toString()
-//            storePassword = keystoreProperties["storePassword"].toString()
-//        }
-//    }
+    signingConfigs {
+        getByName("debug") {
+            val keystorePropertiesFile = rootProject.file("keystore.properties")
+            val keystoreProperties = Properties()
+            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+            storeFile = file(file(keystoreProperties["storeFile"]!!))
+            keyAlias = keystoreProperties["keyAlias"].toString()
+            keyPassword = keystoreProperties["keyPassword"].toString()
+            storePassword = keystoreProperties["storePassword"].toString()
+        }
+    }
     compileSdk = 32
     defaultConfig {
         applicationId = "io.github.junkfood.heal"

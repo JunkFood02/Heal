@@ -42,7 +42,7 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
                     author = podcast.author,
                     imageUrl = episode.cover,
                     description = episode.description,
-                    duration = (episode.duration / 600000),
+                    duration = (episode.duration / 60000),
                     pubDate = TextUtil.formatString(episode.pubDate) ?: Date()
                 )
             }

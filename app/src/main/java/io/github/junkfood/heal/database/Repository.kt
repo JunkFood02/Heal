@@ -11,6 +11,8 @@ import io.github.junkfood.heal.util.PreferenceUtil
 import io.github.junkfood.heal.util.TextUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
 object Repository {
@@ -48,9 +50,13 @@ object Repository {
     //fun getLatestRecord() = recordDao.getLastRecord()
 
     fun getLatestRecord(): Flow<EpisodeAndRecord> {
-        val id = PreferenceUtil.getLatestId()
-        return recordDao.getRecordById(id)
+        return recordDao.getEpisodeAndRecordFlow().mapNotNull {
+            it.last()
+        }
     }
+
+    suspend fun updateEpisode(episode: Episode) = episodeDao.update(episode)
+
 
     suspend fun getPodcastById(Id: Long) = podcastDao.getPodcastById(Id)
 

@@ -4,6 +4,8 @@ package io.github.junkfood.heal.ui.destination.listen
 import android.annotation.SuppressLint
 import android.widget.ProgressBar
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -29,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.google.android.material.slider.Slider
@@ -42,7 +45,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ListenPage(
     navHostController: NavHostController = LocalNavHostController.current,
-    listenViewModel: ListenViewModel
+    listenViewModel: ListenViewModel = viewModel()
 ) {
     val viewState = listenViewModel.stateFlow.collectAsState()
     Scaffold(
@@ -59,6 +62,9 @@ fun ListenPage(
             })
         }, content = { paddingValues ->
             viewState.value.run {
+                val padding = animateDpAsState(
+                    targetValue = if (isPlaying) 24.dp else 48.dp
+                )
                 Column(modifier = Modifier.padding(paddingValues)) {
                     Column(
                         modifier = Modifier.weight(5f),
@@ -67,7 +73,7 @@ fun ListenPage(
                         AsyncImage(
                             modifier = Modifier
                                 .aspectRatio(1f, true)
-                                .padding(24.dp)
+                                .padding(padding.value)
                                 .clip(MaterialTheme.shapes.large),
                             model = imageUrl,
                             contentDescription = null,
@@ -83,7 +89,7 @@ fun ListenPage(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            modifier = Modifier.padding(bottom = 3.dp),
+                            modifier = Modifier.padding(bottom = 9.dp),
                             text = title,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -94,10 +100,12 @@ fun ListenPage(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        var slider by remember { mutableStateOf(0f) }
                         Slider(
                             value = progress,
-                            onValueChange = {},
-                            modifier = Modifier.padding(top = 12.dp)
+                            onValueChange = { slider = it },
+                            modifier = Modifier.padding(top = 12.dp),
+                            onValueChangeFinished = { listenViewModel.seekTo(slider) }
                         )
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Text(
@@ -131,6 +139,8 @@ fun ListenPage(
                                 ),
                             text = "Drag me!"
                         )*/
+                        val speedList = listOf(1.0f, 1.2f, 1.5f, 0.8f)
+                        var speedIndex by remember { mutableStateOf(0) }
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -138,10 +148,18 @@ fun ListenPage(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            IconButton(onClick = {}) {
-                                Text(text = "0.8x", fontWeight = FontWeight.Bold)
+                            IconButton(onClick = {
+                                if (speedIndex == 3) speedIndex = 0 else speedIndex += 1
+                                listenViewModel.setPlayBackSpeed(speedList[speedIndex])
+                            }) {
+                                Text(
+                                    text = ("${speedList[speedIndex]}x"),
+                                    fontWeight = FontWeight.Bold
+                                )
                             }
-                            IconButton(modifier = Modifier.size(48.dp), onClick = {}) {
+                            IconButton(
+                                modifier = Modifier.size(48.dp),
+                                onClick = { listenViewModel.replay() }) {
                                 Icon(Icons.Outlined.Replay10, null, modifier = Modifier.size(28.dp))
                             }
                             FilledIconButton(modifier = Modifier.size(54.dp), onClick = {
@@ -153,7 +171,9 @@ fun ListenPage(
                                     modifier = Modifier.size(36.dp)
                                 )
                             }
-                            IconButton(modifier = Modifier.size(48.dp), onClick = {}) {
+                            IconButton(
+                                modifier = Modifier.size(48.dp),
+                                onClick = { listenViewModel.forward() }) {
                                 Icon(
                                     Icons.Outlined.Forward30,
                                     null,

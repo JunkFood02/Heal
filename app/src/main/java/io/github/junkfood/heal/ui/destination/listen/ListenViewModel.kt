@@ -2,34 +2,34 @@ package io.github.junkfood.heal.ui.destination.listen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-
-import io.github.junkfood.heal.MainActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import io.github.junkfood.heal.MainActivity
 import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.database.model.Episode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.log
 
 class ListenViewModel : ViewModel() {
     val exoPlayer = MainActivity.exoPlayer
     private val TAG = "ListenViewModel"
-    val latestRecord = Repository.getLatestRecord().filterNotNull()
     val mutableStateFlow = MutableStateFlow(ViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
     lateinit var episode: Episode
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            latestRecord.collect {
-                val episode = it.episode
+            Repository.getLatestRecord().filterNotNull().collect {
+                episode = it.episode
                 val podcast = Repository.getPodcastById(it.episode.podcastID)
-                exoPlayer.seekTo(0)
                 mutableStateFlow.update { viewState ->
                     viewState.copy(
                         title = episode.title,
@@ -38,16 +38,19 @@ class ListenViewModel : ViewModel() {
                     )
                 }
                 Log.d(TAG, episode.audioUrl)
-                val mediaItem = MediaItem.fromUri(episode.audioUrl)
-                if (exoPlayer.mediaItemCount == 0) {
+                val mediaItem =
+                    MediaItem.Builder().setMediaId(episode.id.toString()).setUri(episode.audioUrl)
+                        .build()
+                if (exoPlayer.mediaItemCount == 0 || exoPlayer.currentMediaItem!!.mediaId != episode.id.toString()) {
                     exoPlayer.setMediaItem(mediaItem)
                     exoPlayer.prepare()
                 }
             }
         }
-        viewModelScope.launch {
+
+        viewModelScope.launch(Dispatchers.Main) {
             while (true) {
-                delay(300)
+                delay(200)
                 mutableStateFlow.update {
                     it.copy(
                         isPlaying = exoPlayer.isPlaying,
@@ -55,8 +58,18 @@ class ListenViewModel : ViewModel() {
                         duration = exoPlayer.duration
                     )
                 }
+                withContext(Dispatchers.IO) {
+                    Repository.updateEpisode(
+                        episode.copy(
+                            progress = stateFlow.value.progress,
+                            duration = stateFlow.value.duration
+                        )
+                    )
+                }
             }
         }
+
+
     }
 
     data class ViewState(
@@ -68,17 +81,25 @@ class ListenViewModel : ViewModel() {
         val isPlaying: Boolean = false
     )
 
-    private fun getProgress(): Float {
-        return exoPlayer.currentPosition.toFloat() / exoPlayer.duration.toFloat()
 
+    private suspend fun getProgress(): Float {
+        return withContext(Dispatchers.Main) { exoPlayer.currentPosition.toFloat() / exoPlayer.duration.toFloat() }
+    }
+
+    fun forward() {
+        exoPlayer.seekTo(exoPlayer.currentPosition + 30000L)
+    }
+
+    fun replay() {
+        exoPlayer.seekTo(exoPlayer.currentPosition - 10000L)
     }
 
     fun setPlayBackSpeed(speed: Float) {
         exoPlayer.setPlaybackSpeed(speed)
     }
 
-    fun seekTo(pos: Long) {
-
+    fun seekTo(progress: Float) {
+        exoPlayer.seekTo((exoPlayer.duration * progress).toLong())
     }
 
     fun skipToNext() {

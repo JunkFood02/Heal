@@ -8,10 +8,11 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.PlaylistAdd
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -148,7 +149,7 @@ fun FeedItem(
                         TimeUnit.MILLISECONDS
                     )
                     val text =
-                        if (dayCount == 0L) stringResource(R.string.today) else if (dayCount <= 60L) stringResource(
+                        if (dayCount <= 1L) stringResource(R.string.today) else if (dayCount <= 14L) stringResource(
                             R.string.days_before
                         ).format(dayCount.toInt())
                         else TextUtil.parseDate(episodeDate)
@@ -159,7 +160,7 @@ fun FeedItem(
         }
         Text(
             text = HtmlCompat.fromHtml(episodeDescription, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                .toString(),
+                .toString().replace("\n\n", "\n"),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
             maxLines = 2,
@@ -216,5 +217,49 @@ fun FeedItem(
 
         }
 
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistoryCard(imageModel: Any, title: String, timeLeft: String, onClick: () -> Unit) {
+    var s by remember { mutableStateOf(title) }
+
+    ElevatedCard(
+        modifier = Modifier
+            .padding(vertical = 6.dp)
+            .width(150.dp), onClick = onClick
+    ) {
+        AsyncImage(
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.medium)
+                .aspectRatio(1f, matchHeightConstraintsFirst = true),
+            model = imageModel,
+            contentDescription = null, contentScale = ContentScale.Crop
+        )
+        Text(
+            s,
+            modifier = Modifier.padding(
+                top = 9.dp,
+                bottom = 3.dp,
+                start = 12.dp,
+                end = 12.dp
+            ),
+            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis, onTextLayout = { textLayoutResult ->
+                if ((textLayoutResult.lineCount) < 2) {
+                    s = "$title\n "
+                }
+            }
+        )
+        Text(
+            timeLeft,
+            modifier = Modifier.padding(bottom = 15.dp, start = 12.dp, end = 12.dp),
+            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }

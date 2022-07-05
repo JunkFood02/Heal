@@ -1,5 +1,6 @@
 package io.github.junkfood.heal.ui.destination.episode
 
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -21,7 +22,7 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
         val podcastImageUrl: String = "",
         val imageUrl: String = "",
         val description: String = "",
-        val duration: String = "",
+        val duration: Long = 0,
         val pubDate: Date = Date()
     )
 
@@ -32,7 +33,6 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val episode = Repository.getEpisodeById(episodeId)
             val podcast = Repository.getPodcastById(episode.podcastID)
-
             mutableStateFlow.update {
                 it.copy(
                     podcastId = episode.podcastID,
@@ -42,7 +42,7 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
                     author = podcast.author,
                     imageUrl = episode.cover,
                     description = episode.description,
-                    duration = episode.duration.toString(),
+                    duration = (episode.duration / 600000),
                     pubDate = TextUtil.formatString(episode.pubDate) ?: Date()
                 )
             }

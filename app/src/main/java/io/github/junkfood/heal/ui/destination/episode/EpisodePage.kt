@@ -126,7 +126,7 @@ fun EpisodePage(
                                     modifier = Modifier.padding(end = 9.dp)
                                 )
                                 LabelMedium(
-                                    stringResource(R.string.duration).format(duration),
+                                    stringResource(R.string.duration).format(duration.toString()),
                                     modifier = Modifier.padding(end = 18.dp)
                                 )
                             }

@@ -1,8 +1,6 @@
 package io.github.junkfood.heal.ui.destination.library
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -10,25 +8,26 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.rounded.ContentPaste
+import androidx.compose.material.icons.rounded.RssFeed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import io.github.junkfood.heal.R
+import io.github.junkfood.heal.ui.common.LocalNavHostController
 import io.github.junkfood.heal.ui.common.NavigationGraph
 import io.github.junkfood.heal.ui.common.NavigationGraph.toId
-import io.github.junkfood.heal.ui.component.BackButton
+import io.github.junkfood.heal.util.DatabaseUtil
 
 private const val TAG = "LibraryPage"
 
@@ -36,235 +35,154 @@ private const val TAG = "LibraryPage"
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryPage(
-    navHostController: NavHostController,
+    navHostController: NavHostController = LocalNavHostController.current,
     libraryViewModel: LibraryViewModel
 ) {
-    val decayAnimationSpec = rememberSplineBasedDecay<Float>()
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        decayAnimationSpec,
-        rememberTopAppBarScrollState()
-    )
-    val viewState = libraryViewModel.stateFlow.collectAsState()
-    val libraryDataState = libraryViewModel.episodeAndRecordFlow.collectAsState(ArrayList())
     var showDialog by remember { mutableStateOf(false) }
-    Scaffold(
-        modifier = Modifier
-            .padding()
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            io.github.junkfood.heal.ui.component.SmallTopAppBar(
-                title = { Text(stringResource(id = R.string.library)) },
-                navigationIcon = { BackButton { navHostController.popBackStack() } },
-                scrollBehavior = scrollBehavior
-            )
-        }, backgroundColor = MaterialTheme.colorScheme.surface,
-        content = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
 
-                Card(
-                    modifier = Modifier
-                        .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "历史记录",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier
-                                .padding(10.dp)
-                        )
-                        TextButton(
-                            modifier = Modifier
-                                .padding(end = 10.dp),
-                            onClick = {
-                                libraryViewModel.deleteAllRecords()
-                            }) {
-                            Text("清除记录")
-                        }
-                    }
-
-
-/*                    libraryDataState.value.run {
-                        //val episodeList = ArrayList<io.github.junkfood.podcast.database.model.Episode>()
-                        LazyRow(
-                            modifier = Modifier
-                                .height(180.dp)
-                        ) {
-                            val episodeList = libraryDataState.value.reversed()
-                            for (item in episodeList) {
-                                item {
-                                    HistoryCard(
-                                        imageModel = item.episode.cover,
-                                        title = item.episode.title,
-                                        author = item.episode.author,
-                                        length = item.episode.duration,
-                                        progress = item.episode.progress,
-                                        onClick = {
-                                            Log.d(TAG, "LibraryPage: onClick")
-                                            navHostController.navigate(
-                                                NavigationGraph.EPISODE.toId(
-                                                    item.episode.id
-                                                )
-                                            )
-                                            libraryViewModel.insertToHistory(item.episode.id)
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }*/
+    val viewState = libraryViewModel.stateFlow.collectAsState()
+    val podcasts = libraryViewModel.podcastFlow.collectAsState(ArrayList()).value
+    Scaffold(modifier = Modifier
+        .padding()
+        .fillMaxSize(), topBar = {
+        io.github.junkfood.heal.ui.component.LargeTopAppBar(title = { Text(stringResource(id = R.string.library)) },
+            actions = {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Outlined.ImportExport, null)
                 }
-                Card(
-                    modifier = Modifier
-                        .padding(10.dp)
+                IconButton(onClick = { }) {
+                    Icon(Icons.Outlined.Search, null)
+                }
+            })
+    }, backgroundColor = MaterialTheme.colorScheme.surface, floatingActionButton = {
+        FloatingActionButton(
+            onClick = { showDialog = true },
+            modifier = Modifier.padding(bottom = 36.dp, end = 24.dp)
+        ) { Icon(Icons.Rounded.RssFeed, null) }
+    }, content = {
+        Column(Modifier.verticalScroll(rememberScrollState())) {
+            Box(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 18.dp, vertical = 12.dp
+                    )
+                    .fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.align(Alignment.CenterStart),
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .clickable { navHostController.navigate(NavigationGraph.SUBSCRIPTIONS) }
-                                .padding(12.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Icon(
-                                Icons.Rounded.Download,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                            Text(
-                                text = "下载内容",
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                        LibraryDivider()
-                        Row(
-                            modifier = Modifier
-                                .clickable {
+                    Icon(
+                        Icons.Outlined.Subscriptions,
+                        null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        stringResource(R.string.subscriptions),
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
 
-                                    navHostController.navigate(NavigationGraph.SETTINGS) {
-                                        launchSingleTop = true
-                                    }
-                                }
-                                .padding(12.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Icon(
-                                Icons.Rounded.Settings,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                TextButton(modifier = Modifier.align(Alignment.CenterEnd),
+                    onClick = { navHostController.navigate(NavigationGraph.SUBSCRIPTIONS) }) {
+                    Text(stringResource(R.string.more))
+                }
+
+            }
+
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 18.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)
+            ) {
+
+                podcasts.forEach { podcastItem ->
+                    item {
+                        OutlinedCard(onClick = {
+                            navHostController.navigate(
+                                NavigationGraph.PODCAST.toId(
+                                    podcastItem.id
+                                )
                             )
-                            Text(
-                                text = "设置",
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                        }) {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                                    .size(120.dp),
+                                model = podcastItem.coverUrl,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
                             )
                         }
                     }
                 }
             }
+            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+            LibraryItem(
+                icon = Icons.Outlined.DownloadForOffline,
+                title = stringResource(R.string.downloads)
+            ) {}
+            LibraryItem(
+                icon = Icons.Outlined.Queue, title = stringResource(R.string.queue)
+            ) {}
+            LibraryItem(
+                icon = Icons.Outlined.History, title = stringResource(R.string.history)
+            ) {}
         }
-    )
-}
 
-@Composable
-fun LibraryDivider() {
-    Divider(
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier
-            .padding(start = 8.dp, end = 8.dp)
-    )
-}
+    }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CardContent(imageModel: Any, title: String, timeLeft: String, onClick: () -> Unit) {
-    ElevatedCard(
-        modifier = Modifier
-            .padding(vertical = 6.dp)
-            .padding(start = 12.dp)
-            .width(150.dp), onClick = onClick
-    ) {
-        AsyncImage(
-            modifier = Modifier
-                .clip(MaterialTheme.shapes.medium)
-                .aspectRatio(1f, matchHeightConstraintsFirst = true),
-            model = imageModel,
-            contentDescription = null
-        )
-        Text(
-            title,
-            modifier = Modifier.padding(
-                top = 9.dp,
-                bottom = 3.dp,
-                start = 12.dp,
-                end = 12.dp
-            ),
-            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            timeLeft,
-            modifier = Modifier.padding(bottom = 15.dp, start = 12.dp, end = 12.dp),
-            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.62f),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+    )
+    if (showDialog) {
+        val clipboardManager = LocalClipboardManager.current
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(stringResource(R.string.subscribe_rss)) },
+            text = {
+                TextField(
+                    value = viewState.value.url,
+                    onValueChange = { libraryViewModel.updateUrl(it) }, trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                clipboardManager.getText()?.text?.let {
+                                    libraryViewModel.updateUrl(it)
+                                }
+                            }) { Icon(Icons.Rounded.ContentPaste, null) }
+                    })
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    DatabaseUtil.fetchPodcast(viewState.value.url)
+                    showDialog = false
+                }) {
+                    Text("Fetch podcast")
+                }
+            })
     }
 }
 
 @Composable
-fun HistoryCard(
-    imageModel: Any,
-    title: String,
-    author: String,
-    length: String,
-    progress: Float,
-    onClick: () -> Unit
-) {
-    Column(
-        Modifier
-            .padding(12.dp)
-            .clickable {
-                onClick()
-            }
-    ) {
-        AsyncImage(
-            modifier = Modifier
-                .size(150.dp)
-                .clip(MaterialTheme.shapes.medium)
-                .aspectRatio(1f, matchHeightConstraintsFirst = true),
-            model = imageModel,
-            contentDescription = null
-        )
+fun LibraryItem(title: String, icon: ImageVector, onClick: () -> Unit) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable { onClick() }
+        .padding(horizontal = 16.dp, vertical = 18.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(
+            modifier = Modifier.padding(start = 12.dp),
             text = title,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            fontSize = 10.sp,
-            modifier = Modifier
-                .width(100.dp)
-        )
-        Text(
-            text = author,
-            fontSize = 10.sp,
-            modifier = Modifier
-                .width(100.dp)
-        )
-        LinearProgressIndicator(
-            progress = progress,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .width(100.dp)
+            style = MaterialTheme.typography.titleMedium
         )
     }
+    Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+
 }
+
+
+
+
 
 

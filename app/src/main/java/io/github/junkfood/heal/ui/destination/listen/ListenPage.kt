@@ -10,10 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DownloadForOffline
 import androidx.compose.material.icons.outlined.SkipNext
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.PlaylistAdd
-import androidx.compose.material.icons.rounded.SkipPrevious
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,7 +40,8 @@ fun ListenPage(navHostController: NavHostController) {
                     modifier = Modifier.padding()
                 ) {
                     Icon(
-                        Icons.Rounded.PlayArrow,
+                        if (MainActivity.mediaController.playbackState.state == PlaybackStateCompat.STATE_PLAYING )
+                            Icons.Rounded.PlayArrow else Icons.Rounded.Pause,
                         null,
                         tint = MaterialTheme.colorScheme.secondary
                     )

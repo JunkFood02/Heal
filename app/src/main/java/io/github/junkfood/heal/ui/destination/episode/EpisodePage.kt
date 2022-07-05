@@ -58,7 +58,10 @@ fun EpisodePage(
         rememberTopAppBarScrollState()
     )
     val viewState = episodeViewModel.stateFlow.collectAsState()
-    if (viewState.value.episodeId != episodeId) episodeViewModel.initEpisodeContent()
+    LaunchedEffect(viewState.value.episodeId != episodeId)
+    {
+        episodeViewModel.initEpisodeContent()
+    }
     with(viewState.value) {
         Scaffold(
             modifier = Modifier

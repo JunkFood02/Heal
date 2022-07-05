@@ -30,29 +30,30 @@ class EpisodeViewModel constructor(private val episodeId: Long) : ViewModel() {
     private val mutableStateFlow = MutableStateFlow(EpisodeViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
 
-    fun initEpisodeContent() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val episode = Repository.getEpisodeById(episodeId)
-            val podcast = Repository.getPodcastById(episode.podcastID)
-            mutableStateFlow.update {
-                it.copy(
-                    episodeId = episodeId,
-                    podcastId = episode.podcastID,
-                    podcastTitle = podcast.title,
-                    podcastImageUrl = podcast.coverUrl,
-                    title = episode.title,
-                    author = podcast.author,
-                    imageUrl = episode.cover,
-                    description = episode.description,
-                    duration = (episode.duration / 60000),
-                    pubDate = TextUtil.formatString(episode.pubDate) ?: Date()
-                )
-            }
+    suspend fun initEpisodeContent() {
+        val episode = Repository.getEpisodeById(episodeId)
+        val podcast = Repository.getPodcastById(episode.podcastID)
+        mutableStateFlow.update {
+            it.copy(
+                episodeId = episodeId,
+                podcastId = episode.podcastID,
+                podcastTitle = podcast.title,
+                podcastImageUrl = podcast.coverUrl,
+                title = episode.title,
+                author = podcast.author,
+                imageUrl = episode.cover,
+                description = episode.description,
+                duration = (episode.duration / 60000),
+                pubDate = TextUtil.formatString(episode.pubDate) ?: Date()
+            )
         }
+
     }
 
     init {
-        initEpisodeContent()
+        viewModelScope.launch(Dispatchers.IO) {
+            initEpisodeContent()
+        }
     }
 
 }

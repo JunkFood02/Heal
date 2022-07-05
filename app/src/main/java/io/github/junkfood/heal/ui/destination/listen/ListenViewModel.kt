@@ -10,6 +10,7 @@ import com.google.android.exoplayer2.MediaItem
 import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.database.model.Episode
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,25 +25,38 @@ class ListenViewModel : ViewModel() {
     lateinit var episode: Episode
 
     init {
-        viewModelScope.launch (Dispatchers.Main) {
-
+        viewModelScope.launch(Dispatchers.Main) {
             latestRecord.collect {
                 val episode = it.episode
                 val podcast = Repository.getPodcastById(it.episode.podcastID)
+                exoPlayer.seekTo(0)
                 mutableStateFlow.update { viewState ->
                     viewState.copy(
                         title = episode.title,
                         podcastTitle = podcast.title,
                         imageUrl = episode.cover,
-                        duration = episode.duration,
                     )
                 }
+                Log.d(TAG, episode.audioUrl)
                 val mediaItem = MediaItem.fromUri(episode.audioUrl)
-                exoPlayer.setMediaItem(mediaItem)
+                if (exoPlayer.mediaItemCount == 0) {
+                    exoPlayer.setMediaItem(mediaItem)
+                    exoPlayer.prepare()
+                }
             }
         }
-
-
+        viewModelScope.launch {
+            while (true) {
+                delay(300)
+                mutableStateFlow.update {
+                    it.copy(
+                        isPlaying = exoPlayer.isPlaying,
+                        progress = getProgress(),
+                        duration = exoPlayer.duration
+                    )
+                }
+            }
+        }
     }
 
     data class ViewState(
@@ -50,11 +64,12 @@ class ListenViewModel : ViewModel() {
         val podcastTitle: String = "",
         val imageUrl: String = "",
         val duration: Long = 0,
-        val progress: Float = 0F
+        val progress: Float = 0F,
+        val isPlaying: Boolean = false
     )
 
-    fun getProgress(): Float {
-        return (exoPlayer.currentPosition / exoPlayer.duration).toFloat()
+    private fun getProgress(): Float {
+        return exoPlayer.currentPosition.toFloat() / exoPlayer.duration.toFloat()
 
     }
 
@@ -62,8 +77,8 @@ class ListenViewModel : ViewModel() {
         exoPlayer.setPlaybackSpeed(speed)
     }
 
-    fun seekTo(pos: Float) {
-        exoPlayer.seekTo((pos * episode.duration).toLong())
+    fun seekTo(pos: Long) {
+
     }
 
     fun skipToNext() {
@@ -82,6 +97,5 @@ class ListenViewModel : ViewModel() {
             exoPlayer.play()
         }
     }
-
 
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.icosillion.podengine.models.Podcast
 import io.github.junkfood.heal.BaseApplication.Companion.context
 import io.github.junkfood.heal.database.Repository
+import io.github.junkfood.heal.util.PreferenceUtil
 import io.github.junkfood.heal.util.TextUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -94,6 +95,7 @@ class FeedViewModel : ViewModel() {
     fun insertToHistory(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             Repository.insertRecord(id)
+            PreferenceUtil.insertLatestId(id)
         }
     }
 }

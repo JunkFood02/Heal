@@ -122,6 +122,13 @@ object PreferenceUtil {
         )
     }
 
+    fun insertLatestId(id: Long) {
+        kv.encode("history", id)
+    }
+
+    fun getLatestId(): Long {
+        return kv.decodeLong("history", 1)
+    }
 //    suspend fun insertHistory(id: Long) {
 //        if (kv.decodeStringSet("history") == null || kv.decodeStringSet("history")!!.size == 0) {
 //            val set = LinkedHashSet<String>()

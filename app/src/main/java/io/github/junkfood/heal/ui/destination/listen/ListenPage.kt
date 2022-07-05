@@ -11,8 +11,10 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.Nightlife
+import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material3.*
@@ -92,10 +94,9 @@ fun ListenPage(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        var progress by remember { mutableStateOf(0f) }
                         Slider(
                             value = progress,
-                            onValueChange = { progress = it },
+                            onValueChange = {},
                             modifier = Modifier.padding(top = 12.dp)
                         )
                         Box(modifier = Modifier.fillMaxWidth()) {
@@ -146,7 +147,11 @@ fun ListenPage(
                             FilledIconButton(modifier = Modifier.size(54.dp), onClick = {
                                 listenViewModel.playOrPause()
                             }) {
-                                Icon(Icons.Rounded.PlayArrow, null, modifier = Modifier.size(36.dp))
+                                Icon(
+                                    if (!isPlaying) Icons.Filled.PlayArrow else Icons.Outlined.Pause,
+                                    null,
+                                    modifier = Modifier.size(36.dp)
+                                )
                             }
                             IconButton(modifier = Modifier.size(48.dp), onClick = {}) {
                                 Icon(

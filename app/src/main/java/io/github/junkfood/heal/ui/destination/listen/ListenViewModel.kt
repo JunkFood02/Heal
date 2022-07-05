@@ -12,67 +12,57 @@ import io.github.junkfood.heal.database.Repository
 import io.github.junkfood.heal.database.model.Episode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ListenViewModel : ViewModel() {
     val exoPlayer = MainActivity.exoPlayer
     private val TAG = "ListenViewModel"
-    val mutableStateFlow = MutableStateFlow(ViewState())
+    private val mutableStateFlow = MutableStateFlow(ViewState())
     val stateFlow = mutableStateFlow.asStateFlow()
     lateinit var episode: Episode
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            Repository.getLatestRecord().filterNotNull().collect {
-                episode = it.episode
-                val podcast = Repository.getPodcastById(it.episode.podcastID)
-                mutableStateFlow.update { viewState ->
-                    viewState.copy(
-                        episodeTitle = episode.title,
-                        podcastTitle = podcast.title,
-                        imageUrl = episode.cover,
-                        podcastId = podcast.id,
-                        episodeId = episode.id
-                    )
-                }
-                Log.d(TAG, episode.audioUrl)
-                val mediaItem =
-                    MediaItem.Builder().setMediaId(episode.id.toString()).setUri(episode.audioUrl)
-                        .build()
-                if (exoPlayer.mediaItemCount == 0 || exoPlayer.currentMediaItem!!.mediaId != episode.id.toString()) {
-                    exoPlayer.setMediaItem(mediaItem)
-                    exoPlayer.prepare()
-                    exoPlayer.seekTo((episode.duration * episode.progress).toLong())
-                }
-            }
-        }
-
-        viewModelScope.launch(Dispatchers.Main) {
-            while (true) {
-                delay(300)
-                mutableStateFlow.update {
-                    it.copy(
-                        isPlaying = exoPlayer.playbackState == ExoPlayer.STATE_READY && exoPlayer.isPlaying,
-                        progress = getProgress(),
-                        duration = if (exoPlayer.duration == C.TIME_UNSET) episode.duration else exoPlayer.duration
-                    )
-                }
-                withContext(Dispatchers.IO) {
-                    Repository.updateEpisode(
-                        episode.copy(
-                            progress = stateFlow.value.progress,
-                            duration = stateFlow.value.duration
+            Repository.getLatestRecord().filterNotNull().distinctUntilChangedBy { it.record.episodeId }
+                .collect {
+                    episode = it.episode
+                    val podcast = Repository.getPodcastById(it.episode.podcastID)
+                    mutableStateFlow.update { viewState ->
+                        viewState.copy(
+                            episodeTitle = episode.title,
+                            podcastTitle = podcast.title,
+                            imageUrl = episode.cover,
+                            podcastId = podcast.id,
+                            episodeId = episode.id
                         )
-                    )
+                    }
+                    Log.d(TAG, episode.audioUrl)
+                    val mediaItem =
+                        MediaItem.Builder().setMediaId(episode.id.toString())
+                            .setUri(episode.audioUrl)
+                            .build()
+                    if (exoPlayer.mediaItemCount == 0 || exoPlayer.currentMediaItem!!.mediaId != episode.id.toString()) {
+                        exoPlayer.setMediaItem(mediaItem)
+                        exoPlayer.prepare()
+                        exoPlayer.seekTo((episode.duration * episode.progress).toLong())
+                    }
                 }
-            }
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            while (true) {
+                delay(1000)
+                if (!stateFlow.value.isPlaying) continue
+                Repository.updateEpisode(
+                    episode.copy(
+                        progress = stateFlow.value.progress,
+                        duration = stateFlow.value.duration
+                    )
+                )
+            }
 
+        }
 
     }
 
@@ -87,6 +77,20 @@ class ListenViewModel : ViewModel() {
         val isPlaying: Boolean = false
     )
 
+    suspend fun updateProgress() {
+        while (true) {
+            Log.d(TAG, "updateProgress: ")
+            delay(300)
+            mutableStateFlow.update {
+                it.copy(
+                    isPlaying = exoPlayer.playbackState == ExoPlayer.STATE_READY && exoPlayer.isPlaying,
+                    progress = getProgress(),
+                    duration = if (exoPlayer.duration == C.TIME_UNSET) episode.duration else exoPlayer.duration
+                )
+            }
+        }
+
+    }
 
     private suspend fun getProgress(): Float {
         return withContext(Dispatchers.Main) { exoPlayer.currentPosition.toFloat() / exoPlayer.duration.toFloat() }
@@ -108,12 +112,6 @@ class ListenViewModel : ViewModel() {
         exoPlayer.seekTo((exoPlayer.duration * progress).toLong())
     }
 
-    fun skipToNext() {
-    }
-
-    fun skipToPrevious() {
-
-    }
 
     fun playOrPause() {
         Log.d(TAG, "playOrPause")

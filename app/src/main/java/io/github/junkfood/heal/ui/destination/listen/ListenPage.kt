@@ -35,6 +35,9 @@ fun ListenPage(
     listenViewModel: ListenViewModel = viewModel()
 ) {
     val viewState = listenViewModel.stateFlow.collectAsState()
+    LaunchedEffect(viewState.value.isPlaying){
+        listenViewModel.updateProgress()
+    }
     Scaffold(
         modifier = Modifier
             .padding()

@@ -40,12 +40,6 @@ class PodcastService : MediaBrowserServiceCompat() {
 
      }
 
-    /**
-     * 当服务收到onCreate（）生命周期回调方法时，它应该执行以下步骤：
-     * 1. 创建并初始化media session
-     * 2. 设置media session回调
-     * 3. 设置media session token
-     */
     override fun onCreate() {
         Log.i(TAG, "onCreate: ")
         super.onCreate()
@@ -81,7 +75,7 @@ class PodcastService : MediaBrowserServiceCompat() {
                         PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SEEK_TO)
             )
             .build()
-        mediaSession!!.setPlaybackState(playbackState)
+        mediaSession.setPlaybackState(playbackState)
 
     }
 
@@ -131,12 +125,12 @@ class PodcastService : MediaBrowserServiceCompat() {
 
 
                 if (0 == i) {
-                    mediaSession?.setMetadata(MediaMetadataCompat.fromMediaMetadata(metadata))//setMetadata(metadataCompat)
+                    mediaSession.setMetadata(MediaMetadataCompat.fromMediaMetadata(metadata))//setMetadata(metadataCompat)
                 }
 
                 mediaItems.add(MediaBrowserCompat.MediaItem(MediaMetadataCompat.fromMediaMetadata(metadata).description, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE))
 
-                exoPlayer?.addMediaItem(MediaItem.fromUri(episodes[i].audioUrl))
+                exoPlayer.addMediaItem(MediaItem.fromUri(episodes[i].audioUrl))
             }
         }
         //当设置多首歌曲组成队列时报错
@@ -145,9 +139,9 @@ class PodcastService : MediaBrowserServiceCompat() {
         result.sendResult(mediaItems)
         Log.i(TAG, "onLoadChildren: addMediaItem")
 
-        mediaSession?.controller?.playbackState?.let { initExoPlayerListener(it) }
+        mediaSession.controller?.playbackState?.let { initExoPlayerListener(it) }
 
-        exoPlayer?.prepare()
+        exoPlayer.prepare()
         Log.i(TAG, "onLoadChildren: prepare")
 
     }

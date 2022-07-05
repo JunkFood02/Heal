@@ -16,12 +16,15 @@ class ListenViewModel: ViewModel() {
     val state: Flow<PlaybackStateCompat> = flow {
         while (true) {
             val state = mediaController.playbackState
+
         }
 
     }
 
-    fun getProgress() {
-        PodcastService.progress
+    fun getProgress() = PodcastService.progress
+
+    fun setPlayBackSpeed(speed: Float){
+        mediaController.transportControls.setPlaybackSpeed(speed)
     }
 
     fun seekTo(pos: Long) {

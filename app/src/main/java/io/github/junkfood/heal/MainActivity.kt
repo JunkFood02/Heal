@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {}
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {}
+
     }
 
 

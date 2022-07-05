@@ -2,7 +2,6 @@ package io.github.junkfood.heal.ui.destination.listen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -32,9 +31,11 @@ class ListenViewModel : ViewModel() {
                 val podcast = Repository.getPodcastById(it.episode.podcastID)
                 mutableStateFlow.update { viewState ->
                     viewState.copy(
-                        title = episode.title,
+                        episodeTitle = episode.title,
                         podcastTitle = podcast.title,
                         imageUrl = episode.cover,
+                        podcastId = podcast.id,
+                        episodeId = episode.id
                     )
                 }
                 Log.d(TAG, episode.audioUrl)
@@ -53,7 +54,7 @@ class ListenViewModel : ViewModel() {
                 delay(200)
                 mutableStateFlow.update {
                     it.copy(
-                        isPlaying = exoPlayer.isPlaying,
+                        isPlaying = exoPlayer.playbackState == ExoPlayer.STATE_READY && exoPlayer.isPlaying,
                         progress = getProgress(),
                         duration = exoPlayer.duration
                     )
@@ -73,8 +74,10 @@ class ListenViewModel : ViewModel() {
     }
 
     data class ViewState(
-        val title: String = "",
+        val episodeId: Long = 0,
+        val episodeTitle: String = "",
         val podcastTitle: String = "",
+        val podcastId: Long = 0,
         val imageUrl: String = "",
         val duration: Long = 0,
         val progress: Float = 0F,

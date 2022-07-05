@@ -23,7 +23,7 @@ class PodcastService : MediaBrowserServiceCompat() {
 
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
     private val TAG = "PodcastService"
-    private lateinit var episodes : List<Episode>//传入的数据集
+    private lateinit var episodes: List<Episode>//传入的数据集
 
     companion object {
         lateinit var exoPlayer: ExoPlayer
@@ -46,14 +46,16 @@ class PodcastService : MediaBrowserServiceCompat() {
         exoPlayer = ExoPlayer.Builder(applicationContext).build()
         //1. 创建并初始化MediaSession
         mediaSession = MediaSessionCompat(applicationContext, TAG).apply {
-            setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-                    or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+            setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+                        or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
             )
 
             // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
             stateBuilder = PlaybackStateCompat.Builder()
-                .setActions(PlaybackStateCompat.ACTION_PLAY
-                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                .setActions(
+                    PlaybackStateCompat.ACTION_PLAY
+                            or PlaybackStateCompat.ACTION_PLAY_PAUSE
                 )
             setPlaybackState(stateBuilder.build())
 
@@ -84,8 +86,11 @@ class PodcastService : MediaBrowserServiceCompat() {
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot {
-        Log.i(TAG, "onGetRoot: clientPackageName=" + clientPackageName + " clientUid=" + clientUid + " pid=" + Binder.getCallingPid()
-                + " uid=" + Binder.getCallingUid())
+        Log.i(
+            TAG,
+            "onGetRoot: clientPackageName=" + clientPackageName + " clientUid=" + clientUid + " pid=" + Binder.getCallingPid()
+                    + " uid=" + Binder.getCallingUid()
+        )
         //返回非空，表示连接成功
         return BrowserRoot("media_root_id", null)
     }
@@ -115,7 +120,7 @@ class PodcastService : MediaBrowserServiceCompat() {
             //MediaMetadataCompat
 
 
-            if( episode ) {
+            if (episode) {
 
 //                metadata.setArtworkUri(Uri.parse(episodes[i].audioUrl))//*****文件
                 metadata.setAlbumArtist(episodes[i].author)
@@ -128,7 +133,13 @@ class PodcastService : MediaBrowserServiceCompat() {
                     mediaSession.setMetadata(MediaMetadataCompat.fromMediaMetadata(metadata))//setMetadata(metadataCompat)
                 }
 
-                mediaItems.add(MediaBrowserCompat.MediaItem(MediaMetadataCompat.fromMediaMetadata(metadata).description, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE))
+                mediaItems.add(
+                    MediaBrowserCompat.MediaItem(
+                        MediaMetadataCompat.fromMediaMetadata(
+                            metadata
+                        ).description, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+                    )
+                )
 
                 exoPlayer.addMediaItem(MediaItem.fromUri(episodes[i].audioUrl))
             }
@@ -141,6 +152,7 @@ class PodcastService : MediaBrowserServiceCompat() {
 
         mediaSession.controller?.playbackState?.let { initExoPlayerListener(it) }
 
+
         exoPlayer.prepare()
         Log.i(TAG, "onLoadChildren: prepare")
 
@@ -150,6 +162,7 @@ class PodcastService : MediaBrowserServiceCompat() {
     //TODO
     private fun initExoPlayerListener(state: PlaybackStateCompat) {
 //            mediaSession?.setPlaybackState(state)
+
 
 
 
@@ -196,14 +209,14 @@ class PodcastService : MediaBrowserServiceCompat() {
 //            }
 //        }
 //        )
-    }
+}
 
-    private fun setPlaybackState(playbackState: Any?) {
-
-    }
-
+private fun setPlaybackState(playbackState: Any?) {
 
 }
+
+
+
 
 
 

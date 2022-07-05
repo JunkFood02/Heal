@@ -24,8 +24,8 @@ class ListenViewModel : ViewModel() {
     lateinit var episode: Episode
 
     init {
-
         viewModelScope.launch (Dispatchers.Main) {
+
             latestRecord.collect {
                 val episode = it.episode
                 val podcast = Repository.getPodcastById(it.episode.podcastID)
@@ -33,7 +33,8 @@ class ListenViewModel : ViewModel() {
                     viewState.copy(
                         title = episode.title,
                         podcastTitle = podcast.title,
-                        imageUrl = episode.cover, duration = episode.duration
+                        imageUrl = episode.cover,
+                        duration = episode.duration,
                     )
                 }
                 val mediaItem = MediaItem.fromUri(episode.audioUrl)
@@ -48,7 +49,8 @@ class ListenViewModel : ViewModel() {
         val title: String = "",
         val podcastTitle: String = "",
         val imageUrl: String = "",
-        val duration: Long = 0
+        val duration: Long = 0,
+        val progress: Float = 0F
     )
 
     fun getProgress(): Float {
@@ -60,8 +62,8 @@ class ListenViewModel : ViewModel() {
         exoPlayer.setPlaybackSpeed(speed)
     }
 
-    fun seekTo(pos: Long) {
-
+    fun seekTo(pos: Float) {
+        exoPlayer.seekTo((pos * episode.duration).toLong())
     }
 
     fun skipToNext() {
